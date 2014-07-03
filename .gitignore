@@ -1,0 +1,13 @@
+*.suo
+*.pyc
+*.pyo
+obj/
+venv/
+.idea/
+.settings
+.pydevproject
+.ropeproject
+.DS_Store
+web/base/local_*settings.py
+web/apps/mediatool/selenium_tests/test_config.json
+config.codekit

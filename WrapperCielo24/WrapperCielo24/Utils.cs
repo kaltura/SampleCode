@@ -8,11 +8,19 @@ namespace WrapperCielo24
 {
     public class Utils
     {
-        public static Guid ExtractGuid();
+        //public static abstract Guid ExtractGuid();
 
         public static Uri BuildUri(string baseUri, string actionPath, Dictionary<string, string> dictionary){
-            string uriString = baseUri + actionPath + "?" + dictionary.AsQueryable().ToString();
+            string uriString = baseUri + actionPath + "?" + ToQuery(dictionary);
             return new Uri(uriString);
+        }
+
+        private static string ToQuery(Dictionary<string, string> dictionary){
+            List<string> pairs = new List<string>();
+            foreach(KeyValuePair<string, string> pair in dictionary){
+                pairs.Add(pair.Key + "=" + pair.Value);
+            }
+            return String.Join("&", pairs);
         }
     }
 
@@ -21,7 +29,7 @@ namespace WrapperCielo24
         public string Id { get; set; }
     }
 
-    enum CaptionFormat { SRT, SBV, DFXP, QT }
+    public enum CaptionFormat { SRT, SBV, DFXP, QT }
 
     /* CUSTOM EXCEPTIONS */
     public class AuthenticationException : WebException

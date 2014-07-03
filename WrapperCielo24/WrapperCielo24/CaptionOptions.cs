@@ -5,7 +5,7 @@ using System.Text;
 
 namespace WrapperCielo24
 {
-    class CaptionOptions
+    public class CaptionOptions
     {
 
     }

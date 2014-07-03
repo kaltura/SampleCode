@@ -9,31 +9,32 @@ namespace WrapperCielo24
 {
     public class Actions
     {
-        private static const string BASE_URI = "https://sandbox.cielo24.com";
-        public static const int VERSION = 1;
+        private const string BASE_URI = "https://sandbox-dev.cielo24.com";
+        public const int VERSION = 1;
 
-        private static const string LOGIN_PATH = "/api/account/login";
-        private static const string LOGOUT_PATH = "/api/account/logout";
-        private static const string UPDATE_PASSWORD_PATH = "/api/account/update_password";
-        private static const string GENERATE_API_KEY_PATH = "/api/account/generate_api_key";
-        private static const string REMOVE_API_KEY_PATH = "/api/account/remove_api_key";
-        private static const string CREATE_JOB_PATH = "/api/job/new";
-        private static const string AUTHORIZE_JOB_PATH = "/api/job/authorize";
-        private static const string DELETE_JOB_PATH = "/api/job/del";
-        private static const string GET_JOB_INFO_PATH = "/api/job/list";
-        private static const string GET_JOB_LIST_PATH = "/api/job/list";
-        private static const string ADD_MEDIA_TO_JOB_PATH = "/api/job/add_media";
-        private static const string ADD_EMBEDDED_MEDIA_TO_JOB_PATH = "/api/job/add_media_url";
-        private static const string GET_MEDIA_PATH = "/api/job/media";
-        private static const string GET_TRANSCRIPTION_PATH = "/api/job/get_transcript";
-        private static const string GET_CAPTION_PATH = "/api/job/get_caption";
-        private static const string GET_ELEMENT_LIST_PATH = "/api/job/get_elementlist";
-        private static const string GET_LIST_OF_ELEMENT_LISTS_PATH = "/api/job/list_elementlists";
+        private const string LOGIN_PATH = "/api/account/login";
+        private const string LOGOUT_PATH = "/api/account/logout";
+        private const string UPDATE_PASSWORD_PATH = "/api/account/update_password";
+        private const string GENERATE_API_KEY_PATH = "/api/account/generate_api_key";
+        private const string REMOVE_API_KEY_PATH = "/api/account/remove_api_key";
+        private const string CREATE_JOB_PATH = "/api/job/new";
+        private const string AUTHORIZE_JOB_PATH = "/api/job/authorize";
+        private const string DELETE_JOB_PATH = "/api/job/del";
+        private const string GET_JOB_INFO_PATH = "/api/job/list";
+        private const string GET_JOB_LIST_PATH = "/api/job/list";
+        private const string ADD_MEDIA_TO_JOB_PATH = "/api/job/add_media";
+        private const string ADD_EMBEDDED_MEDIA_TO_JOB_PATH = "/api/job/add_media_url";
+        private const string GET_MEDIA_PATH = "/api/job/media";
+        private const string GET_TRANSCRIPTION_PATH = "/api/job/get_transcript";
+        private const string GET_CAPTION_PATH = "/api/job/get_caption";
+        private const string GET_ELEMENT_LIST_PATH = "/api/job/get_elementlist";
+        private const string GET_LIST_OF_ELEMENT_LISTS_PATH = "/api/job/list_elementlists";
 
         /// ACCESS CONTROL ///
         
         /* Performs a Login action. If headers is true, puts username and password into HTTP header */
-        public Guid Login(string username, string password, bool headers=false)
+        public string Login(string username, string password, bool headers=false)
+        //public Guid Login(string username, string password, bool headers=false)
         {
             this.AssertArgument(username, "Username");
             this.AssertArgument(password, "Password");
@@ -48,7 +49,9 @@ namespace WrapperCielo24
             }
 
             Uri requestUri = Utils.BuildUri(BASE_URI, LOGIN_PATH, dictionary);
+            
             WebUtils web = new WebUtils();
+            return web.HttpGet(requestUri);
             // webrequest... check if headers
             // check what comes back
             // if eror - throw authentication exception
@@ -57,7 +60,7 @@ namespace WrapperCielo24
             //"$server_url/api/account/login?v=1&username=$username&password=$password"
             //"$server_url/api/account/login?v=1" -H "x-auth-user: $username" -H "x-auth-key: $password"
             
-            return new Guid("test");
+            //return new Guid("test");
         }
 
         /* Performs a Login action. If headers is true, puts securekey into HTTP header */

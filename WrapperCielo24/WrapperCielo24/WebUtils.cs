@@ -40,13 +40,13 @@ namespace WrapperCielo24
     {
         // Progress events/properties?
         // private static AutoResetEvent allDone = new AutoResetEvent(false);
-        private static const TimeSpan BASIC_TIMEOUT = new TimeSpan(TimeSpan.TicksPerSecond * 60); // 60 seconds
-        private static const TimeSpan DOWNLOAD_TIMEOUT = new TimeSpan(TimeSpan.TicksPerMinute * 5);  // 5 minutes
-        
+        private static TimeSpan BASIC_TIMEOUT = new TimeSpan(TimeSpan.TicksPerSecond * 60); // 60 seconds
+        private static TimeSpan DOWNLOAD_TIMEOUT = new TimeSpan(TimeSpan.TicksPerMinute * 5);  // 5 minutes
 
         /* A synchronous HTTP GET method that returns data received from the sever */
-        public void HttpGet(Uri uri)
+        public string HttpGet(Uri uri)
         {
+            string str = "failed";
             HttpWebRequest request = HttpWebRequest.CreateHttp(uri);
             request.Method = "GET";
             //RequestState state = new RequestState(request);
@@ -56,18 +56,35 @@ namespace WrapperCielo24
             {
                 HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(asyncResult); // End getting response
                 Stream stream = response.GetResponseStream();
-                byte[] byteResponse = new byte[stream.Length];
-                stream.Read(byteResponse, 0, byteResponse.Length);
+                
+                byte[] read = ReadStream(stream);
+                //IAsyncResult asyncResult2 = stream.BeginRead(read, 0,  // Begin reading
+                
+                //stream.Read(byteResponse, 0, byteResponse.Length);
                 UTF8Encoding enc = new UTF8Encoding();
-                string str = enc.GetString(byteResponse, 0, byteResponse.Length);
+                str = enc.GetString(read, 0, read.Length);
             }
-
+            return str;
             //allDone.WaitOne(BASIC_TIMEOUT);
         }
 
         public void HttpPost(Uri uri)
         {
             HttpWebRequest request = HttpWebRequest.CreateHttp(uri);
+        }
+
+        private byte[] ReadStream(Stream s)
+        {
+            List<byte> array = new List<byte>();
+            do
+            {
+                array.Add((byte)s.ReadByte());
+            } while (array.Last() != -1);
+
+            array.RemoveAt(array.Count - 1);
+            UTF8Encoding enc = new UTF8Encoding();
+            throw new Exception(enc.GetString(array.ToArray(), 0, array.ToArray().Length));
+            return array.ToArray();
         }
 
         private void GetResponseCallback(IAsyncResult result)
@@ -86,7 +103,7 @@ namespace WrapperCielo24
         }
     }
 
-    private class RequestState
+    class RequestState
     {
         // This class retains the request state through asyncronous calls.
         public int BufferSize { get; set; }
