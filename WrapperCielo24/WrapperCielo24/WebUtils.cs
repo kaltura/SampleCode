@@ -15,10 +15,14 @@ namespace WrapperCielo24
         private static TimeSpan DOWNLOAD_TIMEOUT = new TimeSpan(TimeSpan.TicksPerMinute * 5);  // 5 minutes
 
         /* A synchronous method that performs an HTTP request returning data received from the sever as a string */
-        public string HttpRequest(Uri uri, HttpMethod method=HttpMethod.GET)
+        public string HttpRequest(Uri uri, HttpMethod method=HttpMethod.GET, Dictionary<string, string> headers=null)
         {
-            HttpWebRequest request = HttpWebRequest.CreateHttp(uri);
+            HttpWebRequest request = HttpWebRequest.CreateHttp(uri);            
             request.Method = method.ToString();
+            foreach (KeyValuePair<string, string> pair in headers)
+            {
+                request.Headers[pair.Key] = pair.Value;
+            }
             IAsyncResult asyncResult = request.BeginGetResponse(null, null);
             asyncResult.AsyncWaitHandle.WaitOne(BASIC_TIMEOUT); // Wait untill response is received, then proceed
             if(asyncResult.IsCompleted)

@@ -32,14 +32,14 @@ namespace WrapperCielo24
 
         /// ACCESS CONTROL ///
         
-        /* Performs a Login action. If headers is true, puts username and password into HTTP header */
-        public string Login(string username, string password, bool headers=false)
-        //public Guid Login(string username, string password, bool headers=false)
+        /* Performs a Login action. If headers is true, puts username and password into HTTP headers */
+        public Guid Login(string username, string password, bool headers=false)
         {
             this.AssertArgument(username, "Username");
             this.AssertArgument(password, "Password");
 
             Dictionary<string, string> dictionary = new Dictionary<string, string>();
+            Dictionary<string, string> headersList = new Dictionary<string, string>();
             dictionary.Add("v", VERSION.ToString());
 
             if (!headers)
@@ -47,22 +47,25 @@ namespace WrapperCielo24
                 dictionary.Add("username", username);
                 dictionary.Add("password", password);
             }
+            else
+            {
+                headersList.Add("x-auth-user", username);
+                headersList.Add("x-auth-key", password);
+            }
 
             Uri requestUri = Utils.BuildUri(BASE_URI, LOGIN_PATH, dictionary);
             
             WebUtils web = new WebUtils();
-            string serverResponse = web.HttpRequest(requestUri);
-            //return Utils.DeserializeDictionary(serverResponse).ElementAt(0).Key;
-            
-            //return serverResponse;
 
-            // webrequest... check if headers
-            // check what comes back
-            // if eror - throw authentication exception
-            // else extract and return guid
+            string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, headersList);
+            Dictionary<string, string> response = Utils.DeserializeDictionary(serverResponse);
 
-            //"$server_url/api/account/login?v=1&username=$username&password=$password"
-            //"$server_url/api/account/login?v=1" -H "x-auth-user: $username" -H "x-auth-key: $password"
+            if (response.ContainsKey("ApiToken")) {
+                return new Guid(response["ApiToken"]);
+            }
+            else {
+                throw new AuthenticationException(response["ErrorComment"], response["ErrorType"]);
+            }
         }
 
         /* Performs a Login action. If headers is true, puts securekey into HTTP header */

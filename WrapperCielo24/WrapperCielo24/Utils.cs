@@ -7,6 +7,7 @@ using System.Net;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 
 namespace WrapperCielo24
 {
@@ -27,26 +28,10 @@ namespace WrapperCielo24
             return String.Join("&", pairs);
         }
 
-        /* Takes a json string (of the form {"k1":"v1", "k2":"v2",.....}), and returns a dictionary */
+        /* Takes a json string (of the form {"k1":"v1", "k2":"v2",.....}), and deserializes it into a dictionary */
         public static Dictionary<string, string> DeserializeDictionary(string json)
         {
-            throw new NotImplementedException();
-            // entry (".+?":\s*".+?")
-            // pair  (.+)"\s*:\s*"(.+)
-            Dictionary<string, string> dictionary = new Dictionary<string, string>();
-            string entryPattern = "(\".+?\"\\s*:\\s*\".+?\")";
-            string pairPattern = "\"(.+)\"\\s*:\\s*\"(.+)\"";
-            Regex entryRegex = new Regex(entryPattern);
-            Regex pairRegex = new Regex(pairPattern);
-            Match entry = entryRegex.Match(json);
-            string s = "";
-            while (entry.Success)
-            {
-                Match pair = pairRegex.Match(entry.Value);
-                dictionary.Add(pair.Value, pair.NextMatch().Value);
-                entry = entry.NextMatch();
-            }
-
+            Dictionary<string, string> dictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
             return dictionary;
         }
     }
@@ -56,12 +41,13 @@ namespace WrapperCielo24
     /* CUSTOM EXCEPTIONS */
     public class AuthenticationException : WebException
     {
-        private string errorDetails = null;
-        public string ErrorDetails { get { return this.errorDetails; } }
+        private string errorComment = null;
+        private Dictionary<string, string> response;
+        public string ErrorComment { get { return this.errorComment; } }
 
-        public AuthenticationException(string message, string errDet=null) : base(message)
+        public AuthenticationException(string message, string errCom=null) : base(message)
         {
-            this.errorDetails = errDet;
+            this.errorComment = errCom;
         }
     }
 }
