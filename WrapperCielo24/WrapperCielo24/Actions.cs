@@ -51,7 +51,11 @@ namespace WrapperCielo24
             Uri requestUri = Utils.BuildUri(BASE_URI, LOGIN_PATH, dictionary);
             
             WebUtils web = new WebUtils();
-            return web.HttpGet(requestUri);
+            string serverResponse = web.HttpRequest(requestUri);
+            //return Utils.DeserializeDictionary(serverResponse).ElementAt(0).Key;
+            
+            //return serverResponse;
+
             // webrequest... check if headers
             // check what comes back
             // if eror - throw authentication exception
@@ -59,8 +63,6 @@ namespace WrapperCielo24
 
             //"$server_url/api/account/login?v=1&username=$username&password=$password"
             //"$server_url/api/account/login?v=1" -H "x-auth-user: $username" -H "x-auth-key: $password"
-            
-            //return new Guid("test");
         }
 
         /* Performs a Login action. If headers is true, puts securekey into HTTP header */
@@ -79,6 +81,7 @@ namespace WrapperCielo24
 
             Uri requestUri = Utils.BuildUri(BASE_URI, LOGIN_PATH, dictionary);
             WebUtils web = new WebUtils();
+
             // webrequest... check if headers
             // check what comes back
             // if eror - throw authentication exception
