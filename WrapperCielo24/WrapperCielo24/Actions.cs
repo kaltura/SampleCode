@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Security.Principal;
+using System.Net;
 
 namespace WrapperCielo24
 {
@@ -33,82 +34,77 @@ namespace WrapperCielo24
         /// ACCESS CONTROL ///
         
         /* Performs a Login action. If headers is true, puts username and password into HTTP headers */
-        public Guid Login(string username, string password, bool headers=false)
+        public Guid Login(string username, string password, bool usingHeaders=false)
         {
             this.AssertArgument(username, "Username");
             this.AssertArgument(password, "Password");
 
             Dictionary<string, string> dictionary = new Dictionary<string, string>();
-            Dictionary<string, string> headersList = new Dictionary<string, string>();
+            Dictionary<string, string> headers = new Dictionary<string, string>();
             dictionary.Add("v", VERSION.ToString());
 
-            if (!headers)
+            if (!usingHeaders)
             {
                 dictionary.Add("username", username);
                 dictionary.Add("password", password);
             }
             else
             {
-                headersList.Add("x-auth-user", username);
-                headersList.Add("x-auth-key", password);
+                headers.Add("x-auth-user", username);
+                headers.Add("x-auth-key", password);
             }
 
             Uri requestUri = Utils.BuildUri(BASE_URI, LOGIN_PATH, dictionary);
-            
             WebUtils web = new WebUtils();
 
-            string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, headersList);
+            string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, headers);
             Dictionary<string, string> response = Utils.DeserializeDictionary(serverResponse);
 
-            if (response.ContainsKey("ApiToken")) {
-                return new Guid(response["ApiToken"]);
-            }
-            else {
-                throw new AuthenticationException(response["ErrorComment"], response["ErrorType"]);
-            }
+            return new Guid(response["ApiToken"]);
         }
 
         /* Performs a Login action. If headers is true, puts securekey into HTTP header */
-        public Guid Login(string username, Guid securekey, bool headers = false)
+        public Guid Login(string username, Guid securekey, bool usingHeaders = false)
         {
             this.AssertArgument(username, "Username");
 
             Dictionary<string, string> dictionary = new Dictionary<string, string>();
+            Dictionary<string, string> headers = new Dictionary<string, string>();
             dictionary.Add("v", VERSION.ToString());
 
-            if (!headers)
+            if (!usingHeaders)
             {
                 dictionary.Add("username", username);
-                dictionary.Add("securekey", securekey.ToString());
+                dictionary.Add("securekey", securekey.ToString("N"));
+            }
+
+            else
+            {
+                headers.Add("x-auth-user", username);
+                headers.Add("x-auth-securekey", securekey.ToString("N"));
             }
 
             Uri requestUri = Utils.BuildUri(BASE_URI, LOGIN_PATH, dictionary);
             WebUtils web = new WebUtils();
 
-            // webrequest... check if headers
-            // check what comes back
-            // if eror - throw authentication exception
-            // else extract and return guid
-
-            //"$server_url/api/account/login?v=1&username=$username&securekey=$api_securekey"
-            //"$server_url/api/account/login?v=1&username=$username" -H "x-auth-securekey: $api_securekey"
-
-            return new Guid("test");
+            string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, headers);
+            Dictionary<string, string> response = Utils.DeserializeDictionary(serverResponse);
+            
+            return new Guid(response["ApiToken"]);
         }
 
         /* Performs a Logout action */
         public void Logout(Guid apiToken)
         {
             Dictionary<string, string> dictionary = this.InitAccessReqDict(apiToken);
-
             Uri requestUri = Utils.BuildUri(BASE_URI, LOGOUT_PATH, dictionary);
             WebUtils web = new WebUtils();
-            //web request
-            //throw Exception if error returned
+
+            web.HttpRequest(requestUri, HttpMethod.GET); // Ignore response
         }
 
         /* Updates password */
-        public string UpdatePassword(Guid apiToken, string accountPassword)
+        public void UpdatePassword(Guid apiToken, string accountPassword)
         {
             this.AssertArgument(accountPassword, "New Password");
 
@@ -117,11 +113,8 @@ namespace WrapperCielo24
 
             Uri requestUri = Utils.BuildUri(BASE_URI, UPDATE_PASSWORD_PATH, dictionary);
             WebUtils web = new WebUtils();
-            // web request
-            // throw Exception if error returned
-            // POST
 
-            return null;
+            web.HttpRequest(requestUri, HttpMethod.POST); // Ignore response
         }
 
         /* Returns a Secure API key */
@@ -135,10 +128,11 @@ namespace WrapperCielo24
 
             Uri requestUri = Utils.BuildUri(BASE_URI, GENERATE_API_KEY_PATH, dictionary);
             WebUtils web = new WebUtils();
-            // web request
-            // throw Exceptio if error returned
 
-            return new Guid("test");
+            string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET);
+            Dictionary<string, string> response = Utils.DeserializeDictionary(serverResponse);
+
+            return new Guid(response["ApiKey"]);
         }
 
         /* Removes the supplied API key */
@@ -149,10 +143,11 @@ namespace WrapperCielo24
 
             Uri requestUri = Utils.BuildUri(BASE_URI, REMOVE_API_KEY_PATH, dictionary);
             WebUtils web = new WebUtils();
-            // web request
-            // throw Exception if error returned
 
-            return new Guid("test");
+            string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET);
+            Dictionary<string, string> response = Utils.DeserializeDictionary(serverResponse);
+
+            return new Guid(response["ApiKey"]);
         }
 
 
@@ -166,8 +161,11 @@ namespace WrapperCielo24
 
             Uri requestUri = Utils.BuildUri(BASE_URI, CREATE_JOB_PATH, dictionary);
             WebUtils web = new WebUtils();
-            // web request
-            // throw Exception if error returned
+            
+            string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET);
+            Dictionary<string, string> response = Utils.DeserializeDictionary(serverResponse);
+
+            // TODO
 
             return null;
         }
@@ -178,8 +176,8 @@ namespace WrapperCielo24
 
             Uri requestUri = Utils.BuildUri(BASE_URI, AUTHORIZE_JOB_PATH, dictionary);
             WebUtils web = new WebUtils();
-            // web request
-            // throw Exception if error returned
+
+            web.HttpRequest(requestUri, HttpMethod.GET); // Ignore response
         }
 
         public Guid DeleteJob(Guid apiToken, Guid jobId)
@@ -189,7 +187,10 @@ namespace WrapperCielo24
             Uri requestUri = Utils.BuildUri(BASE_URI, DELETE_JOB_PATH, dictionary);
             WebUtils web = new WebUtils();
 
-            return new Guid(""); // task id
+            string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET);
+            Dictionary<string, string> response = Utils.DeserializeDictionary(serverResponse);
+
+            return new Guid(response["TaskId"]);
         }
 
         public string GetJobInfo(Guid apiToken, Guid jobId)
@@ -199,19 +200,27 @@ namespace WrapperCielo24
             Uri requestUri = Utils.BuildUri(BASE_URI, GET_JOB_INFO_PATH, dictionary);
             WebUtils web = new WebUtils();
 
+            string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET);
+            Dictionary<string, string> response = Utils.DeserializeDictionary(serverResponse);
+
+            // TODO
+
             return null;
         }
 
         public string GetJobList(Guid apiToken)
-        {
-            if (apiToken.Equals(Guid.Empty)) { throw new ArgumentException("Invalid API Token"); }
-            
+        {            
             Dictionary<string, string> dictionary = new Dictionary<string, string>();
             dictionary.Add("v", VERSION.ToString());
             dictionary.Add("api_token", apiToken.ToString());
 
             Uri requestUri = Utils.BuildUri(BASE_URI, GET_JOB_LIST_PATH, dictionary);
             WebUtils web = new WebUtils();
+
+            string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET);
+            Dictionary<string, string> response = Utils.DeserializeDictionary(serverResponse);
+
+            // TODO
 
             return null;
         }
@@ -225,9 +234,11 @@ namespace WrapperCielo24
 
             Uri requestUri = Utils.BuildUri(BASE_URI, ADD_MEDIA_TO_JOB_PATH, dictionary);
             WebUtils web = new WebUtils();
-            // GET request
 
-            return new Guid("");
+            string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET);
+            Dictionary<string, string> response = Utils.DeserializeDictionary(serverResponse);
+
+            return new Guid(response["TaskId"]);
         }
 
         public Guid AddMediaToJob(Guid apiToken, Guid jobId, StreamReader localFile)
@@ -238,6 +249,11 @@ namespace WrapperCielo24
 
             Uri requestUri = Utils.BuildUri(BASE_URI, ADD_MEDIA_TO_JOB_PATH, dictionary);
             WebUtils web = new WebUtils();
+
+            string serverResponse = web.HttpRequest(requestUri, HttpMethod.POST);
+            Dictionary<string, string> response = Utils.DeserializeDictionary(serverResponse);
+
+            // TODO
             // POST request
 
             return new Guid("");
@@ -245,16 +261,18 @@ namespace WrapperCielo24
 
         public Guid AddEmbeddedMediaToJob(Guid apiToken, Guid jobId, Uri mediaUrl)
         {
-            Dictionary<string, string> dictionary = InitJobReqDict(apiToken, jobId);
-            
             if (mediaUrl == null || mediaUrl.ToString().Equals("")) { throw new ArgumentException("Invalid Media URL"); }
+
+            Dictionary<string, string> dictionary = InitJobReqDict(apiToken, jobId);
             dictionary.Add("media_url", mediaUrl.ToString());
 
             Uri requestUri = Utils.BuildUri(BASE_URI, ADD_EMBEDDED_MEDIA_TO_JOB_PATH, dictionary);
             WebUtils web = new WebUtils();
-            // GET request
 
-            return new Guid("");
+            string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET);
+            Dictionary<string, string> response = Utils.DeserializeDictionary(serverResponse);
+
+            return new Guid(response["TaskId"]);
         }
 
         public Uri GetMedia(Guid apiToken, Guid jobId)
@@ -264,7 +282,10 @@ namespace WrapperCielo24
             Uri requestUri = Utils.BuildUri(BASE_URI, GET_MEDIA_PATH, dictionary);
             WebUtils web = new WebUtils();
 
-            return null;
+            string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET);
+            Dictionary<string, string> response = Utils.DeserializeDictionary(serverResponse);
+
+            return new Uri(response["MediaUrl"]);
         }
 
         public string GetTranscript(Guid apiToken, Guid jobId, CaptionOptions captionOptions = null)
@@ -272,11 +293,10 @@ namespace WrapperCielo24
             Dictionary<string, string> dictionary = InitJobReqDict(apiToken, jobId);
             if (captionOptions != null) { dictionary.Add("caption_options", captionOptions.ToString()); }
 
-
             Uri requestUri = Utils.BuildUri(BASE_URI, GET_TRANSCRIPTION_PATH, dictionary);
             WebUtils web = new WebUtils();
 
-            return null;
+            return web.HttpRequest(requestUri, HttpMethod.GET); // Transcript text
         }
 
         public string GetCaption(Guid apiToken, Guid jobId, CaptionFormat captionFormat=CaptionFormat.SRT, CaptionOptions captionOptions = null)
@@ -288,7 +308,7 @@ namespace WrapperCielo24
             Uri requestUri = Utils.BuildUri(BASE_URI, GET_CAPTION_PATH, dictionary);
             WebUtils web = new WebUtils();
 
-            return null;
+            return web.HttpRequest(requestUri, HttpMethod.GET); // Transcript text
         }
 
         public string GetElementList(Guid apiToken, Guid jobId)
@@ -297,6 +317,12 @@ namespace WrapperCielo24
 
             Uri requestUri = Utils.BuildUri(BASE_URI, GET_ELEMENT_LIST_PATH, dictionary);
             WebUtils web = new WebUtils();
+
+            string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET);
+            Dictionary<string, string> response = Utils.DeserializeDictionary(serverResponse);
+            
+            // TODO
+
             return null;
         }
 
@@ -306,6 +332,12 @@ namespace WrapperCielo24
 
             Uri requestUri = Utils.BuildUri(BASE_URI, GET_LIST_OF_ELEMENT_LISTS_PATH, dictionary);
             WebUtils web = new WebUtils();
+
+            string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET);
+            Dictionary<string, string> response = Utils.DeserializeDictionary(serverResponse);
+
+            // TODO
+
             return null;
         }
 
@@ -326,7 +358,7 @@ namespace WrapperCielo24
         {
             Dictionary<string, string> dictionary = new Dictionary<string, string>();
             dictionary.Add("v", VERSION.ToString());
-            dictionary.Add("api_token", apiToken.ToString());
+            dictionary.Add("api_token", apiToken.ToString("N"));
             return dictionary;
         }
 

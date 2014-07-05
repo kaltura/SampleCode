@@ -27,12 +27,23 @@ namespace WrapperCielo24
             asyncResult.AsyncWaitHandle.WaitOne(BASIC_TIMEOUT); // Wait untill response is received, then proceed
             if(asyncResult.IsCompleted)
             {
-                HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(asyncResult);
-                Stream stream = response.GetResponseStream();
-                StreamReader streamReader = new StreamReader(stream);
-                string serverResponse = streamReader.ReadToEnd();
-                stream.Dispose();
-                return serverResponse;
+                try
+                {
+                    HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(asyncResult);
+                    Stream stream = response.GetResponseStream();
+                    StreamReader streamReader = new StreamReader(stream);
+                    string serverResponse = streamReader.ReadToEnd();
+                    stream.Dispose();
+                    return serverResponse;
+                }
+                catch (WebException err) // Catch (400) Bad Request error
+                {
+                    Stream errorStream = err.Response.GetResponseStream();
+                    StreamReader streamReader = new StreamReader(errorStream);
+                    string errorJson = streamReader.ReadToEnd();
+                    Dictionary<string, string> responseDict = Utils.DeserializeDictionary(errorJson);
+                    throw new EnumWebException(responseDict["ErrorType"], responseDict["ErrorComment"]);
+                }
             }
             else
             {
@@ -42,28 +53,21 @@ namespace WrapperCielo24
 
         public string UploadMedia(Uri uri)
         {
+            // TODO
             throw new NotImplementedException();
         }
     }
 
     public enum HttpMethod { GET, POST, DELETE, PUT }
 
-    /*class RequestState
+    public class EnumWebException : WebException
     {
-        // This class retains the request state through asyncronous calls.
-        public int BufferSize { get; set; }
-        public byte[] Buffer { get; set; }
-        public HttpWebRequest Request { get; set; }
+        private string errorType;
+        public string ErrorType { get { return this.errorType; } }
 
-        public RequestState(HttpWebRequest request)
+        public EnumWebException(string errType, string message) : base(errType + ": " + message)
         {
-            this.Request = request;
+            this.errorType = errType;
         }
-
-        public RequestState(HttpWebRequest request, byte[] buffer) : this(request)
-        {
-            this.Buffer = buffer;
-            this.BufferSize = buffer.Count();
-        }
-    }*/
+    }
 }

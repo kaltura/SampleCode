@@ -38,16 +38,4 @@ namespace WrapperCielo24
 
     public enum CaptionFormat { SRT, SBV, DFXP, QT }
 
-    /* CUSTOM EXCEPTIONS */
-    public class AuthenticationException : WebException
-    {
-        private string errorComment = null;
-        private Dictionary<string, string> response;
-        public string ErrorComment { get { return this.errorComment; } }
-
-        public AuthenticationException(string message, string errCom=null) : base(message)
-        {
-            this.errorComment = errCom;
-        }
-    }
 }
