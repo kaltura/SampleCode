@@ -36,8 +36,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="WrapperCielo24">
-      <HintPath>..\..\..\..\..\Visual Studio 2013\Projects\WrapperCielo24\WrapperCielo24\bin\Debug\WrapperCielo24.dll</HintPath>
+    <Reference Include="WrapperCielo24, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\WrapperCielo24\bin\Debug\WrapperCielo24.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Choose>

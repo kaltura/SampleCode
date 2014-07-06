@@ -99,8 +99,7 @@ namespace WrapperCielo24
             Dictionary<string, string> dictionary = this.InitAccessReqDict(apiToken);
             Uri requestUri = Utils.BuildUri(BASE_URI, LOGOUT_PATH, dictionary);
             WebUtils web = new WebUtils();
-
-            web.HttpRequest(requestUri, HttpMethod.GET); // Ignore response
+            web.HttpRequest(requestUri, HttpMethod.GET); // Nothing returned
         }
 
         /* Updates password */
@@ -114,7 +113,9 @@ namespace WrapperCielo24
             Uri requestUri = Utils.BuildUri(BASE_URI, UPDATE_PASSWORD_PATH, dictionary);
             WebUtils web = new WebUtils();
 
-            web.HttpRequest(requestUri, HttpMethod.POST); // Ignore response
+            // TODO: returns a MISSING_PARAMETERS error, although everything is supplied
+
+            web.HttpRequest(requestUri, HttpMethod.POST); // Nothing returned
         }
 
         /* Returns a Secure API key */
@@ -123,7 +124,7 @@ namespace WrapperCielo24
             this.AssertArgument(username, "Username/Account ID");
 
             Dictionary<string, string> dictionary = this.InitAccessReqDict(apiToken);
-            dictionary.Add("username", username);
+            dictionary.Add("account_id", username);
             dictionary.Add("force_new", forceNew.ToString());
 
             Uri requestUri = Utils.BuildUri(BASE_URI, GENERATE_API_KEY_PATH, dictionary);
@@ -136,18 +137,14 @@ namespace WrapperCielo24
         }
 
         /* Removes the supplied API key */
-        public Guid RemoveAPIKey(Guid apiToken, Guid apiSecurekey)
+        public void RemoveAPIKey(Guid apiToken, Guid apiSecurekey)
         {
             Dictionary<string, string> dictionary = this.InitAccessReqDict(apiToken);
-            dictionary.Add("api_securekey", apiSecurekey.ToString());
+            dictionary.Add("api_securekey", apiSecurekey.ToString("N"));
 
             Uri requestUri = Utils.BuildUri(BASE_URI, REMOVE_API_KEY_PATH, dictionary);
             WebUtils web = new WebUtils();
-
-            string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET);
-            Dictionary<string, string> response = Utils.DeserializeDictionary(serverResponse);
-
-            return new Guid(response["ApiKey"]);
+            web.HttpRequest(requestUri, HttpMethod.GET); // Nothing returned
         }
 
 
@@ -232,6 +229,8 @@ namespace WrapperCielo24
             if (mediaUrl == null || mediaUrl.ToString().Equals("")) { throw new ArgumentException("Invalid Media URL"); }
             dictionary.Add("media_url", mediaUrl.ToString());
 
+            // TODO: escape url
+
             Uri requestUri = Utils.BuildUri(BASE_URI, ADD_MEDIA_TO_JOB_PATH, dictionary);
             WebUtils web = new WebUtils();
 
@@ -241,7 +240,7 @@ namespace WrapperCielo24
             return new Guid(response["TaskId"]);
         }
 
-        public Guid AddMediaToJob(Guid apiToken, Guid jobId, StreamReader localFile)
+        public Guid AddMediaToJob(Guid apiToken, Guid jobId, Stream localFile)
         {
             Dictionary<string, string> dictionary = InitJobReqDict(apiToken, jobId);
 
@@ -252,7 +251,7 @@ namespace WrapperCielo24
 
             string serverResponse = web.HttpRequest(requestUri, HttpMethod.POST);
             Dictionary<string, string> response = Utils.DeserializeDictionary(serverResponse);
-
+            
             // TODO
             // POST request
 
@@ -296,7 +295,7 @@ namespace WrapperCielo24
             Uri requestUri = Utils.BuildUri(BASE_URI, GET_TRANSCRIPTION_PATH, dictionary);
             WebUtils web = new WebUtils();
 
-            return web.HttpRequest(requestUri, HttpMethod.GET); // Transcript text
+            return web.HttpRequest(requestUri, HttpMethod.GET, null, true); // Transcript text
         }
 
         public string GetCaption(Guid apiToken, Guid jobId, CaptionFormat captionFormat=CaptionFormat.SRT, CaptionOptions captionOptions = null)
@@ -308,7 +307,7 @@ namespace WrapperCielo24
             Uri requestUri = Utils.BuildUri(BASE_URI, GET_CAPTION_PATH, dictionary);
             WebUtils web = new WebUtils();
 
-            return web.HttpRequest(requestUri, HttpMethod.GET); // Transcript text
+            return web.HttpRequest(requestUri, HttpMethod.GET, null, true); // Transcript text
         }
 
         public string GetElementList(Guid apiToken, Guid jobId)
