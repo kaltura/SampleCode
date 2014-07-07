@@ -34,6 +34,18 @@ namespace WrapperCielo24
             Dictionary<string, string> dictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
             return dictionary;
         }
+
+        /* Encodes the supplied Url into an escaped format */
+        public static string EncodeUrl(Uri uri)
+        {
+            return Uri.EscapeUriString(uri.ToString());
+        }
+
+        /* Unescapes a string */
+        public static string UnescapeString(string uriString)
+        {
+            return Uri.UnescapeDataString(uriString);
+        }
     }
 
     public enum CaptionFormat { SRT, SBV, DFXP, QT }

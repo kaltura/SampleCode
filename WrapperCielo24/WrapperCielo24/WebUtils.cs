@@ -10,12 +10,12 @@ namespace WrapperCielo24
 {
     class WebUtils
     {
-        // Progress events/properties?
-        private static TimeSpan BASIC_TIMEOUT = new TimeSpan(TimeSpan.TicksPerSecond * 60); // 60 seconds
-        private static TimeSpan DOWNLOAD_TIMEOUT = new TimeSpan(TimeSpan.TicksPerMinute * 5);  // 5 minutes
+        // TODO: Progress events/properties ???
+        public static readonly TimeSpan BASIC_TIMEOUT = new TimeSpan(TimeSpan.TicksPerSecond * 60); // 60 seconds
+        public static readonly TimeSpan DOWNLOAD_TIMEOUT = new TimeSpan(TimeSpan.TicksPerMinute * 5);  // 5 minutes
 
         /* A synchronous method that performs an HTTP request returning data received from the sever as a string */
-        public string HttpRequest(Uri uri, HttpMethod method=HttpMethod.GET, Dictionary<string, string> headers=null, bool longTimeout=false)
+        public string HttpRequest(Uri uri, HttpMethod method, TimeSpan timeout, Dictionary<string, string> headers=null)
         {
             HttpWebRequest request = HttpWebRequest.CreateHttp(uri);            
             request.Method = method.ToString();
@@ -25,7 +25,7 @@ namespace WrapperCielo24
                 }
             }
             IAsyncResult asyncResult = request.BeginGetResponse(null, null);
-            asyncResult.AsyncWaitHandle.WaitOne((longTimeout) ? DOWNLOAD_TIMEOUT : BASIC_TIMEOUT); // Wait untill response is received, then proceed
+            asyncResult.AsyncWaitHandle.WaitOne(timeout); // Wait untill response is received, then proceed
             if(asyncResult.IsCompleted)
             {
                 try
