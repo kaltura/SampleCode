@@ -15,36 +15,22 @@ namespace WrapperCielo24
         public static readonly TimeSpan DOWNLOAD_TIMEOUT = new TimeSpan(TimeSpan.TicksPerMinute * 5);  // 5 minutes
 
         /* A synchronous method that performs an HTTP request returning data received from the sever as a string */
-        public string HttpRequest(Uri uri, HttpMethod method, TimeSpan timeout, Dictionary<string, string> headers=null)
+        public string HttpRequest(Uri uri, HttpMethod method, TimeSpan timeout, Dictionary<string, string> headers = null)
         {
-            HttpWebRequest request = HttpWebRequest.CreateHttp(uri);            
+            HttpWebRequest request = HttpWebRequest.CreateHttp(uri);
             request.Method = method.ToString();
-            if (headers != null) {
-                foreach (KeyValuePair<string, string> pair in headers) {
+            if (headers != null)
+            {
+                foreach (KeyValuePair<string, string> pair in headers)
+                {
                     request.Headers[pair.Key] = pair.Value;
                 }
             }
             IAsyncResult asyncResult = request.BeginGetResponse(null, null);
             asyncResult.AsyncWaitHandle.WaitOne(timeout); // Wait untill response is received, then proceed
-            if(asyncResult.IsCompleted)
+            if (asyncResult.IsCompleted)
             {
-                try
-                {
-                    HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(asyncResult);
-                    Stream stream = response.GetResponseStream();
-                    StreamReader streamReader = new StreamReader(stream);
-                    string serverResponse = streamReader.ReadToEnd();
-                    stream.Dispose();
-                    return serverResponse;
-                }
-                catch (WebException err) // Catch (400) Bad Request error
-                {
-                    Stream errorStream = err.Response.GetResponseStream();
-                    StreamReader streamReader = new StreamReader(errorStream);
-                    string errorJson = streamReader.ReadToEnd();
-                    Dictionary<string, string> responseDict = Utils.DeserializeDictionary(errorJson);
-                    throw new EnumWebException(responseDict["ErrorType"], responseDict["ErrorComment"]);
-                }
+                return ReadResponse(request, asyncResult);
             }
             else
             {
@@ -52,67 +38,60 @@ namespace WrapperCielo24
             }
         }
 
-        public string UploadMedia(Uri uri, Stream fileStream, Dictionary<string, string> headers=null)
+        public string UploadMedia(Uri uri, Stream fileStream, string contentType)
         {
             HttpWebRequest request = HttpWebRequest.CreateHttp(uri);
             request.Method = HttpMethod.POST.ToString();
-            foreach (KeyValuePair<string, string> pair in headers)
-            {
-                request.Headers[pair.Key] = pair.Value;
-            }
-            IAsyncResult asyncResult = request.BeginGetRequestStream(null, null);
-            asyncResult.AsyncWaitHandle.WaitOne(); // Wait untill stream is obtained
-            if (asyncResult.IsCompleted)
+            request.ContentType = contentType;
+
+            IAsyncResult asyncRequest = request.BeginGetRequestStream(null, null);
+            asyncRequest.AsyncWaitHandle.WaitOne(BASIC_TIMEOUT); // Wait untill stream is opened
+            if (asyncRequest.IsCompleted)
             {
                 try
                 {
-                    Stream stream = request.EndGetRequestStream(asyncResult);
-                    for (int i = 0; i < fileStream.Length; i++)
-                    {
-                        stream.WriteByte((byte) fileStream.ReadByte()); // Upload media
-                    }
+                    Stream stream = request.EndGetRequestStream(asyncRequest);
+                    fileStream.CopyTo(stream);
+                    fileStream.Flush();
+                    stream.Flush();
                     fileStream.Dispose();
                     stream.Dispose();
                 }
-                catch (WebException err) // Catch (400) Bad Request error
+                catch (WebException err)
                 {
-                    Stream errorStream = err.Response.GetResponseStream();
-                    StreamReader streamReader = new StreamReader(errorStream);
-                    string errorJson = streamReader.ReadToEnd();
-                    Dictionary<string, string> responseDict = Utils.DeserializeDictionary(errorJson);
-                    throw new EnumWebException(responseDict["ErrorType"], responseDict["ErrorComment"]);
+                    throw new WebException("Unknown error: could not upload media.", err);
                 }
             }
             else
             {
-                throw new WebException("Unknown error: could not upload media.");
+                throw new WebException("Timeout error: could not open stream for uploading.");
             }
 
-            IAsyncResult asyncResult2 = request.BeginGetResponse(null, null);
-            asyncResult2.AsyncWaitHandle.WaitOne(BASIC_TIMEOUT);
-            if (asyncResult.IsCompleted)
+            IAsyncResult asyncResponse = request.BeginGetResponse(null, null);
+            // Media is actually still uploading asynchronously at this point. But there is no need to wait,
+            // because EndGetResponse() in the following method will hang untill the file is done uploading, taking care of waiting.
+            return ReadResponse(request, asyncResponse);
+        }
+
+        /* Helper method */
+        private string ReadResponse(HttpWebRequest request, IAsyncResult asyncResponse)
+        {
+            try
             {
-                try
-                {
-                    HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(asyncResult2);
-                    Stream stream = response.GetResponseStream();
-                    StreamReader streamReader = new StreamReader(stream);
-                    string serverResponse = streamReader.ReadToEnd();
-                    stream.Dispose();
-                    return serverResponse;
-                }
-                catch (WebException err) // Catch (400) Bad Request error
-                {
-                    Stream errorStream = err.Response.GetResponseStream();
-                    StreamReader streamReader = new StreamReader(errorStream);
-                    string errorJson = streamReader.ReadToEnd();
-                    Dictionary<string, string> responseDict = Utils.DeserializeDictionary(errorJson);
-                    throw new EnumWebException(responseDict["ErrorType"], responseDict["ErrorComment"]);
-                }
+                HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(asyncResponse);
+                Stream stream = response.GetResponseStream();
+                StreamReader streamReader = new StreamReader(stream);
+                string serverResponse = streamReader.ReadToEnd();
+                stream.Dispose();
+                return serverResponse;
             }
-            else
+            catch (WebException error) // Catch (400) Bad Request error
             {
-                throw new TimeoutException("The HTTP session has timed out.");
+                Stream errorStream = error.Response.GetResponseStream();
+                StreamReader streamReader = new StreamReader(errorStream);
+                string errorJson = streamReader.ReadToEnd();
+                Dictionary<string, string> responseDict = Utils.DeserializeDictionary(errorJson);
+                throw new EnumWebException(responseDict["ErrorType"], responseDict["ErrorComment"]);
             }
         }
     }
@@ -124,7 +103,8 @@ namespace WrapperCielo24
         private string errorType;
         public string ErrorType { get { return this.errorType; } }
 
-        public EnumWebException(string errType, string message) : base(errType + ": " + message)
+        public EnumWebException(string errType, string message)
+            : base(errType + ": " + message)
         {
             this.errorType = errType;
         }

@@ -190,7 +190,7 @@ namespace WrapperCielo24
 
             string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
             
-            // TODO: server returns Guid as a string, not inside of a json object
+            // TODO: server returns Guid as a raw string, not inside of a json object
 
             Dictionary<string, string> response = Utils.DeserializeDictionary(serverResponse);
 
@@ -245,22 +245,19 @@ namespace WrapperCielo24
             return new Guid(response["TaskId"]);
         }
 
-        public Guid AddMediaToJob(Guid apiToken, Guid jobId, Stream localFile)
+        public Guid AddMediaToJob(Guid apiToken, Guid jobId, Stream fileStream)
         {
+            if (fileStream == null) { throw new ArgumentException("Invalid File"); }
+
             Dictionary<string, string> queryDictionary = InitJobReqDict(apiToken, jobId);
-
-            if (localFile == null) { throw new ArgumentException("Invalid File"); }
-
             Uri requestUri = Utils.BuildUri(BASE_URI, ADD_MEDIA_TO_JOB_PATH, queryDictionary);
             WebUtils web = new WebUtils();
 
-            string serverResponse = web.HttpRequest(requestUri, HttpMethod.POST, WebUtils.BASIC_TIMEOUT);
+            // TODO: Content-Type: video/mp4 ???
+            string serverResponse = web.UploadMedia(requestUri, fileStream, "video/mp4");
             Dictionary<string, string> response = Utils.DeserializeDictionary(serverResponse);
             
-            // TODO
-            // POST request
-
-            return new Guid("");
+            return new Guid(response["TaskId"]);
         }
 
         public Guid AddEmbeddedMediaToJob(Guid apiToken, Guid jobId, Uri mediaUrl)
