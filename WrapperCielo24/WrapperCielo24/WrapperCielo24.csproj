@@ -35,6 +35,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CaptionOptions.cs" />
+    <Compile Include="TranscriptionOptions.cs" />
     <Compile Include="Actions.cs" />
     <Compile Include="JSON\ElementList.cs" />
     <Compile Include="JSON\Enums.cs" />

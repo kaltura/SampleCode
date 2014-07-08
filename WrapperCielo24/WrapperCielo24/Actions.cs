@@ -114,8 +114,6 @@ namespace WrapperCielo24
             Uri requestUri = Utils.BuildUri(BASE_URI, UPDATE_PASSWORD_PATH, queryDictionary);
             WebUtils web = new WebUtils();
 
-            // TODO: returns a MISSING_PARAMETERS error, although everything is supplied
-
             web.HttpRequest(requestUri, HttpMethod.POST, WebUtils.BASIC_TIMEOUT); // Nothing returned
         }
 
@@ -291,7 +289,7 @@ namespace WrapperCielo24
             return web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.DOWNLOAD_TIMEOUT); // Transcript text
         }
 
-        public string GetCaption(Guid apiToken, Guid jobId, CaptionFormat captionFormat=CaptionFormat.SRT, CaptionOptions captionOptions = null)
+        public string GetCaption(Guid apiToken, Guid jobId, CaptionFormat captionFormat=CaptionFormat.SRT, CaptionOptions captionOptions=null)
         {
             Dictionary<string, string> queryDictionary = InitJobReqDict(apiToken, jobId);
             queryDictionary.Add("caption_format", captionFormat.ToString());
@@ -311,6 +309,7 @@ namespace WrapperCielo24
             WebUtils web = new WebUtils();
 
             string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
+
             //Dictionary<string, string> response = Utils.DeserializeDictionary(serverResponse);
             
             // TODO
