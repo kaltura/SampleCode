@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 using System.Security.Principal;
 using System.Net;
+using WrapperCielo24.JSON;
 
 namespace WrapperCielo24
 {
@@ -21,7 +22,7 @@ namespace WrapperCielo24
         private const string CREATE_JOB_PATH = "/api/job/new";
         private const string AUTHORIZE_JOB_PATH = "/api/job/authorize";
         private const string DELETE_JOB_PATH = "/api/job/del";
-        private const string GET_JOB_INFO_PATH = "/api/job/list";
+        private const string GET_JOB_INFO_PATH = "/api/job/info";
         private const string GET_JOB_LIST_PATH = "/api/job/list";
         private const string ADD_MEDIA_TO_JOB_PATH = "/api/job/add_media";
         private const string ADD_EMBEDDED_MEDIA_TO_JOB_PATH = "/api/job/add_media_url";
@@ -108,7 +109,7 @@ namespace WrapperCielo24
             this.AssertArgument(accountPassword, "New Password");
 
             Dictionary<string, string> queryDictionary = this.InitAccessReqDict(apiToken);
-            queryDictionary.Add("account_password", accountPassword);
+            queryDictionary.Add("new_password", accountPassword);
 
             Uri requestUri = Utils.BuildUri(BASE_URI, UPDATE_PASSWORD_PATH, queryDictionary);
             WebUtils web = new WebUtils();
@@ -189,15 +190,12 @@ namespace WrapperCielo24
             WebUtils web = new WebUtils();
 
             string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
-            
-            // TODO: server returns Guid as a raw string, not inside of a json object
-
             Dictionary<string, string> response = Utils.DeserializeDictionary(serverResponse);
 
             return new Guid(response["TaskId"]);
         }
 
-        public string GetJobInfo(Guid apiToken, Guid jobId)
+        public JobInfo GetJobInfo(Guid apiToken, Guid jobId)
         {
             Dictionary<string, string> queryDictionary = InitJobReqDict(apiToken, jobId);
 
@@ -205,28 +203,22 @@ namespace WrapperCielo24
             WebUtils web = new WebUtils();
 
             string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
-            Dictionary<string, string> response = Utils.DeserializeDictionary(serverResponse);
+            JobInfo jobInfo = Utils.DeserializeJobInfo(serverResponse);
 
-            // TODO
-
-            return null;
+            return jobInfo;
         }
 
-        public string GetJobList(Guid apiToken)
-        {            
-            Dictionary<string, string> queryDictionary = new Dictionary<string, string>();
-            queryDictionary.Add("v", VERSION.ToString());
-            queryDictionary.Add("api_token", apiToken.ToString());
+        public JobList GetJobList(Guid apiToken)
+        {
+            Dictionary<string, string> queryDictionary = InitAccessReqDict(apiToken);
 
             Uri requestUri = Utils.BuildUri(BASE_URI, GET_JOB_LIST_PATH, queryDictionary);
             WebUtils web = new WebUtils();
 
             string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
-            Dictionary<string, string> response = Utils.DeserializeDictionary(serverResponse);
+            JobList jobList = Utils.DeserializeJobList(serverResponse);
 
-            // TODO
-
-            return null;
+            return jobList;
         }
 
         public Guid AddMediaToJob(Guid apiToken, Guid jobId, Uri mediaUrl)
@@ -253,7 +245,6 @@ namespace WrapperCielo24
             Uri requestUri = Utils.BuildUri(BASE_URI, ADD_MEDIA_TO_JOB_PATH, queryDictionary);
             WebUtils web = new WebUtils();
 
-            // TODO: Content-Type: video/mp4 ???
             string serverResponse = web.UploadMedia(requestUri, fileStream, "video/mp4");
             Dictionary<string, string> response = Utils.DeserializeDictionary(serverResponse);
             
@@ -285,10 +276,8 @@ namespace WrapperCielo24
 
             string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
             Dictionary<string, string> response = Utils.DeserializeDictionary(serverResponse);
-
-            // TODO: Url that's being returned does not match the Url used in AddMediaToJob. Returns "api.sandbox.cielo24.com"
-
-            return new Uri(Utils.UnescapeString(response["MediaUrl"]));
+            
+            return new Uri(response["MediaUrl"]);
         }
 
         public string GetTranscript(Guid apiToken, Guid jobId, CaptionOptions captionOptions = null)
@@ -322,11 +311,11 @@ namespace WrapperCielo24
             WebUtils web = new WebUtils();
 
             string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
-            Dictionary<string, string> response = Utils.DeserializeDictionary(serverResponse);
+            //Dictionary<string, string> response = Utils.DeserializeDictionary(serverResponse);
             
             // TODO
 
-            return null;
+            return serverResponse;
         }
 
         public string GetListOfElementLists(Guid apiToken, Guid jobId)
@@ -337,11 +326,11 @@ namespace WrapperCielo24
             WebUtils web = new WebUtils();
 
             string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
-            Dictionary<string, string> response = Utils.DeserializeDictionary(serverResponse);
+            //Dictionary<string, string> response = Utils.DeserializeDictionary(serverResponse);
 
             // TODO
 
-            return null;
+            return serverResponse;
         }
 
 

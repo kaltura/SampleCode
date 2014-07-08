@@ -8,6 +8,7 @@ using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
+using WrapperCielo24.JSON;
 
 namespace WrapperCielo24
 {
@@ -32,7 +33,21 @@ namespace WrapperCielo24
         public static Dictionary<string, string> DeserializeDictionary(string json)
         {
             Dictionary<string, string> dictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+            JsonSerializerSettings js = new JsonSerializerSettings();
+            
             return dictionary;
+        }
+
+        public static JobInfo DeserializeJobInfo(string json)
+        {
+            JobInfo jobInfo = JsonConvert.DeserializeObject<JobInfo>(json);
+            return jobInfo;
+        }
+
+        public static JobList DeserializeJobList(string json)
+        {
+            JobList jobList = JsonConvert.DeserializeObject<JobList>(json);
+            return jobList;
         }
 
         /* Encodes the supplied Url into an escaped format */
@@ -47,7 +62,4 @@ namespace WrapperCielo24
             return Uri.UnescapeDataString(uriString);
         }
     }
-
-    public enum CaptionFormat { SRT, SBV, DFXP, QT }
-
 }

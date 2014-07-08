@@ -68,9 +68,17 @@ namespace WrapperCielo24
             }
 
             IAsyncResult asyncResponse = request.BeginGetResponse(null, null);
-            // Media is actually still uploading asynchronously at this point. But there is no need to wait,
-            // because EndGetResponse() in the following method will hang untill the file is done uploading, taking care of waiting.
-            return ReadResponse(request, asyncResponse);
+            // Media is actually still uploading asynchronously at this point. The following AsyncHandle fires back
+            // when media is uploaded and response is received.
+            asyncResponse.AsyncWaitHandle.WaitOne();
+            if (asyncRequest.IsCompleted)
+            {
+                return ReadResponse(request, asyncResponse);
+            }
+            else
+            {
+                throw new TimeoutException("The HTTP session has timed out.");
+            }
         }
 
         /* Helper method */
