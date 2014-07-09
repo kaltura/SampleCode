@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("WrapperCielo24")]
+[assembly: AssemblyTitle("CommandLineTool")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("WrapperCielo24")]
+[assembly: AssemblyProduct("CommandLineTool")]
 [assembly: AssemblyCopyright("Copyright ©  2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("7863c732-3fe2-4b1f-b00c-115a07446880")]
+[assembly: Guid("cae7ae69-baa9-49f1-b729-8feeb7153249")]
 
 // Version information for an assembly consists of the following four values:
 //

@@ -8,15 +8,40 @@ namespace WrapperCielo24.JSON
     public class ElementList
     {
         public int Version { get; set; }
-        public DateTime StartTime { get; set; }
         public string Language { get; set; }
-        public DateTime EndTime { get; set; }
+        public int StartTime { get; set; }      // Milliseconds
+        public int EndTime { get; set; }        // Milliseconds
+        public List<Segment> Segments { get; set; }
     }
 
-    public class Element
+    public class Segment
     {
-        public DateTime StartTime { get; set; }
-        public string Language { get; set; }
-        public DateTime EndTime { get; set; }
+        public List<Sequence> Sequences { get; set; }
+        public bool SpeakerChange { get; set; }
+        public bool Interpolated { get; set; }
+        public int StartTime { get; set; }
+        public int EndTime { get; set; }
+        public string Style { get; set; }
+    }
+
+    public class Sequence
+    {
+        public List<Token> Tokens { get; set; }
+        public bool Interpolated { get; set; }
+        public int StartTime { get; set; }      // Milliseconds
+        public int EndTime { get; set; }        // Milliseconds
+        public float ConfidenceScore { get; set; }
+        public string Style { get; set; }
+    }
+
+    public class Token
+    {
+        public TokenType Type { get; set; }
+        public string TypeDisplay { get; set; }
+        public bool Interpolated { get; set; }
+        public int StartTime { get; set; }      // Milliseconds
+        public int EndTime { get; set; }        // Milliseconds
+        public List<Tag> Tags { get; set; }
+        public string Style { get; set; }
     }
 }

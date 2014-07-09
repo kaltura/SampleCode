@@ -10,14 +10,13 @@ namespace WrapperCielo24
 {
     class WebUtils
     {
-        // TODO: Progress events/properties ???
         public static readonly TimeSpan BASIC_TIMEOUT = new TimeSpan(TimeSpan.TicksPerSecond * 60); // 60 seconds
         public static readonly TimeSpan DOWNLOAD_TIMEOUT = new TimeSpan(TimeSpan.TicksPerMinute * 5);  // 5 minutes
 
         /* A synchronous method that performs an HTTP request returning data received from the sever as a string */
         public string HttpRequest(Uri uri, HttpMethod method, TimeSpan timeout, Dictionary<string, string> headers = null)
         {
-            HttpWebRequest request = HttpWebRequest.CreateHttp(uri);
+            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(uri);
             request.Method = method.ToString();
             if (headers != null)
             {
@@ -40,9 +39,11 @@ namespace WrapperCielo24
 
         public string UploadMedia(Uri uri, Stream fileStream, string contentType)
         {
-            HttpWebRequest request = HttpWebRequest.CreateHttp(uri);
+            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(uri);
             request.Method = HttpMethod.POST.ToString();
             request.ContentType = contentType;
+            request.AllowWriteStreamBuffering = false;
+            request.ContentLength = fileStream.Length;
 
             IAsyncResult asyncRequest = request.BeginGetRequestStream(null, null);
             asyncRequest.AsyncWaitHandle.WaitOne(BASIC_TIMEOUT); // Wait untill stream is opened
@@ -52,9 +53,8 @@ namespace WrapperCielo24
                 {
                     Stream stream = request.EndGetRequestStream(asyncRequest);
                     fileStream.CopyTo(stream);
-                    fileStream.Flush();
-                    stream.Flush();
                     fileStream.Dispose();
+                    stream.Flush();
                     stream.Dispose();
                 }
                 catch (WebException err)
@@ -68,10 +68,8 @@ namespace WrapperCielo24
             }
 
             IAsyncResult asyncResponse = request.BeginGetResponse(null, null);
-            // Media is actually still uploading asynchronously at this point. The following AsyncHandle fires back
-            // when media is uploaded and response is received.
             asyncResponse.AsyncWaitHandle.WaitOne();
-            if (asyncRequest.IsCompleted)
+            if (asyncResponse.IsCompleted)
             {
                 return ReadResponse(request, asyncResponse);
             }
@@ -98,7 +96,7 @@ namespace WrapperCielo24
                 Stream errorStream = error.Response.GetResponseStream();
                 StreamReader streamReader = new StreamReader(errorStream);
                 string errorJson = streamReader.ReadToEnd();
-                Dictionary<string, string> responseDict = Utils.DeserializeDictionary(errorJson);
+                Dictionary<string, string> responseDict = Utils.Deserialize<Dictionary<string, string>>(errorJson);
                 throw new EnumWebException(responseDict["ErrorType"], responseDict["ErrorComment"]);
             }
         }

@@ -40,9 +40,8 @@ namespace WrapperCielo24
             this.AssertArgument(username, "Username");
             this.AssertArgument(password, "Password");
 
-            Dictionary<string, string> queryDictionary = new Dictionary<string, string>();
+            Dictionary<string, string> queryDictionary = InitVersionDict();
             Dictionary<string, string> headers = new Dictionary<string, string>();
-            queryDictionary.Add("v", VERSION.ToString());
 
             if (!useHeaders)
             {
@@ -59,7 +58,7 @@ namespace WrapperCielo24
             WebUtils web = new WebUtils();
 
             string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT, headers);
-            Dictionary<string, string> response = Utils.DeserializeDictionary(serverResponse);
+            Dictionary<string, string> response = Utils.Deserialize<Dictionary<string, string>>(serverResponse);
 
             return new Guid(response["ApiToken"]);
         }
@@ -69,9 +68,8 @@ namespace WrapperCielo24
         {
             this.AssertArgument(username, "Username");
 
-            Dictionary<string, string> queryDictionary = new Dictionary<string, string>();
+            Dictionary<string, string> queryDictionary = InitVersionDict();
             Dictionary<string, string> headers = new Dictionary<string, string>();
-            queryDictionary.Add("v", VERSION.ToString());
 
             if (!useHeaders)
             {
@@ -89,7 +87,7 @@ namespace WrapperCielo24
             WebUtils web = new WebUtils();
 
             string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT, headers);
-            Dictionary<string, string> response = Utils.DeserializeDictionary(serverResponse);
+            Dictionary<string, string> response = Utils.Deserialize<Dictionary<string, string>>(serverResponse);
             
             return new Guid(response["ApiToken"]);
         }
@@ -130,7 +128,7 @@ namespace WrapperCielo24
             WebUtils web = new WebUtils();
 
             string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
-            Dictionary<string, string> response = Utils.DeserializeDictionary(serverResponse);
+            Dictionary<string, string> response = Utils.Deserialize<Dictionary<string, string>>(serverResponse);
 
             return new Guid(response["ApiKey"]);
         }
@@ -160,7 +158,7 @@ namespace WrapperCielo24
             WebUtils web = new WebUtils();
 
             string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
-            Dictionary<string, string> response = Utils.DeserializeDictionary(serverResponse);
+            Dictionary<string, string> response = Utils.Deserialize<Dictionary<string, string>>(serverResponse);
 
             Guid jobId = new Guid(response["JobId"].ToString());
             Guid taskId = new Guid(response["TaskId"].ToString());
@@ -188,7 +186,7 @@ namespace WrapperCielo24
             WebUtils web = new WebUtils();
 
             string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
-            Dictionary<string, string> response = Utils.DeserializeDictionary(serverResponse);
+            Dictionary<string, string> response = Utils.Deserialize<Dictionary<string, string>>(serverResponse);
 
             return new Guid(response["TaskId"]);
         }
@@ -201,7 +199,7 @@ namespace WrapperCielo24
             WebUtils web = new WebUtils();
 
             string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
-            JobInfo jobInfo = Utils.DeserializeJobInfo(serverResponse);
+            JobInfo jobInfo = Utils.Deserialize<JobInfo>(serverResponse);
 
             return jobInfo;
         }
@@ -214,7 +212,7 @@ namespace WrapperCielo24
             WebUtils web = new WebUtils();
 
             string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
-            JobList jobList = Utils.DeserializeJobList(serverResponse);
+            JobList jobList = Utils.Deserialize<JobList>(serverResponse);
 
             return jobList;
         }
@@ -230,7 +228,7 @@ namespace WrapperCielo24
             WebUtils web = new WebUtils();
 
             string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
-            Dictionary<string, string> response = Utils.DeserializeDictionary(serverResponse);
+            Dictionary<string, string> response = Utils.Deserialize<Dictionary<string, string>>(serverResponse);
 
             return new Guid(response["TaskId"]);
         }
@@ -244,7 +242,7 @@ namespace WrapperCielo24
             WebUtils web = new WebUtils();
 
             string serverResponse = web.UploadMedia(requestUri, fileStream, "video/mp4");
-            Dictionary<string, string> response = Utils.DeserializeDictionary(serverResponse);
+            Dictionary<string, string> response = Utils.Deserialize<Dictionary<string, string>>(serverResponse);
             
             return new Guid(response["TaskId"]);
         }
@@ -260,7 +258,7 @@ namespace WrapperCielo24
             WebUtils web = new WebUtils();
 
             string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
-            Dictionary<string, string> response = Utils.DeserializeDictionary(serverResponse);
+            Dictionary<string, string> response = Utils.Deserialize<Dictionary<string, string>>(serverResponse);
 
             return new Guid(response["TaskId"]);
         }
@@ -273,7 +271,7 @@ namespace WrapperCielo24
             WebUtils web = new WebUtils();
 
             string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
-            Dictionary<string, string> response = Utils.DeserializeDictionary(serverResponse);
+            Dictionary<string, string> response = Utils.Deserialize<Dictionary<string, string>>(serverResponse);
             
             return new Uri(response["MediaUrl"]);
         }
@@ -301,7 +299,7 @@ namespace WrapperCielo24
             return web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.DOWNLOAD_TIMEOUT); // Caption text
         }
 
-        public string GetElementList(Guid apiToken, Guid jobId)
+        public ElementList GetElementList(Guid apiToken, Guid jobId)
         {
             Dictionary<string, string> queryDictionary = InitJobReqDict(apiToken, jobId);
 
@@ -309,15 +307,12 @@ namespace WrapperCielo24
             WebUtils web = new WebUtils();
 
             string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
+            ElementList elements = Utils.Deserialize<ElementList>(serverResponse);
 
-            //Dictionary<string, string> response = Utils.DeserializeDictionary(serverResponse);
-            
-            // TODO
-
-            return serverResponse;
+            return elements;
         }
 
-        public string GetListOfElementLists(Guid apiToken, Guid jobId)
+        public List<ElementList> GetListOfElementLists(Guid apiToken, Guid jobId)
         {
             Dictionary<string, string> queryDictionary = InitJobReqDict(apiToken, jobId);
 
@@ -325,11 +320,9 @@ namespace WrapperCielo24
             WebUtils web = new WebUtils();
 
             string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
-            //Dictionary<string, string> response = Utils.DeserializeDictionary(serverResponse);
+            List<ElementList> lists = Utils.Deserialize<List<ElementList>>(serverResponse);
 
-            // TODO
-
-            return serverResponse;
+            return lists;
         }
 
 
@@ -344,12 +337,19 @@ namespace WrapperCielo24
             return queryDictionary;
         }
 
-        /* Returns a dictionary with version and api_token key-value pairs (parameters used in almst every access-control action). */
+        /* Returns a dictionary with version and api_token key-value pairs (parameters used in almost every access-control action). */
         private Dictionary<string, string> InitAccessReqDict(Guid apiToken)
+        {
+            Dictionary<string, string> queryDictionary = InitVersionDict();
+            queryDictionary.Add("api_token", apiToken.ToString("N"));
+            return queryDictionary;
+        }
+
+        /* Returns a dictionary with version key-value pair (parameter used in every action). */
+        private Dictionary<string, string> InitVersionDict()
         {
             Dictionary<string, string> queryDictionary = new Dictionary<string, string>();
             queryDictionary.Add("v", VERSION.ToString());
-            queryDictionary.Add("api_token", apiToken.ToString("N"));
             return queryDictionary;
         }
 

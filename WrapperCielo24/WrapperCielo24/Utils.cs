@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
@@ -29,25 +28,11 @@ namespace WrapperCielo24
             return String.Join("&", pairs);
         }
 
-        /* Takes a json string (of the form {"k1":"v1", "k2":"v2",.....}), and deserializes it into a dictionary */
-        public static Dictionary<string, string> DeserializeDictionary(string json)
+        /* Deserializes given JSON into an object of type T */
+        public static T Deserialize<T>(string json)
         {
-            Dictionary<string, string> dictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
-            JsonSerializerSettings js = new JsonSerializerSettings();
-            
-            return dictionary;
-        }
-
-        public static JobInfo DeserializeJobInfo(string json)
-        {
-            JobInfo jobInfo = JsonConvert.DeserializeObject<JobInfo>(json);
-            return jobInfo;
-        }
-
-        public static JobList DeserializeJobList(string json)
-        {
-            JobList jobList = JsonConvert.DeserializeObject<JobList>(json);
-            return jobList;
+            T result = JsonConvert.DeserializeObject<T>(json);
+            return result;
         }
 
         /* Encodes the supplied Url into an escaped format */
