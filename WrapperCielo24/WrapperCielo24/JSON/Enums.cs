@@ -21,7 +21,7 @@ namespace WrapperCielo24.JSON
 
     public enum Priority { ECONOMY, STANDARD, PRIORITY, CRITICAL }
 
-    public enum Fidelity { MECHANICAL, STANDARD, HIGH }
+    public enum Fidelity { MECHANICAL, PREMIUM, PROFESSIONAL, INTERIM_PROFESSIONAL, FINAL }
 
     public enum CaptionFormat { SRT, SBV, DFXP, QT }
 
@@ -34,6 +34,10 @@ namespace WrapperCielo24.JSON
     public enum Case { upper, lower }
 
     public enum LineEnding { UNIX, WINDOWS, OSX }
+
+    public enum CustomerApprovalSteps { TRANSLATION, RETURN }
+
+    public enum CustomerApprovalTools { AMARA, CIELO24 }
 
     /* JobStatus enum requires a converter because strings with spacescannot be implicitly converted to enum */
     public class JobStatusConverter : StringEnumConverter

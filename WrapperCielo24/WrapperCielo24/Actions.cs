@@ -28,6 +28,7 @@ namespace WrapperCielo24
         private const string ADD_MEDIA_TO_JOB_PATH = "/api/job/add_media";
         private const string ADD_EMBEDDED_MEDIA_TO_JOB_PATH = "/api/job/add_media_url";
         private const string GET_MEDIA_PATH = "/api/job/media";
+        private const string PERFORM_TRANSCRIPTION = "/api/job/perform_transcription";
         private const string GET_TRANSCRIPTION_PATH = "/api/job/get_transcript";
         private const string GET_CAPTION_PATH = "/api/job/get_caption";
         private const string GET_ELEMENT_LIST_PATH = "/api/job/get_elementlist";
@@ -278,11 +279,32 @@ namespace WrapperCielo24
             return new Uri(response["MediaUrl"]);
         }
 
-        /* Returns a transcript from a job with jobId */
-        public string GetTranscript(Guid apiToken, Guid jobId, IQueryConvertible captionOptions = null)
+        /* Makes a PerformTranscription call */
+        public Guid PerformTranscription(Guid apiToken, Guid jobId, Fidelity fidelity=Fidelity.PROFESSIONAL, Priority priority=Priority.STANDARD,
+            Uri callback_uri=null, int? turnaround_hours=null, string targetLanguage=null, Options performTranscriptionOptions=null)
         {
             Dictionary<string, string> queryDictionary = InitJobReqDict(apiToken, jobId);
-            if (captionOptions != null) { queryDictionary.Add("caption_options", captionOptions.ToQuery()); }
+            queryDictionary.Add("transcription_fidelity", fidelity.ToString());
+            queryDictionary.Add("priority", priority.ToString());
+            if (callback_uri != null) { queryDictionary.Add("callback_url", Utils.EncodeUrl(callback_uri)); }
+            if (turnaround_hours != null) { queryDictionary.Add("turnaround_hours", turnaround_hours.ToString()); }
+            if (targetLanguage != null) { queryDictionary.Add("target_language", targetLanguage); }
+            if (performTranscriptionOptions != null) { queryDictionary.Concat(performTranscriptionOptions.GetDictionary()); }
+
+            Uri requestUri = Utils.BuildUri(BASE_URL, PERFORM_TRANSCRIPTION, queryDictionary);
+            WebUtils web = new WebUtils();
+
+            string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
+            Dictionary<string, string> response = Utils.Deserialize<Dictionary<string, string>>(serverResponse);
+
+            return new Guid(response["TaskId"]);
+        }
+
+        /* Returns a transcript from a job with jobId */
+        public string GetTranscript(Guid apiToken, Guid jobId, Options captionOptions = null)
+        {
+            Dictionary<string, string> queryDictionary = InitJobReqDict(apiToken, jobId);
+            if (captionOptions != null) { queryDictionary.Concat(captionOptions.GetDictionary()); }
 
             Uri requestUri = Utils.BuildUri(BASE_URL, GET_TRANSCRIPTION_PATH, queryDictionary);
             WebUtils web = new WebUtils();
@@ -291,11 +313,11 @@ namespace WrapperCielo24
         }
 
         /* Returns a caption from a job with jobId OR if buildUri is true, returns a string representation of the uri */
-        public string GetCaption(Guid apiToken, Guid jobId, CaptionFormat captionFormat=CaptionFormat.SRT, IQueryConvertible captionOptions=null)
+        public string GetCaption(Guid apiToken, Guid jobId, CaptionFormat captionFormat=CaptionFormat.SRT, Options captionOptions=null)
         {
             Dictionary<string, string> queryDictionary = InitJobReqDict(apiToken, jobId);
             queryDictionary.Add("caption_format", captionFormat.ToString());
-            if (captionOptions != null) { queryDictionary.Add("caption_options", captionOptions.ToQuery()); }
+            if (captionOptions != null) { queryDictionary.Concat(captionOptions.GetDictionary()); }
 
             Uri requestUri = Utils.BuildUri(BASE_URL, GET_CAPTION_PATH, queryDictionary);
             WebUtils web = new WebUtils();

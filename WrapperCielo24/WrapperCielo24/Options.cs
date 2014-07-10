@@ -8,42 +8,9 @@ using WrapperCielo24.JSON;
 
 namespace WrapperCielo24
 {
-    /* Options found in both Transcript and Caption options */
-    public abstract class BaseOptions : IQueryConvertible
+    /* The base class. All of the other option classes inherit from it. */
+    public abstract class Options
     {
-        // DEFAULTS //
-        private static readonly char[] soundBoundariesDefault = { '[', ']' };
-
-        [QueryName("characters_per_caption_line")]
-        public int CharactersPerCaptionLine { get; set; }   // Default: 0
-        [QueryName("elementlist_version")]
-        public DateTime? ElementListVersion { get; set; }   // Default: ""
-        [QueryName("emit_speaker_change_token_as")]
-        public string SpeakerChangeToken { get; set; }      // Default: ">>"
-        [QueryName("mask_profanity")]
-        public bool MaskProfanity { get; set; }             // Default: false
-        [QueryName("remove_sounds_list")]
-        public List<Tag> RemoveSoundsList { get; set; }     // Default: empty
-        [QueryName("remove_sound_references")]
-        public bool RemoveSoundReferences { get; set; }     // Default: true
-        [QueryName("replace_slang")]
-        public bool ReplaceSlang { get; set; }              // Default: false
-        [QueryName("sound_boundaries")]
-        public char[] SoundBoundaries { get; set; }         // Default: ('[' , ']')
-
-        public BaseOptions(int charactersPerCaptionLine = 0, DateTime? elementListVersion = null, string speakerChangeToken = ">>", bool maskProfanity = false,
-            List<Tag> removeSoundsList = null, bool removeSoundReferences = true, bool replaceSlang = false, char[] soundBoundaries = null)
-        {
-            this.CharactersPerCaptionLine = charactersPerCaptionLine;
-            this.ElementListVersion = elementListVersion;
-            this.SpeakerChangeToken = speakerChangeToken;
-            this.MaskProfanity = maskProfanity;
-            this.RemoveSoundsList = (removeSoundsList == null) ? new List<Tag>() : removeSoundsList;
-            this.RemoveSoundReferences = removeSoundReferences;
-            this.ReplaceSlang = replaceSlang;
-            this.SoundBoundaries = (soundBoundaries == null) ? soundBoundariesDefault : soundBoundaries;
-        }
-
         public virtual Dictionary<string, string> GetDictionary()
         {
             Dictionary<string, string> queryDictionary = new Dictionary<string, string>();
@@ -62,21 +29,6 @@ namespace WrapperCielo24
         {
             Dictionary<string, string> queryDictionary = this.GetDictionary();
             return Utils.ToQuery(queryDictionary);
-        }
-
-        public virtual void FromQuery(string queryString)
-        {
-            Dictionary<string, string> dictionary = Regex.Matches(queryString, "([^?=&]+)(=([^&]*))?").Cast<Match>().ToDictionary(x => x.Groups[1].Value, x => x.Groups[3].Value);
-            Type type = this.GetType();
-            PropertyInfo[] properties = type.GetProperties();
-            foreach (PropertyInfo property in properties)
-            {
-                QueryName key = (QueryName)property.GetCustomAttributes(false).First();
-                if (dictionary.ContainsKey(key.Name))
-                {
-                    property.SetValue(this, dictionary[key.Name], null); // TODO convert to proper type
-                }
-            }
         }
 
         /* Converts 'value' into string based on its type */
@@ -101,6 +53,16 @@ namespace WrapperCielo24
                 }
                 return "[" + String.Join(", ", stringList) + "]";
             }
+            else if (value is List<Fidelity>)    // List<Tag> (returned as ["TAG", "TAG", "TAG"]
+            {
+                List<string> stringList = new List<string>();
+                List<Fidelity> fidelityList = ((List<Fidelity>)value);
+                for (int i = 0; i < fidelityList.Count; i++)
+                {
+                    stringList.Add("\"" + fidelityList[i].ToString() + "\""); // Add quotation marks
+                }
+                return "[" + String.Join(", ", stringList) + "]";
+            }
             else if (value is char[])       // char[] (returned as (a, b))
             {
                 return "(" + String.Join(", ", ((char[])value)) + ")";
@@ -117,7 +79,59 @@ namespace WrapperCielo24
         }
     }
 
-    public class TranscriptOptions : BaseOptions, IQueryConvertible
+    /* Options found in both Transcript and Caption options */
+    public abstract class CommonOptions : Options
+    {
+        // DEFAULTS //
+        private static readonly char[] soundBoundariesDefault = { '[', ']' };
+
+        [QueryName("characters_per_caption_line")]
+        public int CharactersPerCaptionLine { get; set; }   // Default: 0
+        [QueryName("elementlist_version")]
+        public DateTime? ElementListVersion { get; set; }   // Default: ""
+        [QueryName("emit_speaker_change_token_as")]
+        public string SpeakerChangeToken { get; set; }      // Default: ">>"
+        [QueryName("mask_profanity")]
+        public bool MaskProfanity { get; set; }             // Default: false
+        [QueryName("remove_sounds_list")]
+        public List<Tag> RemoveSoundsList { get; set; }     // Default: empty
+        [QueryName("remove_sound_references")]
+        public bool RemoveSoundReferences { get; set; }     // Default: true
+        [QueryName("replace_slang")]
+        public bool ReplaceSlang { get; set; }              // Default: false
+        [QueryName("sound_boundaries")]
+        public char[] SoundBoundaries { get; set; }         // Default: ('[' , ']')
+
+        public CommonOptions(int charactersPerCaptionLine = 0, DateTime? elementListVersion = null, string speakerChangeToken = ">>", bool maskProfanity = false,
+            List<Tag> removeSoundsList = null, bool removeSoundReferences = true, bool replaceSlang = false, char[] soundBoundaries = null)
+        {
+            this.CharactersPerCaptionLine = charactersPerCaptionLine;
+            this.ElementListVersion = elementListVersion;
+            this.SpeakerChangeToken = speakerChangeToken;
+            this.MaskProfanity = maskProfanity;
+            this.RemoveSoundsList = (removeSoundsList == null) ? new List<Tag>() : removeSoundsList;
+            this.RemoveSoundReferences = removeSoundReferences;
+            this.ReplaceSlang = replaceSlang;
+            this.SoundBoundaries = (soundBoundaries == null) ? soundBoundariesDefault : soundBoundaries;
+        }
+
+        public virtual void FromQuery(string queryString)
+        {
+            Dictionary<string, string> dictionary = Regex.Matches(queryString, "([^?=&]+)(=([^&]*))?").Cast<Match>().ToDictionary(x => x.Groups[1].Value, x => x.Groups[3].Value);
+            Type type = this.GetType();
+            PropertyInfo[] properties = type.GetProperties();
+            foreach (PropertyInfo property in properties)
+            {
+                QueryName key = (QueryName)property.GetCustomAttributes(false).First();
+                if (dictionary.ContainsKey(key.Name))
+                {
+                    property.SetValue(this, dictionary[key.Name], null); // TODO convert to proper type
+                }
+            }
+        }        
+    }
+
+    public class TranscriptOptions : CommonOptions
     {
         [QueryName("create_paragraphs")]
         public bool CreateParagraphs { get; set; }          // Default: true
@@ -150,7 +164,7 @@ namespace WrapperCielo24
         }
     }
 
-    public class CaptionOptions : BaseOptions, IQueryConvertible
+    public class CaptionOptions : CommonOptions
     {
         // DEFAULTS //
         private static readonly string srtFormatDefault = "{caption_number:d}\n{start_hour:02d}:{start_minute:02d}:{start_second:02d},{start_millisecond:03d} --> {end_hour:02d}:{end_minute:02d}:{end_second:02d},{end_millisecond:03d}\n{caption_text}\n\n";
@@ -264,7 +278,7 @@ namespace WrapperCielo24
         }
     }
 
-    public class QueryOptions : IQueryConvertible
+    public class QueryOptions : Options
     {
         public string QueryString { get; set; }
 
@@ -273,15 +287,37 @@ namespace WrapperCielo24
             this.QueryString = queryString;
         }
 
-        public string ToQuery()
+        public override string ToQuery()
         {
             return this.QueryString;
         }
     }
 
-    public interface IQueryConvertible
+    public class PerformTranscriptionOptions : Options
     {
-        string ToQuery();
+        [QueryName("customer_approval_steps")]
+        public CustomerApprovalSteps? CustomerApprovalSteps { get; set; }   // Default: []
+        [QueryName("customer_approval_tool")]
+        public CustomerApprovalTools CustomerApprovalTool { get; set; }    // Default: CIELO24
+        [QueryName("custom_metadata")]
+        public string CustomMetadata { get; set; }                          // Default: {}
+        [QueryName("notes")]
+        public string Notes { get; set; }                                   // Default: ""
+        [QueryName("return_iwp")]
+        public List<Fidelity> ReturnIwp { get; set; }                       // Default: []
+        [QueryName("speaker_id")]
+        public bool SpeakerId { get; set; }                                 // Default: false
+
+        public PerformTranscriptionOptions(CustomerApprovalSteps? customerApprovalSteps=null, CustomerApprovalTools customerApprovalTool=CustomerApprovalTools.CIELO24,
+            string customMetadata = "{}", string notes = "", List<Fidelity> returnIwp = null, bool speakerId = false)
+        {
+            this.CustomerApprovalSteps = customerApprovalSteps;
+            this.CustomerApprovalTool = customerApprovalTool;
+            this.CustomMetadata = customMetadata;
+            this.Notes = notes;
+            this.ReturnIwp = returnIwp;
+            this.SpeakerId = speakerId;
+        }
     }
 
     [AttributeUsage(AttributeTargets.Property)]

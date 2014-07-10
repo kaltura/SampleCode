@@ -7,131 +7,10 @@ using CommandLine.Text;
 using System.ComponentModel;
 using System.IO;
 using WrapperCielo24.JSON;
+using WrapperCielo24;
 
 namespace CommandLineTool
 {
-    public class CommonOptions
-    {
-        protected string indent = "   ";
-        protected string gap = "     ";
-
-        [Option('h', "help", HelpText = "cielo24 username", Required = false, DefaultValue = null)]
-        public string Help { get; set; }
-
-        [Option('u', "username", HelpText = "cielo24 username", Required = false, DefaultValue = null)]
-        public string Username { get; set; }
-
-        [Option('k', "key", HelpText = "API Secure Key", Required = false, DefaultValue = null)]
-        public string _ApiSecureKey { get { return this.ApiSecureKey.ToString("N"); } set { this.ApiSecureKey = Converters.StringToGuid(value, "API Secure Key"); } }
-        public Guid ApiSecureKey { get; set; }
-
-        [Option('N', "token", HelpText = "API token of the current session", Required = false, DefaultValue = null)]
-        public string _ApiToken { get { return this.ApiToken.ToString("N"); } set { this.ApiToken = Converters.StringToGuid(value, "Api Token"); } }
-        public Guid ApiToken { get; set; }
-
-        [Option('s', "server", HelpText = "cielo24 server url [https://api.cielo24.com]", Required = false, DefaultValue = "https://sandbox.cielo24.com")]
-        public string ServerUrl { get; set; }
-
-        public virtual void GetUsage()
-        {
-            Console.WriteLine("ALWAYS REQUIRED:");
-            Console.WriteLine("--------------------------");
-            Console.WriteLine(indent + "-u" + gap + "cielo24 username");
-            Console.WriteLine(indent + "-p" + gap + "cielo24 password");
-            Console.WriteLine("or");
-            Console.WriteLine(indent + "-k" + gap + "API secure key");
-            Console.WriteLine("or");
-            Console.WriteLine(indent + "-N" + gap + "API token of the current session");
-            Console.WriteLine("--------------------------");
-            Console.WriteLine(indent + "-s" + gap + "cielo24 server url [https://api.cielo24.com]");
-        }
-    }
-
-    public class JobOptions : CommonOptions
-    {
-        [Option('j', "id", HelpText = "Job Id", Required = false, DefaultValue = null)]
-        public string _JobId { get { return this.JobId.ToString("N"); } set { this.JobId = Converters.StringToGuid(value, "Job Id"); } }
-        public Guid JobId { get; set; }
-
-        public virtual void GetUsage()
-        {
-            base.GetUsage();
-            Console.WriteLine("REQUIRED FOR THIS ACTION:");
-            Console.WriteLine(indent + "-j" + gap + "Job Id");
-        }
-    }
-
-    public class AddEmbeddedOptions : JobOptions
-    {
-        [Option('m', "url", HelpText = "Media Url", Required = false, DefaultValue = null)]
-        public string _MediaUrl { get { return this.MediaUrl.ToString(); } set { this.MediaUrl = Converters.StringToUri(value, "Media Url"); } }
-        public Uri MediaUrl { get; set; }
-
-        public virtual void GetUsage()
-        {
-            base.GetUsage();
-            Console.WriteLine(indent + "-m" + gap + "Media Url");
-        }
-    }
-
-    public class AddMediaOptions : AddEmbeddedOptions
-    {
-        [Option('M', "file", HelpText = "Local media file", Required = false, DefaultValue = null)]
-        public string _MediaFile { get { return this.MediaFile.ToString(); } set { this.MediaFile = Converters.StringToFileStream(value, "Media File"); } }
-        public FileStream MediaFile { get; set; }
-
-        public virtual void GetUsage()
-        {
-            base.GetUsage();
-            Console.WriteLine("or");
-            Console.WriteLine(indent + "-M" + gap + "Local Media Url");
-        }
-    }
-
-    public class CaptionOptions : JobOptions
-    {
-        [Option('c', "format", HelpText = "The caption format [SRT, DFXP, QT] (SRT by default)", Required = false, DefaultValue = CaptionFormat.SRT)]
-        public CaptionFormat CaptionFormat { get; set; }
-
-        [Option('e', "el", HelpText = "The element list version [ISO Date format: 2014-05-06T10:49:38.341715]", Required = false, DefaultValue = null)]
-        public string ElementlistVersion { get; set; }
-
-        public virtual void GetUsage()
-        {
-            base.GetUsage();
-            Console.WriteLine(indent + "-c" + gap + "The caption format [SRT, DFXP, QT] (SRT by default)");
-            Console.WriteLine("\nOPTIONAL:");
-            Console.WriteLine(indent + "-e" + gap + "The element list version [ISO Date format: 2014-05-06T10:49:38.341715]");
-        }
-    }
-
-    public class GenerateKeyOptions : CommonOptions
-    {
-        [Option('F', "forcenew", HelpText = "Always force new API key (disabled by default)", Required = false, DefaultValue = false)]
-        public bool ForceNew { get; set; }
-
-        public virtual void GetUsage()
-        {
-            base.GetUsage();
-            Console.WriteLine("\nOPTIONAL:");
-            Console.WriteLine(indent + "-F" + gap + "Always force new API key (disabled by default)");
-        }
-    }
-
-    public class RemoveKeyOptions : CommonOptions
-    {
-        [Option('k', "key", HelpText = "API Secure Key", Required = false, DefaultValue = null)]
-        public string _ApiSecureKey { get { return this.ApiSecureKey.ToString("N"); } set { this.ApiSecureKey = Converters.StringToGuid(value, "API Secure Key"); } }
-        public Guid ApiSecureKey { get; set; }
-
-        public virtual void GetUsage()
-        {
-            base.GetUsage();
-            Console.WriteLine("\nOPTIONAL:");
-            Console.WriteLine(indent + "-F" + gap + "Always force new API key (disabled by default)");
-        }
-    }
-
     public class Options
     {
         protected string indent = "   ";
@@ -222,16 +101,16 @@ namespace CommandLineTool
         public bool HeaderLogin { get; set; }
 
         [HelpVerbOption]
-        public void GetActionHelp(string verb)
+        public void PrintActionHelp(string action)
         {
-            GetDefaultUsage();
-            Console.WriteLine("REQUIRED FOR THIS ACTION:");
+            PrintDefaultUsage();
+            Console.WriteLine("\nREQUIRED FOR THIS ACTION:");
             string[] job_id_param = { "delete", "authorize", "list_elementlists", "get_elementlist", "get_media", "job_info", "add_media_to_job", "add_embedded_media_to_job", "get_transcript", "get_caption" };
             if (job_id_param.Contains("verb"))
             {
                 Console.WriteLine(indent + "-j" + gap + "Job Id");
             }
-            switch (verb)
+            switch (action)
             {
                 case "add_media_to_job":
                     //"$job_id_param" "$media_url_param" "or" "$media_file_param"
@@ -282,9 +161,9 @@ namespace CommandLineTool
             }
         }
 
-        public void GetDefaultUsage()
+        public void PrintDefaultUsage()
         {
-            Console.WriteLine("ALWAYS REQUIRED:");
+            Console.WriteLine("\nALWAYS REQUIRED:");
             Console.WriteLine("--------------------------");
             Console.WriteLine(indent + "-u" + gap + "cielo24 username");
             Console.WriteLine(indent + "-p" + gap + "cielo24 password");
@@ -294,12 +173,13 @@ namespace CommandLineTool
             Console.WriteLine(indent + "-N" + gap + "API token of the current session");
             Console.WriteLine("--------------------------");
             Console.WriteLine(indent + "-s" + gap + "cielo24 server url [https://api.cielo24.com]");
+            Console.WriteLine(indent + "-a" + gap + "API action to execute [create, delete, authorize, add_media_to_job, add_embedded_media_to_job, list, list_elementlists, get_caption, get_transcript, get_elementlist, get_media, generate_api_key, remove_api_key, update_password, job_info]");
         }
-    }
 
-    public class LoginOptions
-    {
+        public CaptionOptions GetCaptionOptions()
+        {
 
+        }
     }
 
     public class Converters

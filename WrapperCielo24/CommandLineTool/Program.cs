@@ -13,20 +13,22 @@ namespace CommandLineTool
     class Program
     {
         static Options options = new Options();
-        static VerbOptions verbOptions = new VerbOptions();
         static Parser optionParser = new Parser();
         static Actions actions = new Actions();
 
         static void Main(string[] args)
         {
-            //optionParser.ParseArguments(args, verbOptions);
             options = new Options();
-            //string[] arggs = {"program", "-h", "generate_api_key"};
-            if (optionParser.ParseArguments(args, verbOptions, (verb, subOptions) => {Program.options = (Options)subOptions; Program.options.ActionName = verb;})) // Parsing successful
+            if (optionParser.ParseArguments(args, options)) // Parsing successful
             {
-                if (options.Help != null)
+                if (options.Help != null) // Specific help requested
                 {
-                    options.GetActionHelp(options.Help);
+                    options.PrintActionHelp(options.Help);
+                    return;
+                }
+                else if (options.ActionName == null) // No action was entered
+                {
+                    options.PrintDefaultUsage();
                     return;
                 }
 
@@ -42,7 +44,7 @@ namespace CommandLineTool
             }
             else
             {
-                options.GetDefaultUsage();
+                options.PrintDefaultUsage();
                 return;
             }
 
@@ -58,10 +60,10 @@ namespace CommandLineTool
                 // ACCESS CONTROL //
                 case "login":
                     if (options.ApiSecureKey.Equals(Guid.Empty)) { // Use password and username
-                        actions.Login(options.Username, options.Password, options.HeaderLogin);
+                        TryAction(delegate() { return actions.Login(options.Username, options.Password, options.HeaderLogin); });
                     }
                     else { // Use secure key
-                        actions.Login(options.Username, options.ApiSecureKey, options.HeaderLogin);
+                        TryAction(delegate() { return actions.Login(options.Username, options.ApiSecureKey, options.HeaderLogin); });
                     }
                     break;
                 case "logout":
@@ -119,7 +121,7 @@ namespace CommandLineTool
                     TryAction(delegate() { return actions.GetListOfElementLists(options.ApiToken, options.JobId); });
                     break;
                 default:
-                    options.GetDefaultUsage();
+                    options.PrintDefaultUsage();
                     break;
             }
         }
@@ -133,14 +135,11 @@ namespace CommandLineTool
             }
             catch (Exception e)
             {
-                if (e is ArgumentException || e is TimeoutException || e is WebException || e is EnumWebException)
+                if (e is ArgumentException || e is TimeoutException || e is WebException || e is EnumWebException) // Known exceptions
                 {
                     Console.WriteLine(e.Message);
                 }
-                else
-                {
-                    options.GetDefaultUsage();
-                }
+                options.PrintActionHelp(options.ActionName);
             }
         }
 
