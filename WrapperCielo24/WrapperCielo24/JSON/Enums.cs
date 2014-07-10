@@ -31,10 +31,11 @@ namespace WrapperCielo24.JSON
 
     public enum SpeakerId { no, number, name }
 
-    public enum Case { upper, lower, unchanged }
+    public enum Case { upper, lower }
 
     public enum LineEnding { UNIX, WINDOWS, OSX }
 
+    /* JobStatus enum requires a converter because strings with spacescannot be implicitly converted to enum */
     public class JobStatusConverter : StringEnumConverter
     {
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)

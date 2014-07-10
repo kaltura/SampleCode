@@ -20,7 +20,8 @@ namespace WrapperCielo24
         }
 
         /* Creates a query string from key-value pairs in the dictionary */
-        private static string ToQuery(Dictionary<string, string> dictionary){
+        public static string ToQuery(Dictionary<string, string> dictionary){
+            if (dictionary == null) { return ""; }
             List<string> pairs = new List<string>();
             foreach(KeyValuePair<string, string> pair in dictionary){
                 pairs.Add(pair.Key + "=" + pair.Value);

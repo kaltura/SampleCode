@@ -37,13 +37,21 @@ namespace WrapperCielo24
             }
         }
 
-        public string UploadMedia(Uri uri, Stream fileStream, string contentType)
+        /* Used exclusively by UpdatePassword method */
+        public string HttpRequest(Uri uri, HttpMethod method, TimeSpan timeout, string requestBody)
+        {
+            MemoryStream s = new MemoryStream(Encoding.UTF8.GetBytes(requestBody));
+            return UploadData(uri, s, "password");
+        }
+
+        /* Uploads data in the body of HTTP request */
+        public string UploadData(Uri uri, Stream inputStream, string contentType)
         {
             HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(uri);
             request.Method = HttpMethod.POST.ToString();
             request.ContentType = contentType;
             request.AllowWriteStreamBuffering = false;
-            request.ContentLength = fileStream.Length;
+            request.ContentLength = inputStream.Length;
 
             IAsyncResult asyncRequest = request.BeginGetRequestStream(null, null);
             asyncRequest.AsyncWaitHandle.WaitOne(BASIC_TIMEOUT); // Wait untill stream is opened
@@ -51,20 +59,20 @@ namespace WrapperCielo24
             {
                 try
                 {
-                    Stream stream = request.EndGetRequestStream(asyncRequest);
-                    fileStream.CopyTo(stream);
-                    fileStream.Dispose();
-                    stream.Flush();
-                    stream.Dispose();
+                    Stream webStream = request.EndGetRequestStream(asyncRequest);
+                    inputStream.CopyTo(webStream);
+                    inputStream.Dispose();
+                    webStream.Flush();
+                    webStream.Dispose();
                 }
                 catch (WebException err)
                 {
-                    throw new WebException("Unknown error: could not upload media.", err);
+                    throw new WebException("Unknown error: could not upload data.", err);
                 }
             }
             else
             {
-                throw new WebException("Timeout error: could not open stream for uploading.");
+                throw new WebException("Timeout error: could not open stream for data uploading.");
             }
 
             IAsyncResult asyncResponse = request.BeginGetResponse(null, null);
