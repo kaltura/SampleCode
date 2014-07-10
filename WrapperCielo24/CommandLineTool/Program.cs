@@ -80,7 +80,18 @@ namespace CommandLineTool
                     break;
                 // JOB CONTROL //
                 case "create":
-                    TryAction(delegate() { return actions.CreateJob(options.ApiToken, options.JobName, options.SourceLanguage)[0]; });
+                    TryAction(delegate() {
+                        Guid jobId = actions.CreateJob(options.ApiToken, options.JobName, options.SourceLanguage)[0];
+                        if (options.MediaFile == null)
+                        {
+                            actions.AddMediaToJob(options.ApiToken, jobId, options.MediaUrl);
+                        }
+                        else
+                        {
+                            actions.AddMediaToJob(options.ApiToken, jobId, options.MediaFile);
+                        }
+                        return actions.PerformTranscription(options.ApiToken, jobId, options.Fidelity, options.Priority, options.CallbackUrl, options.TurnaroundHours, options.TargetLanguage, new QueryOptions(options.JobConfig));
+                    });
                     break;
                 case "authorize":
                     TryAction(delegate() { actions.AuthorizeJob(options.ApiToken, options.JobId); return "Job Authorized Succesfully"; });
@@ -109,10 +120,10 @@ namespace CommandLineTool
                     TryAction(delegate() { return actions.GetMedia(options.ApiToken, options.JobId); });
                     break;
                 case "get_transcript":
-                    TryAction(delegate() { return actions.GetTranscript(options.ApiToken, options.JobId, null); });
+                    TryAction(delegate() { return actions.GetTranscript(options.ApiToken, options.JobId, new QueryOptions(options.CaptionOptions)); });
                     break;
                 case "get_caption":
-                    TryAction(delegate() { return actions.GetCaption(options.ApiToken, options.JobId, options.CaptionFormat, null); });
+                    TryAction(delegate() { return actions.GetCaption(options.ApiToken, options.JobId, options.CaptionFormat, new QueryOptions(options.CaptionOptions)); });
                     break;
                 case "get_elementlist":
                     TryAction(delegate() { return actions.GetElementList(options.ApiToken, options.JobId); });
@@ -125,7 +136,7 @@ namespace CommandLineTool
                     break;
             }
         }
-
+        
         private static void TryAction(Func<object> action)
         {
             try

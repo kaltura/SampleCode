@@ -281,13 +281,13 @@ namespace WrapperCielo24
 
         /* Makes a PerformTranscription call */
         public Guid PerformTranscription(Guid apiToken, Guid jobId, Fidelity fidelity=Fidelity.PROFESSIONAL, Priority priority=Priority.STANDARD,
-            Uri callback_uri=null, int? turnaround_hours=null, string targetLanguage=null, Options performTranscriptionOptions=null)
+            Uri callback_uri=null, int turnaround_hours=-1, string targetLanguage=null, Options performTranscriptionOptions=null)
         {
             Dictionary<string, string> queryDictionary = InitJobReqDict(apiToken, jobId);
             queryDictionary.Add("transcription_fidelity", fidelity.ToString());
             queryDictionary.Add("priority", priority.ToString());
             if (callback_uri != null) { queryDictionary.Add("callback_url", Utils.EncodeUrl(callback_uri)); }
-            if (turnaround_hours != null) { queryDictionary.Add("turnaround_hours", turnaround_hours.ToString()); }
+            if (turnaround_hours > 0) { queryDictionary.Add("turnaround_hours", turnaround_hours.ToString()); }
             if (targetLanguage != null) { queryDictionary.Add("target_language", targetLanguage); }
             if (performTranscriptionOptions != null) { queryDictionary.Concat(performTranscriptionOptions.GetDictionary()); }
 

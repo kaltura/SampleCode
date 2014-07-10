@@ -39,11 +39,11 @@ namespace CommandLineTool
         public string _ApiToken { get { return this.ApiToken.ToString("N"); } set { this.ApiToken = Converters.StringToGuid(value, "Api Token"); } }
         public Guid ApiToken { get; set; }
 
-        [Option('f', "fidelity", HelpText = "Fidelity [MECHANICAL, PREMIUM, PROFESSIONAL] (PREMIUM by default)", Required = false, DefaultValue = "PREMIUM")]
-        public string Fidelity { get; set; }
+        [Option('f', "fidelity", HelpText = "Fidelity [MECHANICAL, PREMIUM, PROFESSIONAL] (PREMIUM by default)", Required = false, DefaultValue = Fidelity.PREMIUM)]
+        public Fidelity Fidelity { get; set; }
 
-        [Option('P', "priority", HelpText = "Priority [ECONOMY, STANDARD, HIGH] (STANDARD by default)", Required = false, DefaultValue = "STANDARD")]
-        public string Priority { get; set; }
+        [Option('P', "priority", HelpText = "Priority [ECONOMY, STANDARD, HIGH] (STANDARD by default)", Required = false, DefaultValue = Priority.STANDARD)]
+        public Priority Priority { get; set; }
 
         [Option('m', "url", HelpText = "Media Url", Required = false, DefaultValue = null)]
         public string _MediaUrl { get { return this.MediaUrl.ToString(); } set { this.MediaUrl = Converters.StringToUri(value, "Media Url"); } }
@@ -63,8 +63,8 @@ namespace CommandLineTool
         public string _JobId { get { return this.JobId.ToString("N"); } set { this.JobId = Converters.StringToGuid(value, "Job Id"); } }
         public Guid JobId { get; set; }
 
-        [Option('T', "hours", HelpText = "Turnaround hours", Required = false, DefaultValue = null)]
-        public string TurnaroundHours { get; set; }
+        [Option('T', "hours", HelpText = "Turnaround hours", Required = false, DefaultValue = -1)]
+        public int TurnaroundHours { get; set; }
 
         [Option('n', "name", HelpText = "Job Name", Required = false, DefaultValue = null)]
         public string JobName { get; set; }
@@ -153,8 +153,18 @@ namespace CommandLineTool
                     Console.WriteLine(indent + "-H" + gap + "Use headers");
                     break;
                 case "create":
-                    Console.WriteLine(indent + "-l" + gap + "Source Language");
+                    Console.WriteLine(indent + "-l" + gap + "The source language [en, es, de, fr] (en by default)");
+                    Console.WriteLine(indent + "-t" + gap + "The target language [en, es, de, fr] (en by default)");
+                    Console.WriteLine(indent + "-f" + gap + "Fidelity [MECHANICAL, PREMIUM, PROFESSIONAL] (PREMIUM by default)");
+                    Console.WriteLine(indent + "-P" + gap + "Priority [ECONOMY, STANDARD, HIGH] (STANDARD by default)");
+                    Console.WriteLine(indent + "-M" + gap + "Local Media File");
+                    Console.WriteLine("or");
+                    Console.WriteLine(indent + "-m" + gap + "Media Url");
+                    Console.WriteLine("\nOPTIONAL:");
                     Console.WriteLine(indent + "-n" + gap + "Job Name");
+                    Console.WriteLine(indent + "-J" + gap + "Job options dictionary. See API documentation for details");
+                    Console.WriteLine(indent + "-С" + gap + "Callback Url for the job");
+                    Console.WriteLine(indent + "-T" + gap + "Turnaround hours");
                     break;
                 default:
                     break;
@@ -174,11 +184,6 @@ namespace CommandLineTool
             Console.WriteLine("--------------------------");
             Console.WriteLine(indent + "-s" + gap + "cielo24 server url [https://api.cielo24.com]");
             Console.WriteLine(indent + "-a" + gap + "API action to execute [create, delete, authorize, add_media_to_job, add_embedded_media_to_job, list, list_elementlists, get_caption, get_transcript, get_elementlist, get_media, generate_api_key, remove_api_key, update_password, job_info]");
-        }
-
-        public CaptionOptions GetCaptionOptions()
-        {
-
         }
     }
 
