@@ -6,6 +6,7 @@ using System.IO;
 using System.Security.Principal;
 using System.Net;
 using WrapperCielo24.JSON;
+using System.Diagnostics;
 
 namespace WrapperCielo24
 {
@@ -281,7 +282,7 @@ namespace WrapperCielo24
 
         /* Makes a PerformTranscription call */
         public Guid PerformTranscription(Guid apiToken, Guid jobId, Fidelity fidelity=Fidelity.PROFESSIONAL, Priority priority=Priority.STANDARD,
-            Uri callback_uri=null, int turnaround_hours=-1, string targetLanguage=null, Options performTranscriptionOptions=null)
+            Uri callback_uri=null, int turnaround_hours=-1, string targetLanguage=null, Options options=null)
         {
             Dictionary<string, string> queryDictionary = InitJobReqDict(apiToken, jobId);
             queryDictionary.Add("transcription_fidelity", fidelity.ToString());
@@ -289,10 +290,13 @@ namespace WrapperCielo24
             if (callback_uri != null) { queryDictionary.Add("callback_url", Utils.EncodeUrl(callback_uri)); }
             if (turnaround_hours > 0) { queryDictionary.Add("turnaround_hours", turnaround_hours.ToString()); }
             if (targetLanguage != null) { queryDictionary.Add("target_language", targetLanguage); }
-            if (performTranscriptionOptions != null) { queryDictionary.Concat(performTranscriptionOptions.GetDictionary()); }
-
-            Uri requestUri = Utils.BuildUri(BASE_URL, PERFORM_TRANSCRIPTION, queryDictionary);
+            string opt = "";
+            if (options != null && options.ToQuery() != null) { opt = "&" + options.ToQuery(); }
+            
+            Uri requestUri = new Uri(Utils.BuildUri(BASE_URL, PERFORM_TRANSCRIPTION, queryDictionary).ToString() + opt);
             WebUtils web = new WebUtils();
+
+            //Debug.WriteLine()
 
             string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
             Dictionary<string, string> response = Utils.Deserialize<Dictionary<string, string>>(serverResponse);

@@ -18,7 +18,7 @@ namespace WrapperCielo24
             PropertyInfo[] properties = type.GetProperties();
             foreach (PropertyInfo property in properties)
             {
-                QueryName key = (QueryName)property.GetCustomAttributes(false).First();
+                QueryName key = (QueryName)property.GetCustomAttributes(typeof(QueryName), true).First();
                 object value = property.GetValue(this, null);
                 queryDictionary.Add(key.Name, GetStringValue(value));
             }
@@ -128,7 +128,7 @@ namespace WrapperCielo24
                     property.SetValue(this, dictionary[key.Name], null); // TODO convert to proper type
                 }
             }
-        }        
+        }
     }
 
     public class TranscriptOptions : CommonOptions
@@ -282,12 +282,24 @@ namespace WrapperCielo24
     {
         public string QueryString { get; set; }
 
-        public QueryOptions(string queryString)
+        public QueryOptions(string queryString=null)
         {
             this.QueryString = queryString;
         }
 
-        public override string ToQuery()
+        public override Dictionary<string, string> GetDictionary()
+        {
+            if (this.QueryString == null || this.QueryString.Length == 0)
+            {
+                return new Dictionary<string, string>(); // empty dictionary
+            }
+            Dictionary<string, string> dict = new Dictionary<string, string>();
+            string[] str = this.QueryString.Split("=".ToCharArray(), 2);
+            dict.Add(str[0], str[1]);
+            return dict;
+        }
+
+        public virtual string ToQuery()
         {
             return this.QueryString;
         }

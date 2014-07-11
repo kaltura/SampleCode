@@ -15,6 +15,7 @@ namespace CommandLineTool
     {
         protected string indent = "   ";
         protected string gap = "     ";
+        protected string[] actionNames = { "create", "delete", "authorize", "add_media_to_job", "add_embedded_media_to_job", "list", "list_elementlists", "get_caption", "get_transcript", "get_elementlist", "get_media", "generate_api_key", "remove_api_key", "update_password", "job_info" };
 
         [Option('h', "help", HelpText = "cielo24 username", Required = false, DefaultValue = null)]
         public string Help { get; set; }
@@ -104,9 +105,11 @@ namespace CommandLineTool
         public void PrintActionHelp(string action)
         {
             PrintDefaultUsage();
+            if (!actionNames.Contains(action)) { return; }
+
             Console.WriteLine("\nREQUIRED FOR THIS ACTION:");
             string[] job_id_param = { "delete", "authorize", "list_elementlists", "get_elementlist", "get_media", "job_info", "add_media_to_job", "add_embedded_media_to_job", "get_transcript", "get_caption" };
-            if (job_id_param.Contains("verb"))
+            if (job_id_param.Contains(action))
             {
                 Console.WriteLine(indent + "-j" + gap + "Job Id");
             }
@@ -163,7 +166,7 @@ namespace CommandLineTool
                     Console.WriteLine("\nOPTIONAL:");
                     Console.WriteLine(indent + "-n" + gap + "Job Name");
                     Console.WriteLine(indent + "-J" + gap + "Job options dictionary. See API documentation for details");
-                    Console.WriteLine(indent + "-С" + gap + "Callback Url for the job");
+                    Console.WriteLine(indent + "-C" + gap + "Callback Url for the job");
                     Console.WriteLine(indent + "-T" + gap + "Turnaround hours");
                     break;
                 default:
@@ -173,6 +176,8 @@ namespace CommandLineTool
 
         public void PrintDefaultUsage()
         {
+            Console.WriteLine("\nUsage: ./program.exe options");
+            Console.WriteLine("\nExecutes a cielo24 API call");
             Console.WriteLine("\nALWAYS REQUIRED:");
             Console.WriteLine("--------------------------");
             Console.WriteLine(indent + "-u" + gap + "cielo24 username");

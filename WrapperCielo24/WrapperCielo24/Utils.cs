@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using WrapperCielo24.JSON;
+using System.Diagnostics;
 
 namespace WrapperCielo24
 {
@@ -16,6 +17,7 @@ namespace WrapperCielo24
         /* Concatinates baseUri, actionPath and key-value pairs from the dictionary, returning a uri */
         public static Uri BuildUri(string baseUri, string actionPath, Dictionary<string, string> dictionary){
             string uriString = baseUri + actionPath + "?" + ToQuery(dictionary);
+            Debug.WriteLine("Uri: " + uriString);
             return new Uri(uriString);
         }
 
