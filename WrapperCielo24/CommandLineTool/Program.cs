@@ -92,7 +92,7 @@ namespace CommandLineTool
                 case "create":
                     TryAction(delegate() {
                         Console.WriteLine("Creating job...");
-                        Guid jobId = actions.CreateJob(options.ApiToken, options.JobName, options.SourceLanguage)[0];
+                        Guid jobId = actions.CreateJob(options.ApiToken, options.JobName, options.SourceLanguage).JobId;
                         Console.WriteLine("JobId: " + jobId.ToString());
                         Console.WriteLine("Adding media...");
                         if (options.MediaFile == null)
