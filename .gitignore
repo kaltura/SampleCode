@@ -4,7 +4,6 @@
 *.pyo
 obj/
 venv/
-Debug/
 .idea/
 .settings
 .pydevproject

@@ -14,7 +14,7 @@ namespace WrapperCielo24
     {
         public const int VERSION = 1;
         private string BASE_URL = "https://sandbox-dev.cielo24.com";
-        public string ServerUrl { get { return this.BASE_URL; } set { this.BASE_URL = value; } }
+        public string ServerUrl { get; set; }
 
         private const string LOGIN_PATH = "/api/account/login";
         private const string LOGOUT_PATH = "/api/account/logout";
@@ -36,9 +36,9 @@ namespace WrapperCielo24
         private const string GET_LIST_OF_ELEMENT_LISTS_PATH = "/api/job/list_elementlists";
 
         /// ACCESS CONTROL ///
-
+        
         /* Performs a Login action. If useHeaders is true, puts username and password into HTTP headers */
-        public Guid Login(string username, string password, bool useHeaders = false)
+        public Guid Login(string username, string password, bool useHeaders=false)
         {
             this.AssertArgument(username, "Username");
             this.AssertArgument(password, "Password");
@@ -91,7 +91,7 @@ namespace WrapperCielo24
 
             string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT, headers);
             Dictionary<string, string> response = Utils.Deserialize<Dictionary<string, string>>(serverResponse);
-
+            
             return new Guid(response["ApiToken"]);
         }
 
@@ -149,9 +149,9 @@ namespace WrapperCielo24
 
 
         /// JOB CONTROL ///
-
+        
         /* Creates a new job. Returns an array of Guids where 'JobId' is the 0th element and 'TaskId' is the 1st element */
-        public CreateJobResult CreateJob(Guid apiToken, string jobName = null, string sourceLanguage = "en")
+        public Guid[] CreateJob(Guid apiToken, string jobName = null, string sourceLanguage = "en")
         {
             Dictionary<string, string> queryDictionary = this.InitAccessReqDict(apiToken);
             if (jobName != null) { queryDictionary.Add("job_name", jobName); }
@@ -161,9 +161,12 @@ namespace WrapperCielo24
             WebUtils web = new WebUtils();
 
             string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
-            CreateJobResult response = Utils.Deserialize<CreateJobResult>(serverResponse);
+            Dictionary<string, string> response = Utils.Deserialize<Dictionary<string, string>>(serverResponse);
 
-            return response;
+            Guid jobId = new Guid(response["JobId"].ToString());
+            Guid taskId = new Guid(response["TaskId"].ToString());
+
+            return new Guid[] { jobId, taskId };
         }
 
         /* Authorizes a job with jobId */
@@ -230,14 +233,14 @@ namespace WrapperCielo24
 
             string serverResponse = web.UploadData(requestUri, fileStream, "video/mp4");
             Dictionary<string, string> response = Utils.Deserialize<Dictionary<string, string>>(serverResponse);
-
+            
             return new Guid(response["TaskId"]);
         }
 
         /* Provides job with jobId a url to media */
         public Guid AddMediaToJob(Guid apiToken, Guid jobId, Uri mediaUrl)
         {
-            return SendMediaUrl(apiToken, jobId, mediaUrl, ADD_MEDIA_TO_JOB_PATH);
+            return SendMediaUrl(apiToken, jobId, mediaUrl, ADD_MEDIA_TO_JOB_PATH);            
         }
 
         /* Provides job with jobId a url to media */
@@ -249,7 +252,7 @@ namespace WrapperCielo24
         /* Helper method for AddMediaToJob and AddEmbeddedMediaToJob methods */
         private Guid SendMediaUrl(Guid apiToken, Guid jobId, Uri mediaUrl, string path)
         {
-            this.AssertArgument(mediaUrl, "Media URL");
+            this.AssertArgument(mediaUrl, "Media Url");
 
             Dictionary<string, string> queryDictionary = InitJobReqDict(apiToken, jobId);
             queryDictionary.Add("media_url", Utils.EncodeUrl(mediaUrl));
@@ -273,19 +276,13 @@ namespace WrapperCielo24
 
             string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
             Dictionary<string, string> response = Utils.Deserialize<Dictionary<string, string>>(serverResponse);
-
+            
             return new Uri(response["MediaUrl"]);
         }
 
         /* Makes a PerformTranscription call */
-        public Guid PerformTranscription(Guid apiToken,
-                                         Guid jobId,
-                                         Fidelity fidelity = Fidelity.PROFESSIONAL,
-                                         Priority priority = Priority.STANDARD,
-                                         Uri callback_uri = null,
-                                         int turnaround_hours = -1,
-                                         string targetLanguage = null,
-                                         Options options = null)
+        public Guid PerformTranscription(Guid apiToken, Guid jobId, Fidelity fidelity=Fidelity.PROFESSIONAL, Priority priority=Priority.STANDARD,
+            Uri callback_uri=null, int turnaround_hours=-1, string targetLanguage=null, Options options=null)
         {
             Dictionary<string, string> queryDictionary = InitJobReqDict(apiToken, jobId);
             queryDictionary.Add("transcription_fidelity", fidelity.ToString());
@@ -295,7 +292,7 @@ namespace WrapperCielo24
             if (targetLanguage != null) { queryDictionary.Add("target_language", targetLanguage); }
             string opt = "";
             if (options != null && options.ToQuery() != null) { opt = "&" + options.ToQuery(); }
-
+            
             Uri requestUri = new Uri(Utils.BuildUri(BASE_URL, PERFORM_TRANSCRIPTION, queryDictionary).ToString() + opt);
             WebUtils web = new WebUtils();
 
@@ -320,7 +317,7 @@ namespace WrapperCielo24
         }
 
         /* Returns a caption from a job with jobId OR if buildUri is true, returns a string representation of the uri */
-        public string GetCaption(Guid apiToken, Guid jobId, CaptionFormat captionFormat = CaptionFormat.SRT, Options captionOptions = null)
+        public string GetCaption(Guid apiToken, Guid jobId, CaptionFormat captionFormat=CaptionFormat.SRT, Options captionOptions=null)
         {
             Dictionary<string, string> queryDictionary = InitJobReqDict(apiToken, jobId);
             queryDictionary.Add("caption_format", captionFormat.ToString());
@@ -353,7 +350,7 @@ namespace WrapperCielo24
         }
 
         /* Returns a list of elements lists */
-        public List<ElementListVersion> GetListOfElementLists(Guid apiToken, Guid jobId)
+        public List<ElementList> GetListOfElementLists(Guid apiToken, Guid jobId)
         {
             Dictionary<string, string> queryDictionary = InitJobReqDict(apiToken, jobId);
 
@@ -361,14 +358,14 @@ namespace WrapperCielo24
             WebUtils web = new WebUtils();
 
             string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
-            List<ElementListVersion> list = Utils.Deserialize<List<ElementListVersion>>(serverResponse);
+            List<ElementList> lists = Utils.Deserialize<List<ElementList>>(serverResponse);
 
-            return list;
+            return lists;
         }
 
 
         /// PRIVATE HELPER METHODS ///
-
+        
         /* Returns a dictionary with version, api_token and job_id key-value pairs (parameters used in almost every job-control action). */
         private Dictionary<string, string> InitJobReqDict(Guid apiToken, Guid jobId)
         {
