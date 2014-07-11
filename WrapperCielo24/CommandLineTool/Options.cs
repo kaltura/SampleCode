@@ -17,7 +17,7 @@ namespace CommandLineTool
         protected string gap = "     ";
         protected string[] actionNames = { "create", "delete", "authorize", "add_media_to_job", "add_embedded_media_to_job", "list", "list_elementlists", "get_caption", "get_transcript", "get_elementlist", "get_media", "generate_api_key", "remove_api_key", "update_password", "job_info" };
 
-        [Option('h', "help", HelpText = "cielo24 username", Required = false, DefaultValue = null)]
+        [Option('h', "help", HelpText = "Show help", Required = false, DefaultValue = null)]
         public string Help { get; set; }
 
         [Option('u', "username", HelpText = "cielo24 username", Required = false, DefaultValue = null)]
@@ -26,7 +26,7 @@ namespace CommandLineTool
         [Option('p', "password", HelpText = "cielo24 password", Required = false, DefaultValue = null)]
         public string Password { get; set; }
 
-        [Option('s', "server", HelpText = "cielo24 server url [https://api.cielo24.com]", Required = false, DefaultValue = "https://sandbox.cielo24.com")]
+        [Option('s', "server", HelpText = "cielo24 server URL [https://api.cielo24.com]", Required = false, DefaultValue = "https://sandbox.cielo24.com")]
         public string ServerUrl { get; set; }
 
         [Option('a', "action", HelpText = "API action to execute [create, delete, authorize, add_media_to_job, add_embedded_media_to_job, list, list_elementlists, get_caption, get_transcript, get_elementlist, get_media, generate_api_key, remove_api_key, update_password, job_info]", Required = false, DefaultValue = null)]
@@ -46,8 +46,8 @@ namespace CommandLineTool
         [Option('P', "priority", HelpText = "Priority [ECONOMY, STANDARD, HIGH] (STANDARD by default)", Required = false, DefaultValue = Priority.STANDARD)]
         public Priority Priority { get; set; }
 
-        [Option('m', "url", HelpText = "Media Url", Required = false, DefaultValue = null)]
-        public string _MediaUrl { get { return this.MediaUrl.ToString(); } set { this.MediaUrl = Converters.StringToUri(value, "Media Url"); } }
+        [Option('m', "url", HelpText = "Media URL", Required = false, DefaultValue = null)]
+        public string _MediaUrl { get { return this.MediaUrl.ToString(); } set { this.MediaUrl = Converters.StringToUri(value, "Media URL"); } }
         public Uri MediaUrl { get; set; }
 
         [Option('M', "file", HelpText = "Local media file", Required = false, DefaultValue = null)]
@@ -76,8 +76,8 @@ namespace CommandLineTool
         [Option('e', "el", HelpText = "The element list version [ISO Date format: 2014-05-06T10:49:38.341715]", Required = false, DefaultValue = null)]
         public string ElementlistVersion { get; set; }
 
-        [Option('C', "callback", HelpText = "Callback Url for the job", Required = false, DefaultValue = null)]
-        public string _CallbackUrl { get { return this.CallbackUrl.ToString(); } set { this.CallbackUrl = Converters.StringToUri(value, "Callback Url"); } }
+        [Option('C', "callback", HelpText = "Callback URL for the job", Required = false, DefaultValue = null)]
+        public string _CallbackUrl { get { return this.CallbackUrl.ToString(); } set { this.CallbackUrl = Converters.StringToUri(value, "Callback URL"); } }
         public Uri CallbackUrl { get; set; }
 
         [Option('S', "silent", HelpText = "Silent mode", Required = false, DefaultValue = null)]
@@ -117,12 +117,12 @@ namespace CommandLineTool
             {
                 case "add_media_to_job":
                     //"$job_id_param" "$media_url_param" "or" "$media_file_param"
-                    Console.WriteLine(indent + "-m" + gap + "Media Url");
+                    Console.WriteLine(indent + "-m" + gap + "Media URL");
                     Console.WriteLine("or");
                     Console.WriteLine(indent + "-M" + gap + "Local Media File");
                     break;
                 case "add_embedded_media_to_job":
-                    Console.WriteLine(indent + "-m" + gap + "Media Url");
+                    Console.WriteLine(indent + "-m" + gap + "Media URL");
                     break;
                 case "list":
                     Console.WriteLine(indent + "none");
@@ -162,11 +162,11 @@ namespace CommandLineTool
                     Console.WriteLine(indent + "-P" + gap + "Priority [ECONOMY, STANDARD, HIGH] (STANDARD by default)");
                     Console.WriteLine(indent + "-M" + gap + "Local Media File");
                     Console.WriteLine("or");
-                    Console.WriteLine(indent + "-m" + gap + "Media Url");
+                    Console.WriteLine(indent + "-m" + gap + "Media URL");
                     Console.WriteLine("\nOPTIONAL:");
                     Console.WriteLine(indent + "-n" + gap + "Job Name");
                     Console.WriteLine(indent + "-J" + gap + "Job options dictionary. See API documentation for details");
-                    Console.WriteLine(indent + "-C" + gap + "Callback Url for the job");
+                    Console.WriteLine(indent + "-C" + gap + "Callback URL for the job");
                     Console.WriteLine(indent + "-T" + gap + "Turnaround hours");
                     break;
                 default:
@@ -187,7 +187,7 @@ namespace CommandLineTool
             Console.WriteLine("or");
             Console.WriteLine(indent + "-N" + gap + "API token of the current session");
             Console.WriteLine("--------------------------");
-            Console.WriteLine(indent + "-s" + gap + "cielo24 server url [https://api.cielo24.com]");
+            Console.WriteLine(indent + "-s" + gap + "cielo24 server URL [https://api.cielo24.com]");
             Console.WriteLine(indent + "-a" + gap + "API action to execute [create, delete, authorize, add_media_to_job, add_embedded_media_to_job, list, list_elementlists, get_caption, get_transcript, get_elementlist, get_media, generate_api_key, remove_api_key, update_password, job_info]");
         }
     }
@@ -210,7 +210,7 @@ namespace CommandLineTool
             try { return new Uri(s); }
             catch (UriFormatException e)
             {
-                throw new UriFormatException("Invalid Url: \'" + propertyName + "\'.\n" + e.Message, e);
+                throw new UriFormatException("Invalid URL: \'" + propertyName + "\'.\n" + e.Message, e);
             }
         }
 
