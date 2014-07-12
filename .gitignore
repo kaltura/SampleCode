@@ -3,6 +3,7 @@
 *.pyc
 *.pyo
 obj/
+Debug/
 venv/
 .idea/
 .settings

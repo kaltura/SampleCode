@@ -20,7 +20,8 @@ namespace WrapperCielo24.JSON
             {
                 activeJobs += job.ToString() + "\n";
             }
-            return "Username: " + this.Username + "\nActiveJobs:\n\n" + activeJobs;
+            return "Username: " + this.Username +
+                   "\nActiveJobs:\n\n" + activeJobs;
         }
     }
 
