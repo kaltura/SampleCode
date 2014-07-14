@@ -18,3 +18,8 @@ WrapperCielo24/WrapperCielo24/bin/Release/Newtonsoft.Json.dll
 WrapperCielo24/CommandLineTool/bin/Release/CommandLine.xml
 WrapperCielo24/CommandLineTool/bin/Release/CommandLineTool.exe
 WrapperCielo24/UnitTest/bin/Release/WrapperCielo24.dll
+WrapperCielo24/CommandLineTool/bin/Release/CommandLine.dll
+WrapperCielo24/UnitTest/bin/Release/Newtonsoft.Json.dll
+WrapperCielo24/UnitTest/bin/Release/Newtonsoft.Json.xml
+WrapperCielo24/WrapperCielo24/bin/Release/WrapperCielo24.dll
+WrapperCielo24/CommandLineTool/bin/Release/Cielo24Merged.dll
