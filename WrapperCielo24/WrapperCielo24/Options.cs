@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -37,24 +38,38 @@ namespace WrapperCielo24
             return Utils.ToQuery(queryDictionary);
         }
 
-        public void PopulateFromKeyValuePair(KeyValuePair<string, string> pair)
+        /* Sets the property whose QueryName attribute matches the key */
+        public virtual void PopulateFromKeyValuePair(KeyValuePair<string, string> pair)
         {
-            // TODO
-        }
-
-        public virtual void FromQuery(string queryString)
-        {
-            Dictionary<string, string> dictionary = Regex.Matches(queryString, "([^?=&]+)(=([^&]*))?").Cast<Match>().ToDictionary(x => x.Groups[1].Value, x => x.Groups[3].Value);
-            Type type = this.GetType();
-            PropertyInfo[] properties = type.GetProperties();
+            PropertyInfo[] properties = this.GetType().GetProperties();
             foreach (PropertyInfo property in properties)
             {
-                QueryName key = (QueryName)property.GetCustomAttributes(false).First();
-                if (dictionary.ContainsKey(key.Name))
+                QueryName key = (QueryName)property.GetCustomAttributes(typeof(QueryName), true).First();
+                Type type = property.PropertyType;
+                if (key.Name.Equals(pair.Key))
                 {
-                    property.SetValue(this, dictionary[key.Name], null); // TODO convert to proper type
+                    property.SetValue(this, this.GetValueFromString(pair.Value, type), null);
+                    break;
                 }
             }
+        }
+
+        // Array of strings in the key=value form 
+        public void PopulateFromArray(string[] array)
+        {
+            if (array == null) { return; }
+            foreach (string s in array)
+            {
+                Dictionary<string, string> dictionary = Regex.Matches(s, "([^?=&]+)(=([^&]*))?").Cast<Match>().ToDictionary(x => x.Groups[1].Value, x => x.Groups[3].Value);
+                this.PopulateFromKeyValuePair(dictionary.First());
+            }
+        }
+
+        /* Converts string into an object */
+        protected object GetValueFromString(string str, Type type)
+        {
+            object result = JsonConvert.DeserializeObject("\"" + str + "\"", type); // Quotes are necessary in json
+            return result;
         }
 
         /* Converts 'value' into string based on its type. Precondition: value != null */
@@ -344,32 +359,10 @@ namespace WrapperCielo24
         }
     }
 
-    // TODO remove this class
-    public class QueryOptions : Options
+    class DeserializationHelper<T>
     {
-        public string QueryString { get; set; }
-
-        public QueryOptions(string queryString = null)
-        {
-            this.QueryString = queryString;
-        }
-
-        public override Dictionary<string, string> GetDictionary()
-        {
-            if (this.QueryString == null || this.QueryString.Length == 0)
-            {
-                return new Dictionary<string, string>(); // empty dictionary
-            }
-            Dictionary<string, string> dict = new Dictionary<string, string>();
-            string[] str = this.QueryString.Split("=".ToCharArray(), 2);
-            dict.Add(str[0], str[1]);
-            return dict;
-        }
-
-        public virtual string ToQuery()
-        {
-            return this.QueryString;
-        }
+        [JsonProperty("value")]
+        public T Value { get; set; }
     }
 
     [AttributeUsage(AttributeTargets.Property)]

@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.IO;
+using System.Net;
 using System.Linq;
 using System.Text;
-using System.IO;
-using System.Security.Principal;
-using System.Net;
-using WrapperCielo24.JSON;
 using System.Diagnostics;
+using System.Security.Principal;
+using System.Collections.Generic;
+using WrapperCielo24.JSON;
 
 namespace WrapperCielo24
 {
@@ -15,6 +15,7 @@ namespace WrapperCielo24
         public const int VERSION = 1;
         private string BASE_URL = "https://sandbox-dev.cielo24.com";
         public string ServerUrl { get { return this.BASE_URL; } set { this.BASE_URL = value; } }
+        private WebUtils web = new WebUtils();
 
         private const string LOGIN_PATH = "/api/account/login";
         private const string LOGOUT_PATH = "/api/account/logout";
@@ -58,8 +59,6 @@ namespace WrapperCielo24
             }
 
             Uri requestUri = Utils.BuildUri(BASE_URL, LOGIN_PATH, queryDictionary);
-            WebUtils web = new WebUtils();
-
             string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT, headers);
             Dictionary<string, string> response = Utils.Deserialize<Dictionary<string, string>>(serverResponse);
 
@@ -87,8 +86,6 @@ namespace WrapperCielo24
             }
 
             Uri requestUri = Utils.BuildUri(BASE_URL, LOGIN_PATH, queryDictionary);
-            WebUtils web = new WebUtils();
-
             string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT, headers);
             Dictionary<string, string> response = Utils.Deserialize<Dictionary<string, string>>(serverResponse);
 
@@ -100,7 +97,6 @@ namespace WrapperCielo24
         {
             Dictionary<string, string> queryDictionary = this.InitAccessReqDict(apiToken);
             Uri requestUri = Utils.BuildUri(BASE_URL, LOGOUT_PATH, queryDictionary);
-            WebUtils web = new WebUtils();
             web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT); // Nothing returned
         }
 
@@ -113,8 +109,6 @@ namespace WrapperCielo24
             queryDictionary.Add("new_password", newPassword);
 
             Uri requestUri = Utils.BuildUri(BASE_URL, UPDATE_PASSWORD_PATH, null);
-            WebUtils web = new WebUtils();
-
             web.HttpRequest(requestUri, HttpMethod.POST, WebUtils.BASIC_TIMEOUT, Utils.ToQuery(queryDictionary)); // Nothing returned
         }
 
@@ -128,8 +122,6 @@ namespace WrapperCielo24
             queryDictionary.Add("force_new", forceNew.ToString());
 
             Uri requestUri = Utils.BuildUri(BASE_URL, GENERATE_API_KEY_PATH, queryDictionary);
-            WebUtils web = new WebUtils();
-
             string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
             Dictionary<string, string> response = Utils.Deserialize<Dictionary<string, string>>(serverResponse);
 
@@ -143,7 +135,6 @@ namespace WrapperCielo24
             queryDictionary.Add("api_securekey", apiSecurekey.ToString("N"));
 
             Uri requestUri = Utils.BuildUri(BASE_URL, REMOVE_API_KEY_PATH, queryDictionary);
-            WebUtils web = new WebUtils();
             web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT); // Nothing returned
         }
 
@@ -158,8 +149,6 @@ namespace WrapperCielo24
             queryDictionary.Add("source_language", sourceLanguage);
 
             Uri requestUri = Utils.BuildUri(BASE_URL, CREATE_JOB_PATH, queryDictionary);
-            WebUtils web = new WebUtils();
-
             string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
             CreateJobResult response = Utils.Deserialize<CreateJobResult>(serverResponse);
 
@@ -172,8 +161,6 @@ namespace WrapperCielo24
             Dictionary<string, string> queryDictionary = InitJobReqDict(apiToken, jobId);
 
             Uri requestUri = Utils.BuildUri(BASE_URL, AUTHORIZE_JOB_PATH, queryDictionary);
-            WebUtils web = new WebUtils();
-
             web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT); // Nothing returned
         }
 
@@ -183,8 +170,6 @@ namespace WrapperCielo24
             Dictionary<string, string> queryDictionary = InitJobReqDict(apiToken, jobId);
 
             Uri requestUri = Utils.BuildUri(BASE_URL, DELETE_JOB_PATH, queryDictionary);
-            WebUtils web = new WebUtils();
-
             string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
             Dictionary<string, string> response = Utils.Deserialize<Dictionary<string, string>>(serverResponse);
 
@@ -197,8 +182,6 @@ namespace WrapperCielo24
             Dictionary<string, string> queryDictionary = InitJobReqDict(apiToken, jobId);
 
             Uri requestUri = Utils.BuildUri(BASE_URL, GET_JOB_INFO_PATH, queryDictionary);
-            WebUtils web = new WebUtils();
-
             string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
             JobInfo jobInfo = Utils.Deserialize<JobInfo>(serverResponse);
 
@@ -211,8 +194,6 @@ namespace WrapperCielo24
             Dictionary<string, string> queryDictionary = InitAccessReqDict(apiToken);
 
             Uri requestUri = Utils.BuildUri(BASE_URL, GET_JOB_LIST_PATH, queryDictionary);
-            WebUtils web = new WebUtils();
-
             string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
             JobList jobList = Utils.Deserialize<JobList>(serverResponse);
 
@@ -226,8 +207,6 @@ namespace WrapperCielo24
 
             Dictionary<string, string> queryDictionary = InitJobReqDict(apiToken, jobId);
             Uri requestUri = Utils.BuildUri(BASE_URL, ADD_MEDIA_TO_JOB_PATH, queryDictionary);
-            WebUtils web = new WebUtils();
-
             string serverResponse = web.UploadData(requestUri, fileStream, "video/mp4");
             Dictionary<string, string> response = Utils.Deserialize<Dictionary<string, string>>(serverResponse);
 
@@ -255,8 +234,6 @@ namespace WrapperCielo24
             queryDictionary.Add("media_url", Utils.EncodeUrl(mediaUrl));
 
             Uri requestUri = Utils.BuildUri(BASE_URL, path, queryDictionary);
-            WebUtils web = new WebUtils();
-
             string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
             Dictionary<string, string> response = Utils.Deserialize<Dictionary<string, string>>(serverResponse);
 
@@ -269,8 +246,6 @@ namespace WrapperCielo24
             Dictionary<string, string> queryDictionary = InitJobReqDict(apiToken, jobId);
 
             Uri requestUri = Utils.BuildUri(BASE_URL, GET_MEDIA_PATH, queryDictionary);
-            WebUtils web = new WebUtils();
-
             string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
             Dictionary<string, string> response = Utils.Deserialize<Dictionary<string, string>>(serverResponse);
 
@@ -280,27 +255,22 @@ namespace WrapperCielo24
         /* Makes a PerformTranscription call */
         public Guid PerformTranscription(Guid apiToken,
                                          Guid jobId,
-                                         Fidelity fidelity = Fidelity.PROFESSIONAL,
-                                         Priority priority = Priority.STANDARD,
+                                         Fidelity fidelity,
+                                         Priority priority,
                                          Uri callback_uri = null,
-                                         int turnaround_hours = -1,
+                                         int? turnaround_hours = null,
                                          string targetLanguage = null,
-                                         Options options = null)
+                                         PerformTranscriptionOptions options = null)
         {
             Dictionary<string, string> queryDictionary = InitJobReqDict(apiToken, jobId);
             queryDictionary.Add("transcription_fidelity", fidelity.ToString());
             queryDictionary.Add("priority", priority.ToString());
             if (callback_uri != null) { queryDictionary.Add("callback_url", Utils.EncodeUrl(callback_uri)); }
-            if (turnaround_hours > 0) { queryDictionary.Add("turnaround_hours", turnaround_hours.ToString()); }
+            if (turnaround_hours != null) { queryDictionary.Add("turnaround_hours", turnaround_hours.ToString()); }
             if (targetLanguage != null) { queryDictionary.Add("target_language", targetLanguage); }
-            string opt = "";
-            if (options != null && options.ToQuery() != null) { opt = "&" + options.ToQuery(); }
+            if (options != null) { queryDictionary = Utils.DictConcat(queryDictionary, options.GetDictionary()); }
 
-            Uri requestUri = new Uri(Utils.BuildUri(BASE_URL, PERFORM_TRANSCRIPTION, queryDictionary).ToString() + opt);
-            WebUtils web = new WebUtils();
-
-            //Debug.WriteLine()
-
+            Uri requestUri = Utils.BuildUri(BASE_URL, PERFORM_TRANSCRIPTION, queryDictionary);
             string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
             Dictionary<string, string> response = Utils.Deserialize<Dictionary<string, string>>(serverResponse);
 
@@ -308,28 +278,25 @@ namespace WrapperCielo24
         }
 
         /* Returns a transcript from a job with jobId */
-        public string GetTranscript(Guid apiToken, Guid jobId, Options captionOptions = null)
+        public string GetTranscript(Guid apiToken, Guid jobId, TranscriptOptions transcriptOptions = null)
         {
             Dictionary<string, string> queryDictionary = InitJobReqDict(apiToken, jobId);
-            if (captionOptions != null) { queryDictionary.Concat(captionOptions.GetDictionary()); }
+            if (transcriptOptions != null) { queryDictionary.Concat(transcriptOptions.GetDictionary()); }
 
             Uri requestUri = Utils.BuildUri(BASE_URL, GET_TRANSCRIPTION_PATH, queryDictionary);
-            WebUtils web = new WebUtils();
-
             return web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.DOWNLOAD_TIMEOUT); // Transcript text
         }
 
         /* Returns a caption from a job with jobId OR if buildUri is true, returns a string representation of the uri */
-        public string GetCaption(Guid apiToken, Guid jobId, CaptionFormat captionFormat = CaptionFormat.SRT, Options captionOptions = null)
+        public string GetCaption(Guid apiToken, Guid jobId, CaptionFormat captionFormat = CaptionFormat.SRT, CaptionOptions captionOptions = null)
         {
             Dictionary<string, string> queryDictionary = InitJobReqDict(apiToken, jobId);
             queryDictionary.Add("caption_format", captionFormat.ToString());
             if (captionOptions != null) { queryDictionary.Concat(captionOptions.GetDictionary()); }
 
             Uri requestUri = Utils.BuildUri(BASE_URL, GET_CAPTION_PATH, queryDictionary);
-            WebUtils web = new WebUtils();
             string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.DOWNLOAD_TIMEOUT);
-            if (captionOptions.ToQuery().Contains("buildUrl=true"))
+            if (captionOptions.BuildUrl.Value)
             {
                 Dictionary<string, string> response = Utils.Deserialize<Dictionary<string, string>>(serverResponse);
                 return response["CaptionUrl"];
@@ -344,8 +311,6 @@ namespace WrapperCielo24
             Dictionary<string, string> queryDictionary = InitJobReqDict(apiToken, jobId);
 
             Uri requestUri = Utils.BuildUri(BASE_URL, GET_ELEMENT_LIST_PATH, queryDictionary);
-            WebUtils web = new WebUtils();
-
             string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
             ElementList elements = Utils.Deserialize<ElementList>(serverResponse);
 
@@ -358,8 +323,6 @@ namespace WrapperCielo24
             Dictionary<string, string> queryDictionary = InitJobReqDict(apiToken, jobId);
 
             Uri requestUri = Utils.BuildUri(BASE_URL, GET_LIST_OF_ELEMENT_LISTS_PATH, queryDictionary);
-            WebUtils web = new WebUtils();
-
             string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
             List<ElementListVersion> list = Utils.Deserialize<List<ElementListVersion>>(serverResponse);
 

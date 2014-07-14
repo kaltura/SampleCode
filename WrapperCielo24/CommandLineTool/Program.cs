@@ -16,59 +16,59 @@ namespace CommandLineTool
         static Options options = new Options();
         static Parser optionParser = new Parser();
         static Actions actions = new Actions();
+        static string invokedVerb = null;
 
         static void Main(string[] args)
         {
             //string[] argss = { "./prog.exe", "-a", "create", "-u", "testscript", "-p", "testscript2", "-m", "https://www.youtube.com/watch?v=n1JGzxvsRPg" };
-            if (optionParser.ParseArguments(args, options)) // Parsing successful
+            if (Options.Verbs.Contains(args[0])) // If verb is valid
             {
-                if (options.Help != null) // Specific help requested
+                invokedVerb = args[0];
+                if (optionParser.ParseArguments(args, options)) // If parsing successful
                 {
-                    options.PrintActionHelp(options.Help);
-                    return;
-                }
-                else if (options.ActionName == null) // No action was entered
-                {
-                    options.PrintDefaultUsage();
-                    return;
-                }
+                    Console.WriteLine("success");
+                    if (options.VerboseMode) // Enable verbose mode
+                    {
+                        Debug.Listeners.Add(new TextWriterTraceListener(System.Console.Out));
+                    }
 
-                if (options.VerboseMode)
-                {
-                    Debug.Listeners.Add(new TextWriterTraceListener(System.Console.Out));
+                    if (invokedVerb.Equals("login") || invokedVerb.Equals("logout")) // Login and logout are special cases
+                    {
+                        CallAction(invokedVerb);
+                    }
+                    else                                                             // All other actions
+                    {
+                        if (TryLogin()) { CallAction(invokedVerb); }
+                    }
                 }
-
-                if (options.ActionName.Equals("login") || options.ActionName.Equals("logout"))
+                else // Parsing failed: show usage for verb
                 {
-                    CallAction(options.ActionName);
-                }
-                else
-                {
-                    if (TryLogin()) { CallAction(options.ActionName); }
+                    options.PrintActionHelp(invokedVerb);
+                    return;
                 }
             }
             else
             {
                 options.PrintDefaultUsage();
-                return;
             }
 
-            //Console.WriteLine("\nPress any key to exit...");
-            //Console.ReadKey();
             return;
         }
 
         public static void CallAction(string actionName)
         {
+            actions.ServerUrl = options.ServerUrl;
             switch (actionName)
             {
                 // ACCESS CONTROL //
                 case "login":
                     Console.WriteLine("Logging in...");
-                    if (options.ApiSecureKey.Equals(Guid.Empty)) { // Use password and username
+                    if (options.ApiSecureKey.Equals(Guid.Empty))
+                    { // Use password and username
                         TryAction(delegate() { return actions.Login(options.Username, options.Password, options.HeaderLogin); });
                     }
-                    else { // Use secure key
+                    else
+                    { // Use secure key
                         TryAction(delegate() { return actions.Login(options.Username, options.ApiSecureKey, options.HeaderLogin); });
                     }
                     break;
@@ -90,7 +90,8 @@ namespace CommandLineTool
                     break;
                 // JOB CONTROL //
                 case "create":
-                    TryAction(delegate() {
+                    TryAction(delegate()
+                    {
                         Console.WriteLine("Creating job...");
                         Guid jobId = actions.CreateJob(options.ApiToken, options.JobName, options.SourceLanguage).JobId;
                         Console.WriteLine("JobId: " + jobId.ToString());
@@ -104,7 +105,9 @@ namespace CommandLineTool
                             actions.AddMediaToJob(options.ApiToken, jobId, options.MediaFile);
                         }
                         Console.WriteLine("Performing transcrition...");
-                        return actions.PerformTranscription(options.ApiToken, jobId, options.Fidelity, options.Priority, options.CallbackUrl, options.TurnaroundHours, options.TargetLanguage, new QueryOptions(options.JobConfig));
+                        PerformTranscriptionOptions pto = new PerformTranscriptionOptions();
+                        pto.PopulateFromArray(options.JobConfig);
+                        return actions.PerformTranscription(options.ApiToken, jobId, options.Fidelity, options.Priority, options.CallbackUrl, options.TurnaroundHours, options.TargetLanguage, pto);
                     });
                     break;
                 case "authorize":
@@ -125,10 +128,12 @@ namespace CommandLineTool
                     break;
                 case "add_media_to_job":
                     Console.WriteLine("Ading media to job...");
-                    if (options.MediaUrl != null) { // Media Url
+                    if (options.MediaUrl != null)
+                    { // Media Url
                         TryAction(delegate() { return actions.AddMediaToJob(options.ApiToken, options.JobId, options.MediaUrl); });
                     }
-                    else { // Media File
+                    else
+                    { // Media File
                         TryAction(delegate() { return actions.AddMediaToJob(options.ApiToken, options.JobId, options.MediaFile); });
                     }
                     break;
@@ -142,11 +147,15 @@ namespace CommandLineTool
                     break;
                 case "get_transcript":
                     Console.WriteLine("Getting transcript...");
-                    TryAction(delegate() { return actions.GetTranscript(options.ApiToken, options.JobId, new QueryOptions(options.CaptionOptions)); });
+                    TranscriptOptions to = new TranscriptOptions();
+                    to.PopulateFromArray(options.CaptionOptions);
+                    TryAction(delegate() { return actions.GetTranscript(options.ApiToken, options.JobId, to); });
                     break;
                 case "get_caption":
                     Console.WriteLine("Getting caption...");
-                    TryAction(delegate() { return actions.GetCaption(options.ApiToken, options.JobId, options.CaptionFormat, new QueryOptions(options.CaptionOptions)); });
+                    CaptionOptions co = new CaptionOptions();
+                    co.PopulateFromArray(options.CaptionOptions);
+                    TryAction(delegate() { return actions.GetCaption(options.ApiToken, options.JobId, options.CaptionFormat, co); });
                     break;
                 case "get_elementlist":
                     Console.WriteLine("Getting element list...");
@@ -161,7 +170,7 @@ namespace CommandLineTool
                     break;
             }
         }
-        
+
         private static void TryAction(Func<object> action)
         {
             try
@@ -173,13 +182,11 @@ namespace CommandLineTool
             }
             catch (Exception e)
             {
-                //if (e is ArgumentException || e is TimeoutException || e is WebException || e is EnumWebException) // Known exceptions
-                
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("\n" + e.Message);
-                    Console.ResetColor();
-                
-                options.PrintActionHelp(options.ActionName);
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("\n" + e.Message);
+                Console.ResetColor();
+
+                options.PrintActionHelp(invokedVerb);
             }
         }
 
@@ -196,7 +203,7 @@ namespace CommandLineTool
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("\n" + e.Message);
                     Console.ResetColor();
-                    options.PrintActionHelp(options.ActionName);
+                    options.PrintActionHelp(invokedVerb);
                     return false;
                 }
             }

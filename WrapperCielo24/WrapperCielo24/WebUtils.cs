@@ -5,6 +5,7 @@ using System.Text;
 using System.Net;
 using System.IO;
 using System.Threading;
+using System.Diagnostics;
 
 namespace WrapperCielo24
 {
@@ -16,6 +17,7 @@ namespace WrapperCielo24
         /* A synchronous method that performs an HTTP request returning data received from the sever as a string */
         public string HttpRequest(Uri uri, HttpMethod method, TimeSpan timeout, Dictionary<string, string> headers = null)
         {
+            Debug.WriteLine("Uri: " + uri.ToString());
             HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(uri);
             request.Method = method.ToString();
             if (headers != null)
@@ -47,6 +49,7 @@ namespace WrapperCielo24
         /* Uploads data in the body of HTTP request */
         public string UploadData(Uri uri, Stream inputStream, string contentType)
         {
+            Debug.WriteLine("Uri: " + uri.ToString());
             HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(uri);
             request.Method = HttpMethod.POST.ToString();
             request.ContentType = contentType;
