@@ -26,7 +26,7 @@ namespace CommandLineTool
         [Option('p', "password", HelpText = "cielo24 password", Required = false, DefaultValue = null)]
         public string Password { get; set; }
 
-        [Option('s', "server", HelpText = "cielo24 server url [https://api.cielo24.com]", Required = false, DefaultValue = "https://sandbox.cielo24.com")]
+        [Option('s', "server", HelpText = "cielo24 server URL [https://api.cielo24.com]", Required = false, DefaultValue = "https://sandbox.cielo24.com")]
         public string ServerUrl { get; set; }
 
         [Option('k', "key", HelpText = "API Secure Key", Required = false, DefaultValue = null)]
@@ -43,8 +43,8 @@ namespace CommandLineTool
         [Option('P', "priority", HelpText = "Priority [ECONOMY, STANDARD, HIGH] (STANDARD by default)", Required = false, DefaultValue = Priority.STANDARD)]
         public Priority Priority { get; set; }
 
-        [Option('m', "url", HelpText = "Media Url", Required = false, DefaultValue = null)]
-        public string _MediaUrl { get { return this.MediaUrl.ToString(); } set { this.MediaUrl = Converters.StringToUri(value, "Media Url"); } }
+        [Option('m', "url", HelpText = "Media URL", Required = false, DefaultValue = null)]
+        public string _MediaUrl { get { return this.MediaUrl.ToString(); } set { this.MediaUrl = Converters.StringToUri(value, "Media URL"); } }
         public Uri MediaUrl { get; set; }
 
         [Option('M', "file", HelpText = "Local media file", Required = false, DefaultValue = null)]
@@ -73,8 +73,8 @@ namespace CommandLineTool
         [Option('e', "el", HelpText = "The element list version [ISO Date format: 2014-05-06T10:49:38.341715]", Required = false, DefaultValue = null)]
         public string ElementlistVersion { get; set; }
 
-        [Option('C', "callback", HelpText = "Callback Url for the job", Required = false, DefaultValue = null)]
-        public string _CallbackUrl { get { return this.CallbackUrl.ToString(); } set { this.CallbackUrl = Converters.StringToUri(value, "Callback Url"); } }
+        [Option('C', "callback", HelpText = "Callback URL for the job", Required = false, DefaultValue = null)]
+        public string _CallbackUrl { get { return this.CallbackUrl.ToString(); } set { this.CallbackUrl = Converters.StringToUri(value, "Callback URL"); } }
         public Uri CallbackUrl { get; set; }
 
         [Option('S', "silent", HelpText = "Silent mode", Required = false, DefaultValue = false)]
@@ -114,12 +114,12 @@ namespace CommandLineTool
             {
                 case "add_media_to_job":
                     //"$job_id_param" "$media_url_param" "or" "$media_file_param"
-                    Console.WriteLine(indent + "-m" + gap + "Media Url");
+                    Console.WriteLine(indent + "-m" + gap + "Media URL");
                     Console.WriteLine("or");
                     Console.WriteLine(indent + "-M" + gap + "Local Media File");
                     break;
                 case "add_embedded_media_to_job":
-                    Console.WriteLine(indent + "-m" + gap + "Media Url");
+                    Console.WriteLine(indent + "-m" + gap + "Media URL");
                     break;
                 case "list":
                     Console.WriteLine(indent + "none");
@@ -132,6 +132,7 @@ namespace CommandLineTool
                     Console.WriteLine(indent + "-O" + gap + "Caption/transcript options query string arguments. Usage: -O key1=value1 -O key2=value2. See API documentation for details");
                     break;
                 case "generate_api_key":
+                    Console.WriteLine("\nOPTIONAL:");
                     Console.WriteLine(indent + "-F" + gap + "Always force new API key (disabled by default)");
                     break;
                 case "remove_api_key":
@@ -154,18 +155,18 @@ namespace CommandLineTool
                     Console.WriteLine(indent + "-H" + gap + "Use headers");
                     break;
                 case "create":
-                    Console.WriteLine(indent + "-l" + gap + "The source language [en, es, de, fr] (en by default)");
-                    Console.WriteLine(indent + "-t" + gap + "The target language [en, es, de, fr] (en by default)");
-                    Console.WriteLine(indent + "-f" + gap + "Fidelity [MECHANICAL, PREMIUM, PROFESSIONAL] (PREMIUM by default)");
-                    Console.WriteLine(indent + "-P" + gap + "Priority [ECONOMY, STANDARD, HIGH] (STANDARD by default)");
+                    Console.WriteLine(indent + "-f" + gap + "Fidelity [MECHANICAL, PREMIUM, PROFESSIONAL]");
+                    Console.WriteLine(indent + "-P" + gap + "Priority [ECONOMY, STANDARD, HIGH]");
                     Console.WriteLine(indent + "-M" + gap + "Local Media File");
                     Console.WriteLine("or");
-                    Console.WriteLine(indent + "-m" + gap + "Media Url");
+                    Console.WriteLine(indent + "-m" + gap + "Media URL");
                     Console.WriteLine("\nOPTIONAL:");
                     Console.WriteLine(indent + "-n" + gap + "Job Name");
                     Console.WriteLine(indent + "-J" + gap + "Job options dictionary. Usage: -O key1=value1 -O key2=value2. See API documentation for details");
-                    Console.WriteLine(indent + "-C" + gap + "Callback Url for the job");
+                    Console.WriteLine(indent + "-C" + gap + "Callback URL for the job");
                     Console.WriteLine(indent + "-T" + gap + "Turnaround hours");
+                    Console.WriteLine(indent + "-l" + gap + "The source language [en, es, de, fr] (en by default)");
+                    Console.WriteLine(indent + "-t" + gap + "The target language [en, es, de, fr] (en by default)");
                     break;
                 default:
                     break;
@@ -186,7 +187,8 @@ namespace CommandLineTool
             Console.WriteLine("or");
             Console.WriteLine(indent + "-N" + gap + "API token of the current session");
             Console.WriteLine("--------------------------");
-            Console.WriteLine(indent + "-s" + gap + "cielo24 server url [https://api.cielo24.com]");
+            Console.WriteLine("\nOPTIONAL:");
+            Console.WriteLine(indent + "-s" + gap + "cielo24 server URL [https://api.cielo24.com]");
         }
     }
 
@@ -194,8 +196,12 @@ namespace CommandLineTool
     {
         public static Guid StringToGuid(string s, string propertyName)
         {
-            if (s == null) { return Guid.Empty; }
-            try { return Guid.Parse(s); }
+            if (s == null) {
+                return Guid.Empty;
+            }
+            try {
+                return Guid.Parse(s);
+            }
             catch (FormatException e)
             {
                 throw new FormatException("Invalid value entered for option \'" + propertyName + "\'.\n" + e.Message, e);
@@ -204,18 +210,27 @@ namespace CommandLineTool
 
         public static Uri StringToUri(string s, string propertyName)
         {
-            if (s == null) { return null; }
-            try { return new Uri(s); }
+            if (s == null) {
+                return null;
+            }
+            try {
+                return new Uri(s); 
+            }
             catch (UriFormatException e)
             {
-                throw new UriFormatException("Invalid Url: \'" + propertyName + "\'.\n" + e.Message, e);
+                throw new UriFormatException("Invalid URL: \'" + propertyName + "\'.\n" + e.Message, e);
             }
         }
 
         public static FileStream StringToFileStream(string s, string propertyName)
         {
-            if (s == null) { return null; }
-            try { return new FileStream(s, FileMode.Open); }
+            if (s == null) {
+                return null;
+            }
+            try {
+                s = Path.GetFullPath(s); // Handles both absolute and relative paths
+                return new FileStream(s, FileMode.Open);
+            }
             catch (IOException e)
             {
                 throw new IOException("Invalid file path: \'" + propertyName + "\'.\n" + e.Message, e);

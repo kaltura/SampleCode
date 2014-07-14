@@ -21,7 +21,11 @@ namespace CommandLineTool
         static void Main(string[] args)
         {
             //string[] argss = { "./prog.exe", "-a", "create", "-u", "testscript", "-p", "testscript2", "-m", "https://www.youtube.com/watch?v=n1JGzxvsRPg" };
-            if (Options.Verbs.Contains(args[0])) // If verb is valid
+            if (args.Length == 1 && Options.Verbs.Contains(args[0]))
+            {
+                options.PrintActionHelp(args[0]);
+            }
+            else if (args.Length != 0 && Options.Verbs.Contains(args[0])) // If verb is valid
             {
                 invokedVerb = args[0];
                 if (optionParser.ParseArguments(args, options)) // If parsing successful
@@ -36,15 +40,15 @@ namespace CommandLineTool
                     {
                         CallAction(invokedVerb);
                     }
-                    else                                                             // All other actions
+                    else if (TryLogin())                                             // All other actions
                     {
-                        if (TryLogin()) { CallAction(invokedVerb); }
+
+                        CallAction(invokedVerb);
                     }
                 }
                 else // Parsing failed: show usage for verb
                 {
                     options.PrintActionHelp(invokedVerb);
-                    return;
                 }
             }
             else
@@ -58,6 +62,7 @@ namespace CommandLineTool
         public static void CallAction(string actionName)
         {
             actions.ServerUrl = options.ServerUrl;
+
             switch (actionName)
             {
                 // ACCESS CONTROL //
@@ -98,11 +103,11 @@ namespace CommandLineTool
                         Console.WriteLine("Adding media...");
                         if (options.MediaFile == null)
                         {
-                            actions.AddMediaToJob(options.ApiToken, jobId, options.MediaUrl);
+                            Console.WriteLine("TaskId: " + actions.AddMediaToJob(options.ApiToken, jobId, options.MediaUrl).ToString("N"));
                         }
                         else
                         {
-                            actions.AddMediaToJob(options.ApiToken, jobId, options.MediaFile);
+                            Console.WriteLine("TaskId: " + actions.AddMediaToJob(options.ApiToken, jobId, options.MediaFile).ToString("N"));
                         }
                         Console.WriteLine("Performing transcrition...");
                         PerformTranscriptionOptions pto = new PerformTranscriptionOptions();
@@ -196,7 +201,7 @@ namespace CommandLineTool
             {
                 try
                 {
-                    options.ApiToken = actions.Login(options.Username, options.Password);
+                    options.ApiToken = actions.Login(options.Username, options.Password, true);
                 }
                 catch (Exception e)
                 {

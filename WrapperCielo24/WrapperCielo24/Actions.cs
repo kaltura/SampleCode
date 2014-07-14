@@ -78,7 +78,6 @@ namespace WrapperCielo24
                 queryDictionary.Add("username", username);
                 queryDictionary.Add("securekey", securekey.ToString("N"));
             }
-
             else
             {
                 headers.Add("x-auth-user", username);
@@ -115,7 +114,7 @@ namespace WrapperCielo24
         /* Returns a new Secure API key */
         public Guid GenerateAPIKey(Guid apiToken, string username, bool forceNew = false)
         {
-            this.AssertArgument(username, "Username/Account ID");
+            this.AssertArgument(username, "Username");
 
             Dictionary<string, string> queryDictionary = this.InitAccessReqDict(apiToken);
             queryDictionary.Add("account_id", username);
@@ -288,7 +287,7 @@ namespace WrapperCielo24
         }
 
         /* Returns a caption from a job with jobId OR if buildUri is true, returns a string representation of the uri */
-        public string GetCaption(Guid apiToken, Guid jobId, CaptionFormat captionFormat = CaptionFormat.SRT, CaptionOptions captionOptions = null)
+        public string GetCaption(Guid apiToken, Guid jobId, CaptionFormat captionFormat, CaptionOptions captionOptions = null)
         {
             Dictionary<string, string> queryDictionary = InitJobReqDict(apiToken, jobId);
             queryDictionary.Add("caption_format", captionFormat.ToString());
