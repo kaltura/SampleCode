@@ -60,6 +60,7 @@ namespace WrapperCielo24
             return "[" + String.Join(delimeter, stringList) + "]";
         }
 
+        /* Concatinates two dictionaries together returning one */
         public static Dictionary<string, string> DictConcat(Dictionary<string, string> d1, Dictionary<string, string> d2)
         {
             foreach (KeyValuePair<string, string> pair in d2)

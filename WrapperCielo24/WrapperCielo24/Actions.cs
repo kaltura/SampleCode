@@ -281,7 +281,7 @@ namespace WrapperCielo24
         public string GetTranscript(Guid apiToken, Guid jobId, TranscriptOptions transcriptOptions = null)
         {
             Dictionary<string, string> queryDictionary = InitJobReqDict(apiToken, jobId);
-            if (transcriptOptions != null) { queryDictionary.Concat(transcriptOptions.GetDictionary()); }
+            if (transcriptOptions != null) { queryDictionary = Utils.DictConcat(queryDictionary, transcriptOptions.GetDictionary()); }
 
             Uri requestUri = Utils.BuildUri(BASE_URL, GET_TRANSCRIPTION_PATH, queryDictionary);
             return web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.DOWNLOAD_TIMEOUT); // Transcript text
@@ -292,7 +292,7 @@ namespace WrapperCielo24
         {
             Dictionary<string, string> queryDictionary = InitJobReqDict(apiToken, jobId);
             queryDictionary.Add("caption_format", captionFormat.ToString());
-            if (captionOptions != null) { queryDictionary.Concat(captionOptions.GetDictionary()); }
+            if (captionOptions != null) { queryDictionary = Utils.DictConcat(queryDictionary, captionOptions.GetDictionary()); }
 
             Uri requestUri = Utils.BuildUri(BASE_URL, GET_CAPTION_PATH, queryDictionary);
             string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.DOWNLOAD_TIMEOUT);
