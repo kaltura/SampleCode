@@ -51,6 +51,10 @@ namespace WrapperCielo24
                     property.SetValue(this, this.GetValueFromString(pair.Value, type), null);
                     break;
                 }
+                else
+                {
+                    throw new ArgumentException("Invalid option: " + pair.Key); // Fail if property not found
+                }
             }
         }
 
