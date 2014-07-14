@@ -3,6 +3,7 @@
 *.pyc
 *.pyo
 obj/
+Debug/
 venv/
 .idea/
 .settings
@@ -12,3 +13,5 @@ venv/
 web/base/local_*settings.py
 web/apps/mediatool/selenium_tests/test_config.json
 config.codekit
+WrapperCielo24/WrapperCielo24/bin/Release/Newtonsoft.Json.xml
+WrapperCielo24/CommandLineTool/bin/Release/CommandLine.xml
