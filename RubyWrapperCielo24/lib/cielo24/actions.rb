@@ -1,6 +1,6 @@
 module Cielo24
   # Methods for authenticating.
-  module Authentication
+  module Actions
 
     @@VERSION = 1
     @@BASE_URL = "https://sandbox-dev.cielo24.com"
