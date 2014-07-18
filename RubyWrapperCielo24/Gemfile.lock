@@ -2,11 +2,15 @@ PATH
   remote: .
   specs:
     RubyWrapperCielo24 (0.0.1)
+      hashie
+      httpclient
 
 GEM
   remote: https://rubygems.org/
   specs:
-    rake (10.3.1)
+    hashie (3.2.0)
+    httpclient (2.4.0)
+    rake (10.3.2)
 
 PLATFORMS
   x86-mingw32

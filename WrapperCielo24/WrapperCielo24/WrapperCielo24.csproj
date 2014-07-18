@@ -46,8 +46,7 @@
     <Compile Include="Actions.cs" />
     <Compile Include="JSON\ElementList.cs" />
     <Compile Include="JSON\Enums.cs" />
-    <Compile Include="JSON\JobInfo.cs" />
-    <Compile Include="JSON\JobList.cs" />
+    <Compile Include="JSON\Job.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="JSON\Task.cs" />

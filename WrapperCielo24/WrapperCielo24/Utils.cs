@@ -17,7 +17,6 @@ namespace WrapperCielo24
         /* Concatinates baseUri, actionPath and key-value pairs from the dictionary, returning a uri */
         public static Uri BuildUri(string baseUri, string actionPath, Dictionary<string, string> dictionary){
             string uriString = baseUri + actionPath + "?" + ToQuery(dictionary);
-            Debug.WriteLine("Uri: " + uriString);
             return new Uri(uriString);
         }
 
@@ -45,9 +44,30 @@ namespace WrapperCielo24
         }
 
         /* Unescapes a string */
-        public static string UnescapeString(string uriString)
+        public static string UnescapeUrl(string uriString)
         {
             return Uri.UnescapeDataString(uriString);
+        }
+
+        /* Joins list with delimeter, adding quotes around every element (result of the form ["item 1", "item2", "item 3"])*/
+        public static string JoinQuoteList<T>(List<T> list, string delimeter)
+        {
+            List<string> stringList = new List<string>();
+            for (int i = 0; i < list.Count; i++)
+            {
+                stringList.Add("\"" + list[i].ToString() + "\""); // Add quotation marks
+            }
+            return "[" + String.Join(delimeter, stringList) + "]";
+        }
+
+        /* Concatinates two dictionaries together returning one */
+        public static Dictionary<string, string> DictConcat(Dictionary<string, string> d1, Dictionary<string, string> d2)
+        {
+            foreach (KeyValuePair<string, string> pair in d2)
+            {
+                d1.Add(pair.Key, pair.Value);
+            }
+            return d1;
         }
     }
 }

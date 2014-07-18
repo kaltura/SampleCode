@@ -27,9 +27,11 @@ namespace WrapperCielo24.JSON
 
     public enum TokenType { word, punctuation, sound }
 
-    public enum Tag { ENDS_SENTENCE, UNKNOWN, INAUDIBLE, CROSSTALK, MUSIC, NOISE, LAUGH, COUGH, FOREIGN, GUESSED, BLANK_AUDIO }
+    public enum Tag { ENDS_SENTENCE, UNKNOWN, INAUDIBLE, CROSSTALK, MUSIC, NOISE, LAUGH, COUGH, FOREIGN, GUESSED, BLANK_AUDIO, APPLAUSE, BLEEP }
 
     public enum SpeakerId { no, number, name }
+
+    public enum SpeakerGender { UNKNOWN, MALE, FEMALE }
 
     public enum Case { upper, lower }
 
