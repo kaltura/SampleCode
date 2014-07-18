@@ -1,10 +1,13 @@
-module RubyWrapperCielo24
+module Cielo24
   class Actions
 
     require 'uri'
     require 'hashie'
     require_relative 'web_utils'
+    require_relative 'enums'
     include Errno
+    include Hashie
+    include Cielo24
 
     attr_accessor :base_url
 
@@ -29,8 +32,8 @@ module RubyWrapperCielo24
     GET_ELEMENT_LIST_PATH = "/api/job/get_elementlist"
     GET_LIST_OF_ELEMENT_LISTS_PATH = "/api/job/list_elementlists"
 
-    def initialize()
-      @base_url = "https://sandbox-dev.cielo24.com"
+    def initialize(base_url="https://sandbox-dev.Cielo24.com")
+      @base_url = base_url
     end
 
     ### ACCESS CONTROL ###
@@ -102,7 +105,7 @@ module RubyWrapperCielo24
 
       json = WebUtils.get_json(@base_url + CREATE_JOB_PATH, 'GET', WebUtils::BASIC_TIMEOUT, query_hash)
       # Return a hash with JobId and TaskId
-      return {JobId: json["JobId"], TaskId: json["TaskId"]}
+      return Mash.new(json)
     end
 
     def authorize_job(api_token, job_id)
@@ -135,19 +138,19 @@ module RubyWrapperCielo24
       return Mash.new(json)
     end
 
-    def add_media_to_job(api_token, job_id, file_stream)
-      assert_argument(file_stream, "Media File")
+    def add_media_to_job_file(api_token, job_id, media_file)
+      assert_argument(media_file, "Media File")
       query_hash = init_job_req_dict(api_token, job_id)
 
-      json = WebUtils.get_json(@base_url + ADD_MEDIA_TO_JOB_PATH, 'POST', nil, query_hash, {"Content-Type" => "video/mp4"}, {"upload" => file_stream})
+      json = WebUtils.get_json(@base_url + ADD_MEDIA_TO_JOB_PATH, 'POST', nil, query_hash, {"Content-Type" => "video/mp4"}, {"upload" => media_file})
       return json["TaskId"]
     end
 
-    def add_media_to_job2(api_token, job_id, media_url)
+    def add_media_to_job_url(api_token, job_id, media_url)
       return send_media_url(api_token, job_id, media_url, ADD_MEDIA_TO_JOB_PATH);
     end
 
-    def add_embedded_media_to_job(api_token, job_id, media_url)
+    def add_media_to_job_embedded(api_token, job_id, media_url)
       return send_media_url(api_token, job_id, media_url, ADD_EMBEDDED_MEDIA_TO_JOB_PATH);
     end
 
@@ -159,11 +162,13 @@ module RubyWrapperCielo24
       json = WebUtils.get_json(@base_url + path, 'GET', WebUtils::BASIC_TIMEOUT, query_hash)
       return json["TaskId"]
     end
+    private :send_media_url
 
     def get_media(api_token, job_id)
       query_hash = init_job_req_dict(api_token, job_id)
 
       json = WebUtils.get_json(@base_url + GET_MEDIA_PATH, 'GET', WebUtils::BASIC_TIMEOUT, query_hash)
+
       return json["MediaUrl"]
     end
 
@@ -221,9 +226,10 @@ module RubyWrapperCielo24
     def get_list_of_element_lists(api_token, job_id)
       query_hash = init_job_req_dict(api_token, job_id)
 
-      json = WebUtils.get_json(@base_url + GET_LIST_OF_ELEMENT_LISTS_PATH, 'GET', WebUtils::BASIC_TIMEOUT, query_hash)
+      response = WebUtils.http_request(@base_url + GET_LIST_OF_ELEMENT_LISTS_PATH, 'GET', WebUtils::BASIC_TIMEOUT, query_hash)
+      array = JSON.parse(response)
       # TODO: List<ElementListVersion>
-      return Mash.new(json)
+      return array
     end
 
     ### PRIVATE HELPER METHODS ###

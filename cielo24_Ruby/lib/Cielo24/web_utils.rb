@@ -1,8 +1,9 @@
-module RubyWrapperCielo24
+module Cielo24
   class WebUtils
 
     require 'json'
     require 'httpclient'
+    include JSON
 
     VERIFY_MODE = nil
     BASIC_TIMEOUT = 60

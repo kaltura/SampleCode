@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'RubyWrapperCielo24/version'
+require 'Cielo24/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "RubyWrapperCielo24"
-  spec.version       = RubyWrapperCielo24::VERSION
+  spec.name          = "Cielo24"
+  spec.version       = Cielo24::VERSION
   spec.authors       = ["Evgeny Chistyakov"]
   spec.email         = ["z_chiz@live.com"]
   spec.summary       = %q{TODO: Write a short summary. Required.}
@@ -13,13 +13,15 @@ Gem::Specification.new do |spec|
   spec.homepage      = ""
   spec.license       = "MIT"
 
-  spec.files         = `git ls-files -z`.split("\x0")
+  #spec.files         = `git ls-files`.split($/)
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.add_development_dependency "bundler", "~> 1.6"
+  spec.add_development_dependency "bundler"
   spec.add_development_dependency "rake"
+  spec.add_development_dependency "rspec"
+
   spec.add_dependency "httpclient"
   spec.add_dependency "hashie"
 end
