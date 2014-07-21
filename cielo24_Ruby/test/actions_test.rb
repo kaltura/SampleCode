@@ -1,6 +1,7 @@
 require 'test/unit'
 require '../lib/Cielo24/actions'
 require '../lib/Cielo24/web_utils'
+require '../lib/Cielo24/options'
 include Cielo24
 
 class AccessTest < Test::Unit::TestCase
@@ -20,6 +21,13 @@ class AccessTest < Test::Unit::TestCase
     if @@job_id.nil?
       @@job_id = @@actions.create_job(@@api_token).JobId
     end
+  end
+
+  def test_options
+    co = CaptionOptions.new
+    co.build_url = true
+    co.dfxp_header = "header"
+    assert_equal("build_url=true&dfxp_header=header", co.to_query)
   end
 
   def test_login_and_logout
