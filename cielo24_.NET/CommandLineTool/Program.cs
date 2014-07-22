@@ -30,7 +30,6 @@ namespace CommandLineTool
                 invokedVerb = args[0];
                 if (optionParser.ParseArguments(args, options)) // If parsing successful
                 {
-                    Console.WriteLine("success");
                     if (options.VerboseMode) // Enable verbose mode
                     {
                         Debug.Listeners.Add(new TextWriterTraceListener(System.Console.Out));
@@ -42,7 +41,6 @@ namespace CommandLineTool
                     }
                     else if (TryLogin())                                             // All other actions
                     {
-
                         CallAction(invokedVerb);
                     }
                 }
@@ -197,6 +195,7 @@ namespace CommandLineTool
 
         private static bool TryLogin()
         {
+            actions.ServerUrl = options.ServerUrl;
             if (options.ApiToken.Equals(Guid.Empty)) // Need to obtain api token
             {
                 try

@@ -19,7 +19,7 @@ namespace WrapperCielo24.JSON
 
     public enum TaskStatus { COMPLETE, INPROGRESS, ABORTED, FAILED }
 
-    public enum Priority { ECONOMY, STANDARD, PRIORITY, CRITICAL }
+    public enum Priority { ECONOMY, STANDARD, PRIORITY, CRITICAL, HIGH }
 
     public enum Fidelity { MECHANICAL, PREMIUM, PROFESSIONAL, INTERIM_PROFESSIONAL, FINAL }
 
@@ -41,7 +41,9 @@ namespace WrapperCielo24.JSON
 
     public enum CustomerApprovalTools { AMARA, CIELO24 }
 
-    /* JobStatus enum requires a converter because strings with spacescannot be implicitly converted to enum */
+    // TODO: public enum Languages{ en, fr, es, de, cmn, pt, jp, ar,  }
+
+    /* JobStatus enum requires a converter because strings with spaces cannot be implicitly converted to enum */
     public class JobStatusConverter : StringEnumConverter
     {
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)

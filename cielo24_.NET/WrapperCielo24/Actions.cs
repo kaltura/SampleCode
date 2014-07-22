@@ -13,7 +13,7 @@ namespace WrapperCielo24
     public class Actions
     {
         public const int VERSION = 1;
-        private string BASE_URL = "https://sandbox.cielo24.com";
+        private string BASE_URL = "https://api.cielo24.com";
         public string ServerUrl { get { return this.BASE_URL; } set { this.BASE_URL = value; } }
         private WebUtils web = new WebUtils();
 
