@@ -32,7 +32,7 @@ module Cielo24
     GET_ELEMENT_LIST_PATH = "/api/job/get_elementlist"
     GET_LIST_OF_ELEMENT_LISTS_PATH = "/api/job/list_elementlists"
 
-    def initialize(base_url="https://sandbox-dev.cielo24.com")
+    def initialize(base_url="https://api.cielo24.com")
       @base_url = base_url
     end
 
@@ -42,7 +42,7 @@ module Cielo24
       assert_argument(username, "Username")
       # Password or API Secure Key must be supplied but not both
       raise ArgumentError.new("Only password or API secure must be supplied for login.") if (!password.nil? and !api_securekey.nil?)
-      raise ArgumentError.new("Password or API secure must be supplied for login.") if (password.nil? and api_securekey.nil?)
+      raise ArgumentError.new("Password or API Secure Key must be supplied for login.") if (password.nil? and api_securekey.nil?)
 
       query_hash = init_version_dict
       headers = Hash.new

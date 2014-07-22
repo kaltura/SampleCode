@@ -26,7 +26,7 @@ namespace CommandLineTool
         [Option('p', "password", HelpText = "cielo24 password", Required = false, DefaultValue = null)]
         public string Password { get; set; }
 
-        [Option('s', "server", HelpText = "cielo24 server URL [https://api.cielo24.com]", Required = false, DefaultValue = "https://sandbox.cielo24.com")]
+        [Option('s', "server", HelpText = "cielo24 server URL [https://api.cielo24.com]", Required = false, DefaultValue = "https://api.cielo24.com")]
         public string ServerUrl { get; set; }
 
         [Option('k', "key", HelpText = "API Secure Key", Required = false, DefaultValue = null)]
