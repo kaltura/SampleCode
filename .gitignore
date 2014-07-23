@@ -3,6 +3,7 @@
 *.pyc
 *.pyo
 obj/
+class/
 Debug/
 venv/
 .idea/
