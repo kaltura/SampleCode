@@ -295,7 +295,7 @@ namespace WrapperCielo24
 
             Uri requestUri = Utils.BuildUri(BASE_URL, GET_CAPTION_PATH, queryDictionary);
             string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.DOWNLOAD_TIMEOUT);
-            if (captionOptions.BuildUrl.Value)
+            if (captionOptions != null && captionOptions.BuildUrl.Equals(true))
             {
                 Dictionary<string, string> response = Utils.Deserialize<Dictionary<string, string>>(serverResponse);
                 return response["CaptionUrl"];
