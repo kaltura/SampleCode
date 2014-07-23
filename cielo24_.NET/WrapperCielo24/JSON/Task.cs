@@ -23,12 +23,7 @@ namespace WrapperCielo24.JSON
 
         public override string ToString()
         {
-            return "TaskId: " + this.TaskId.ToString("N") +
-                   "\nTaskType: " + this.TaskType.ToString() +
-                   "\nTaskRequestTime: " + this.TaskRequestTime.ToString() +
-                   "\nTaskCompletionTime: " + this.TaskCompletionTime.ToString() +
-                   "\nTaskInfo: " + this.TaskInfo +
-                   "\nTaskStatus: " + this.TaskStatus.ToString();
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
     }
 }

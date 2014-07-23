@@ -89,7 +89,7 @@ namespace CommandLineTool
                     break;
                 case "update_password":
                     Console.WriteLine("Updating password...");
-                    TryAction(delegate() { actions.UpdatePassword(options.ApiToken, options.Password); return "Password Updated Successfulyy"; });
+                    TryAction(delegate() { actions.UpdatePassword(options.ApiToken, options.NewPassword); return "Password updated successfuly"; });
                     break;
                 // JOB CONTROL //
                 case "create":
@@ -166,7 +166,9 @@ namespace CommandLineTool
                     break;
                 case "list_elementlists":
                     Console.WriteLine("Listing element lists...");
-                    TryAction(delegate() { return actions.GetListOfElementLists(options.ApiToken, options.JobId); });
+                    TryAction(delegate() {
+                        return string.Join("\n", actions.GetListOfElementLists(options.ApiToken, options.JobId));
+                    });
                     break;
                 default:
                     options.PrintDefaultUsage();

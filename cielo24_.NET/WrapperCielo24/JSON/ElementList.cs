@@ -23,22 +23,7 @@ namespace WrapperCielo24.JSON
 
         public override string ToString()
         {
-            string segments = "";
-            foreach (Segment seg in this.Segments)
-            {
-                segments += seg.ToString() + "\n";
-            }
-            string speakers = "";
-            foreach (Speaker spk in this.Speakers)
-            {
-                speakers += spk.ToString() + "\n";
-            }
-            return "Version: " + this.Version +
-                   "\nLanguage: " + this.Language +
-                   "\nStart Time (ms): " + this.StartTime +
-                   "\nEnd Time (ms): " + this.EndTime +
-                   "\nSegments:\n" + segments +
-                   "\nSpeakers:\n" + speakers;
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
     }
 
@@ -59,17 +44,7 @@ namespace WrapperCielo24.JSON
 
         public override string ToString()
         {
-            string sequences = "";
-            foreach (Sequence seq in this.Sequences)
-            {
-                sequences += seq.ToString() + "\n";
-            }
-            return "Interpolated: " + this.Interpolated +
-                   "\nStart Time (ms): " + this.StartTime +
-                   "\nEnd Time (ms): " + this.EndTime +
-                   "\nSpeaker change: " + this.SpeakerChange +
-                   "\nSpeaker Id: " + this.SpeakerId +
-                   "\nSequences: \n" + sequences;
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
     }
 
@@ -88,16 +63,7 @@ namespace WrapperCielo24.JSON
 
         public override string ToString()
         {
-            string tokens = "";
-            foreach (Token tok in this.Tokens)
-            {
-                tokens += tok.ToString() + "\n";
-            }
-            return "Confidence score: " + this.ConfidenceScore +
-                   "\nInterpolated: " + this.Interpolated +
-                   "\nStart Time (ms): " + this.StartTime +
-                   "\nEnd Time (ms): " + this.EndTime +
-                   "\nTokens: \n" + tokens;
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
     }
 
@@ -120,18 +86,7 @@ namespace WrapperCielo24.JSON
 
         public override string ToString()
         {
-            string tags = "";
-            foreach (Tag tag in this.Tags)
-            {
-                tags += tag.ToString() + "\n";
-            }
-            return "Interpolated: " + this.Interpolated +
-                   "\nStart Time (ms): " + this.StartTime +
-                   "\nEnd Time (ms): " + this.EndTime +
-                   "\nValue: " + this.Value +
-                   "\nType: " + this.Type +
-                   "\nDisplay as: " + this.TypeDisplay +
-                   "\nSequences: \n" + tags;
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
     }
 
@@ -146,9 +101,7 @@ namespace WrapperCielo24.JSON
 
         public override string ToString()
         {
-            return "Name: " + this.Name +
-                   "\nId: " + this.Id +
-                   "\nGender: " + this.Gender;
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
     }
 
@@ -161,8 +114,7 @@ namespace WrapperCielo24.JSON
 
         public override string ToString()
         {
-            return "Version: " + this.Version +
-                   "\nIWP Name : " + this.IWP;
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
     }
 }

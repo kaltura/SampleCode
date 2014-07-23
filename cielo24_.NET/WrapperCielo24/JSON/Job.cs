@@ -15,13 +15,7 @@ namespace WrapperCielo24.JSON
 
         public override string ToString()
         {
-            string activeJobs = "";
-            foreach (Job job in this.ActiveJobs)
-            {
-                activeJobs += job.ToString() + "\n";
-            }
-            return "Username: " + this.Username +
-                   "\nActiveJobs:\n\n" + activeJobs;
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
     }
 
@@ -54,18 +48,7 @@ namespace WrapperCielo24.JSON
 
         public override string ToString()
         {
-            return "JobId: " + this.JobId.ToString("N") +
-                   "\nJobName: " + this.JobName +
-                   "\nJobStatus: " + this.JobStatus.ToString() +
-                   "\nPriority: " + this.Priority.ToString() +
-                   "\nFidelity: " + this.Fidelity.ToString() +
-                   "\nJobLanguage: " + this.JobLanguage +
-                   "\nTargetLanguage: " + this.TargetLanguage +
-                   "\nCreationTime: " + this.CreationTime.ToString() +
-                   "\nDueDate: " + this.DueDate.ToString() +
-                   "\nTurnaroundTimeHours: " + this.TurnaroundTimeHours +
-                   "\nStartTime: " + this.StartTime.ToString() +
-                   "\nCompletedTime: " + this.CompletedTime.ToString();
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
     }
 
@@ -82,15 +65,7 @@ namespace WrapperCielo24.JSON
 
         public override string ToString()
         {
-            string tasks = "";
-            foreach (Task task in this.Tasks)
-            {
-                tasks += task.ToString() + "\n";
-            }
-            return "JobId: " + this.JobId.ToString("N") +
-                   "\nJobName: " + this.JobName +
-                   "\nLanguage: " + this.Language +
-                   "\nTasks:\n\n" + tasks;
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
     }
 
@@ -103,8 +78,7 @@ namespace WrapperCielo24.JSON
 
         public override string ToString()
         {
-            return "JobId: " + this.JobId.ToString("N") +
-                   "\nTaskId: " + this.TaskId;
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
     }
 }
