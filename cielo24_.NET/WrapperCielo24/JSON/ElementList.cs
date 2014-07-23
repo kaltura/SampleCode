@@ -6,7 +6,7 @@ using System.Text;
 
 namespace WrapperCielo24.JSON
 {
-    public class ElementList
+    public class ElementList : JsonBase
     {
         [JsonProperty("version")]
         public int Version { get; set; }
@@ -20,14 +20,9 @@ namespace WrapperCielo24.JSON
         public List<Segment> Segments { get; set; }
         [JsonProperty("speakers")]
         public List<Speaker> Speakers { get; set; }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
     }
 
-    public class Segment
+    public class Segment : JsonBase
     {
         [JsonProperty("sequences")]
         public List<Sequence> Sequences { get; set; }
@@ -41,14 +36,9 @@ namespace WrapperCielo24.JSON
         public int StartTime { get; set; }
         [JsonProperty("end_time")]
         public int EndTime { get; set; }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
     }
 
-    public class Sequence
+    public class Sequence : JsonBase
     {
         [JsonProperty("tokens")]
         public List<Token> Tokens { get; set; }
@@ -60,14 +50,9 @@ namespace WrapperCielo24.JSON
         public int EndTime { get; set; }        // Milliseconds
         [JsonProperty("confidence_score")]
         public float ConfidenceScore { get; set; }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
     }
 
-    public class Token
+    public class Token : JsonBase
     {
         [JsonProperty("interpolated")]
         public bool Interpolated { get; set; }
@@ -83,14 +68,9 @@ namespace WrapperCielo24.JSON
         public string TypeDisplay { get; set; }
         [JsonProperty("tags")]
         public List<Tag> Tags { get; set; }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
     }
 
-    public class Speaker
+    public class Speaker : JsonBase
     {
         [JsonProperty("name")]
         public string Name { get; set; }
@@ -98,23 +78,13 @@ namespace WrapperCielo24.JSON
         public int Id { get; set; }
         [JsonProperty("gender")]
         public SpeakerGender Gender { get; set; }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
     }
 
-    public class ElementListVersion
+    public class ElementListVersion : JsonBase
     {
         [JsonProperty("version")]
         public DateTime Version { get; set; }
         [JsonProperty("iwp_name")]
         public string IWP { get; set; }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
     }
 }

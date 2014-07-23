@@ -6,7 +6,7 @@ using System.Text;
 
 namespace WrapperCielo24.JSON
 {
-    public class Task
+    public class Task : JsonBase
     {
         [JsonProperty("TaskId")]
         public Guid TaskId { get; set; }
@@ -20,10 +20,5 @@ namespace WrapperCielo24.JSON
         public string TaskInfo { get; set; }
         [JsonProperty("TaskStatus")]
         public TaskStatus TaskStatus { get; set; }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
     }
 }

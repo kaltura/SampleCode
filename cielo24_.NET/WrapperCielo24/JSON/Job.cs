@@ -6,20 +6,15 @@ using System.Text;
 
 namespace WrapperCielo24.JSON
 {
-    public class JobList
+    public class JobList : JsonBase
     {
         [JsonProperty("Username")]
         public string Username { get; set; }
         [JsonProperty("ActiveJobs")]
         public List<Job> ActiveJobs { get; set; }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
     }
 
-    public class Job
+    public class Job : JsonBase
     {
         [JsonProperty("JobId")]
         public Guid JobId { get; set; }
@@ -45,14 +40,9 @@ namespace WrapperCielo24.JSON
         public DateTime? StartTime { get; set; }
         [JsonProperty("CompletedTime")]
         public DateTime? CompletedTime { get; set; }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
     }
 
-    public class JobInfo
+    public class JobInfo : JsonBase
     {
         [JsonProperty("JobId")]
         public Guid JobId { get; set; }
@@ -62,23 +52,13 @@ namespace WrapperCielo24.JSON
         public string Language { get; set; }
         [JsonProperty("Tasks")]
         public List<Task> Tasks { get; set; }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
     }
 
-    public class CreateJobResult
+    public class CreateJobResult : JsonBase
     {
         [JsonProperty("JobId")]
         public Guid JobId { get; set; }
         [JsonProperty("TaskId")]
         public string TaskId { get; set; }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
     }
 }
