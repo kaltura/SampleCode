@@ -4,17 +4,17 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'cielo24_command/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "cielo24_command"
+  spec.name          = "cielo24-cli"
   spec.version       = Cielo24Command::VERSION
   spec.authors       = ["Evgeny Chistyakov"]
-  spec.email         = ["z_chiz@live.com"]
-  spec.summary       = %q{TODO: Write a short summary. Required.}
-  spec.description   = %q{TODO: Write a longer description. Optional.}
-  spec.homepage      = ""
+  spec.email         = ["support@cielo24.com"]
+  spec.summary       = %q{Command line interface to cielo24 gem.}
+  spec.description   = %q{Command line interface that allows you to make web API calls using cielo24 gem.}
+  spec.homepage      = "http://cielo24.com"
   spec.license       = "MIT"
 
-  spec.files         = `git ls-files -z`.split("\x0")
-  spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
+  spec.files         = Dir['lib/cielo24_command/*.rb'] + Dir['lib/*.rb']
+  spec.executables   = ["cielo24"] #spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 

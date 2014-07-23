@@ -2,7 +2,6 @@ module Cielo24Command
 
   require 'thor'
   require 'cielo24'
-  require 'logger'
 
   class Application < Thor
 
@@ -367,14 +366,14 @@ module Cielo24Command
     def help(arg=nil, arg2=nil)
       super(arg, arg2)
       puts "\nAlways required options:"
-      puts "  -u=username              \# cielo24 username"
-      puts "  [-s=serverurl]           \# cielo24 server URL"
-      puts "                           \# Default: https://api.cielo24.com"
-      puts "\n  ++Either one from the following:"
+      puts "  -u=username          \# cielo24 username"
+      puts "  [-s=serverurl]       \# cielo24 server URL"
+      puts "                       \# Default: https://api.cielo24.com"
+      puts "\n  ++Either one of the following:"
       puts "  --------------------------------------------"
-      puts "  -p=password              \# cielo24 password"
-      puts "  -k=securekey             \# The API Secure Key"
-      puts "  -N=token                 \# The API token of the current session"
+      puts "  -p=password          \# cielo24 password"
+      puts "  -k=securekey         \# The API Secure Key"
+      puts "  -N=token             \# The API token of the current session"
       puts "  --------------------------------------------"
     end
 
