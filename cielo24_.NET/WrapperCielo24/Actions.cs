@@ -107,7 +107,7 @@ namespace WrapperCielo24
             Dictionary<string, string> queryDictionary = this.InitAccessReqDict(apiToken);
             queryDictionary.Add("new_password", newPassword);
 
-            Uri requestUri = Utils.BuildUri(BASE_URL, UPDATE_PASSWORD_PATH, null);
+            Uri requestUri = Utils.BuildUri(BASE_URL, UPDATE_PASSWORD_PATH, queryDictionary);
             web.HttpRequest(requestUri, HttpMethod.POST, WebUtils.BASIC_TIMEOUT, Utils.ToQuery(queryDictionary)); // Nothing returned
         }
 
