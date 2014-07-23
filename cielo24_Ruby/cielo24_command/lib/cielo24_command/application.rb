@@ -2,6 +2,7 @@ module Cielo24Command
 
   require 'thor'
   require 'cielo24'
+  require 'logger'
 
   class Application < Thor
 
@@ -26,16 +27,18 @@ module Cielo24Command
     source_language_option = [:l, :required => false, :desc => "Source language " + Language.all, :banner => "source", :default => Language.English]
     target_language_option = [:t, :required => false, :desc => "Target language " + Language.all, :banner => "target", :default => Language.English]
     job_name_option = [:n, :required => false, :desc => "Job name", :banner => "jobname"]
-    job_options_option = [:J, :required => false, :desc => "Job option", :banner => "jobopt", :type => :array]
-    caption_options_option = [:O, :required => false, :desc => "Caption/transcript options", :banner => "'key=value'", :type => :array]
+    job_options_option = [:J, :required => false, :desc => "Job option (list key:value pairs after -J)", :banner => 'key:value', :type => :hash]
+    caption_options_option = [:O, :required => false, :desc => "Caption/transcript options (list key:value pairs after -O)", :banner => 'key:value', :type => :hash]
     turn_around_hours_option = [:T, :required => false, :desc => "Turn around hours", :banner => "hours"]
     callback_url_option = [:C, :required => false, :desc => "Callback URL", :banner => "callback"]
     caption_format_option = [:c, :required => true, :desc => "Caption format " + CaptionFormat.all, :banner => "format", :default => CaptionFormat.SRT]
     elementlist_version_option = [:e, :required => false, :desc => "ElementList Version", :banner => "version"]
     force_new_option = [:F, :required => false, :desc => "Force new key", :default => false]
     new_password_option = [:d, :required => true, :desc => "New password", :banner => "newpass"]
+    verbose_option = [:v, :require => false, :desc => "Verbose mode", :hide => true, :default => false, :type => :boolean]
 
     class_option *server_url_option # Server URL can be specified for any action
+    class_option *verbose_option # Verbose mode can be specified for any action
 
     desc "login", 'Performs a login action'
     option :u, :required => true, :desc => "cielo24 username", :type => :string, :banner => "username"
@@ -46,6 +49,7 @@ module Cielo24Command
       puts "Performing a login action..."
       actions = initialize_actions
       token = actions.login(options[:u], options[:p], options[:k], options[:h])
+      print_url()
       puts "API token: " + token
     end
 
@@ -55,6 +59,7 @@ module Cielo24Command
       puts "Performing a logout action..."
       actions = initialize_actions
       actions.logout(options[:N])
+      print_url()
       puts "Logged out successfully"
     end
 
@@ -87,6 +92,7 @@ module Cielo24Command
       mash = actions.create_job(token, options[:n], options[:l])
       puts "Job ID: " + mash.JobId
       puts "Task ID: " + mash.TaskId
+      print_url()
 
       puts "Adding media..."
       if !options[:m].nil?
@@ -96,11 +102,17 @@ module Cielo24Command
         task_id = actions.add_media_to_job_file(token, mash.JobId, file)
       end
       puts "Task ID: " + task_id
+      print_url()
 
       puts "Performing transcription..."
-      # TODO options
-      task_id = actions.perform_transcription(token, mash.JobId, options[:f], options[:P], options[:c], options[:T], nil)
-      puts task_id
+
+      # Parse option hash
+      jobopts = PerformTranscriptionOptions.new
+      jobopts.populate_from_hash(options[:J])
+
+      task_id = actions.perform_transcription(token, mash.JobId, options[:f], options[:P], options[:c], options[:T], options[:t], jobopts)
+      puts "Task ID: " + task_id
+      print_url()
     end
 
     desc "delete", 'Delete a job'
@@ -116,6 +128,7 @@ module Cielo24Command
       token = get_token(actions)
       task_id = actions.delete_job(token, options[:j])
       puts "Task ID: " + task_id
+      print_url()
     end
 
     desc "authorize", 'Authorize a job'
@@ -130,6 +143,7 @@ module Cielo24Command
       actions = initialize_actions
       token = get_token(actions)
       actions.authorize_job(token, options[:j])
+      print_url()
       puts "Authorized successfully"
     end
 
@@ -155,6 +169,7 @@ module Cielo24Command
         raise ArgumentError.new("Media URL or local file path must be supplied")
       end
       puts "Task ID: " + task_id
+      print_url()
     end
 
     desc "add_embedded_media_to_job", 'Add embedded media to job'
@@ -171,6 +186,7 @@ module Cielo24Command
       token = get_token(actions)
       task_id = actions.add_media_to_job_embedded(token, options[:j], options[:m])
       puts "Task ID: " + task_id
+      print_url()
     end
 
     desc "list", 'Lists current jobs'
@@ -184,6 +200,7 @@ module Cielo24Command
       actions = initialize_actions
       token = get_token(actions)
       mash = actions.get_job_list(token)
+      print_url()
       puts JSON.pretty_generate(JSON.parse(mash.to_json(nil)))
     end
 
@@ -199,6 +216,7 @@ module Cielo24Command
       actions = initialize_actions
       token = get_token(actions)
       array = actions.get_list_of_element_lists(token, options[:j])
+      print_url()
       puts JSON.pretty_generate(array)
     end
 
@@ -216,8 +234,13 @@ module Cielo24Command
       puts "Getting caption..."
       actions = initialize_actions
       token = get_token(actions)
-      # TODO caption options
-      caption = actions.get_caption(token, options[:j], options[:c], nil)
+
+      # Parse options
+      caption_opts = CaptionOptions.new
+      caption_opts.populate_from_hash(options[:O])
+
+      caption = actions.get_caption(token, options[:j], options[:c], caption_opts)
+      print_url()
       puts caption
     end
 
@@ -234,8 +257,13 @@ module Cielo24Command
       puts "Getting transcript..."
       actions = initialize_actions
       token = get_token(actions)
-      # TODO transcript options
-      transcript = actions.get_transcript(token, options[:j], nil)
+
+      # Parse options
+      transcription_opts = TranscriptionOptions.new
+      transcription_opts.populate_from_hash(options[:O])
+
+      transcript = actions.get_transcript(token, options[:j], transcription_opts)
+      print_url()
       puts transcript
     end
 
@@ -251,6 +279,7 @@ module Cielo24Command
       actions = initialize_actions
       token = get_token(actions)
       mash = actions.get_element_list(token, options[:j])
+      print_url()
       puts JSON.pretty_generate(JSON.parse(mash.to_json(nil)))
     end
 
@@ -266,6 +295,7 @@ module Cielo24Command
       actions = initialize_actions
       token = get_token(actions)
       url = actions.get_media(token, options[:j])
+      print_url()
       puts url
     end
 
@@ -281,6 +311,7 @@ module Cielo24Command
       actions = initialize_actions
       token = get_token(actions)
       key = actions.generate_api_key(token, options[:u], options[:F])
+      print_url()
       puts "API Secure Key: " + key
     end
 
@@ -296,6 +327,7 @@ module Cielo24Command
       actions = initialize_actions
       token = get_token(actions)
       actions.remove_api_key(token, options[:k])
+      print_url()
       puts "The key was successfully removed."
     end
 
@@ -311,6 +343,7 @@ module Cielo24Command
       actions = initialize_actions
       token = get_token(actions)
       actions.update_password(token, options[:d])
+      print_url()
       puts "Password was updated successfully."
     end
 
@@ -326,6 +359,7 @@ module Cielo24Command
       actions = initialize_actions
       token = get_token(actions)
       mash = actions.get_job_info(token, options[:j])
+      print_url()
       puts JSON.pretty_generate(JSON.parse(mash.to_json(nil)))
     end
 
@@ -358,6 +392,12 @@ module Cielo24Command
 
       def get_token(actions)
         return (options[:N].nil?) ? private_login(actions, options[:u], options[:p], options[:k]) : options[:N]
+      end
+
+      def print_url
+        if(options[:v])
+          puts WebUtils.LAST_URL
+        end
       end
     }
   end

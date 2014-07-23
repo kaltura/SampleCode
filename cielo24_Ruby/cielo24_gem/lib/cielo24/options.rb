@@ -22,8 +22,20 @@ module Cielo24
       return array.join("&")
     end
 
-    def populate_from_key_value_pair
+    def populate_from_key_value_pair(key, value)
+      # Iterate over instance variables
+      self.instance_variables.each{ |var|
+        if var.to_s.delete("@") == key
+          self.instance_variable_set(var, value)
+          break
+        end
+      }
+    end
 
+    def populate_from_hash(hash)
+      hash.each do |key, value|
+        populate_from_key_value_pair(key, value)
+      end
     end
   end
 

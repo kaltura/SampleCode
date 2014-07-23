@@ -188,7 +188,7 @@ module Cielo24
       query_hash[:callback_uri] = URI.escape(callback_uri) if !(callback_uri.nil?)
       query_hash[:turnaround_hours] = turnaround_hours if !(turnaround_hours.nil?)
       query_hash[:target_language] = target_language if !(target_language.nil?)
-      query_hash.merge(options.get_hash) if !(options.nil?)
+      query_hash.merge!(options.get_hash) if !(options.nil?)
 
       json = WebUtils.get_json(@base_url + PERFORM_TRANSCRIPTION, 'GET', WebUtils::BASIC_TIMEOUT, query_hash)
       return json["TaskId"]
@@ -196,7 +196,7 @@ module Cielo24
 
     def get_transcript(api_token, job_id, transcript_options = nil)
       query_hash = init_job_req_dict(api_token, job_id)
-      query_hash.merge(transcript_options.get_hash) if !(transcript_options.nil?)
+      query_hash.merge!(transcript_options.get_hash) if !(transcript_options.nil?)
 
       # Return raw transcript text
       return WebUtils.http_request(@base_url + GET_TRANSCRIPTION_PATH, 'GET', WebUtils::DOWNLOAD_TIMEOUT, query_hash)
@@ -205,7 +205,7 @@ module Cielo24
     def get_caption(api_token, job_id, caption_format, caption_options = nil)
       query_hash = init_job_req_dict(api_token, job_id)
       query_hash[:caption_format] = caption_format
-      query_hash.merge(caption_options.get_hash) if !(caption_options.nil?)
+      query_hash.merge!(caption_options.get_hash) if !(caption_options.nil?)
 
       response = WebUtils.http_request(@base_url + GET_CAPTION_PATH, 'GET', WebUtils::DOWNLOAD_TIMEOUT, query_hash)
       if(!caption_options.nil? and caption_options[:build_url]) # If build_url is true

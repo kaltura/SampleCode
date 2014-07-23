@@ -8,6 +8,11 @@ module Cielo24
     VERIFY_MODE = nil
     BASIC_TIMEOUT = 60
     DOWNLOAD_TIMEOUT = 300
+    @@LAST_URL = "none" # For logging purposes
+
+    def self.LAST_URL
+      return @@LAST_URL
+    end
 
     def self.get_json(uri, method, timeout, query=nil, headers=nil, body=nil)
       response = http_request(uri, method, timeout, query, headers, body)
@@ -20,6 +25,7 @@ module Cielo24
       # TODO: timeout
 
       response = http_client.request(method, uri, query, body, headers, nil)
+      @@LAST_URL = uri + "?" + URI.encode_www_form(query)
 
       # Handle web errors
       if response.status_code == 200 or response.status_code == 204
