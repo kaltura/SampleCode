@@ -126,7 +126,6 @@ module Cielo24
       query_hash = init_job_req_dict(api_token, job_id)
 
       json = WebUtils.get_json(@base_url + GET_JOB_INFO_PATH, 'GET', WebUtils::BASIC_TIMEOUT, query_hash)
-      # TODO: JobInfo
       return Mash.new(json)
     end
 
@@ -134,7 +133,6 @@ module Cielo24
       query_hash = init_access_req_dict(api_token)
 
       json = WebUtils.get_json(@base_url + GET_JOB_LIST_PATH, 'GET', WebUtils::BASIC_TIMEOUT, query_hash)
-      # TODO: JobList
       return Mash.new(json)
     end
 
@@ -219,7 +217,6 @@ module Cielo24
       query_hash = init_job_req_dict(api_token, job_id)
 
       json = WebUtils.get_json(@base_url + GET_ELEMENT_LIST_PATH, 'GET', WebUtils::BASIC_TIMEOUT, query_hash)
-      # TODO: ElementList
       return Mash.new(json)
     end
 
@@ -228,7 +225,6 @@ module Cielo24
 
       response = WebUtils.http_request(@base_url + GET_LIST_OF_ELEMENT_LISTS_PATH, 'GET', WebUtils::BASIC_TIMEOUT, query_hash)
       array = JSON.parse(response)
-      # TODO: List<ElementListVersion>
       return array
     end
 
