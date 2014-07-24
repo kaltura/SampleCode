@@ -63,7 +63,6 @@ module Cielo24
 
     def logout(api_token)
       query_hash = init_access_req_dict(api_token)
-
       # Nothing returned
       WebUtils.http_request(@base_url + LOGOUT_PATH, 'GET', WebUtils::BASIC_TIMEOUT, query_hash)
     end
@@ -110,7 +109,6 @@ module Cielo24
 
     def authorize_job(api_token, job_id)
       query_hash = init_job_req_dict(api_token, job_id)
-
       # Nothing returned
       WebUtils.http_request(@base_url + AUTHORIZE_JOB_PATH, 'GET', WebUtils::BASIC_TIMEOUT, query_hash)
     end

@@ -6,9 +6,10 @@ module Cielo24
     def self.JOB_ADD_TRANSCRIPT; "JOB_ADD_TRANSCRIPT"; end
     def self.JOB_PERFORM_TRANSCRIPTION; "JOB_PERFORM_TRANSCRIPTION"; end
     def self.JOB_PERFORM_PREMIUM_SYNC; "JOB_PERFORM_PREMIUM_SYNC"; end
-    def self.JOB_REQUEST_TRANSCRIPT; "JOB_REQUEST_TRANSCRIPT"; end
-    def self.JOB_REQUEST_CAPTION; "JOB_REQUEST_CAPTION"; end
-    def self.JOB_REQUEST_ELEMENTLIST; "JOB_REQUEST_ELEMENTLIST"; end
+    def self.JOB_UPDATE_ELEMENTLIST; "JOB_UPDATE_ELEMENTLIST"; end
+    def self.JOB_GET_TRANSCRIPT; "JOB_GET_TRANSCRIPT"; end
+    def self.JOB_GET_CAPTION; "JOB_GET_CAPTION"; end
+    def self.JOB_GET_ELEMENTLIST; "JOB_GET_ELEMENTLIST"; end
   end
 
   class ErrorType < BasicObject
@@ -42,24 +43,30 @@ module Cielo24
     def self.STANDARD; "STANDARD"; end
     def self.PRIORITY; "PRIORITY"; end
     def self.CRITICAL; "CRITICAL"; end
-    def self.all; "[ ECONOMY, STANDARD, PRIORITY, CRITICAL ]"; end
+    def self.HIGH; "HIGH"; end
+    def self.all; "[ ECONOMY, STANDARD, PRIORITY, CRITICAL, HIGH ]"; end
   end
 
   class Fidelity < BasicObject
     def self.MECHANICAL; "MECHANICAL"; end
+    def self.STANDARD; "STANDARD"; end
+    def self.HIGH; "HIGH"; end
     def self.PREMIUM; "PREMIUM"; end
     def self.PROFESSIONAL; "PROFESSIONAL"; end
-    def self.INTERIM_PROFESSIONAL; "INTERIM_PROFESSIONAL"; end
-    def self.FINAL; "FINAL"; end
-    def self.all; "[ MECHANICAL, PREMIUM, PROFESSIONAL, INTERIM_PROFESSIONAL, FINAL ]"; end
+    def self.EXTERNAL; "EXTERNAL"; end
+    def self.all; "[ MECHANICAL, STANDARD, HIGH, PREMIUM, PROFESSIONAL, EXTERNAL ]"; end
   end
 
   class CaptionFormat < BasicObject
     def self.SRT; "SRT"; end
     def self.SBV; "SBV"; end
     def self.DFXP; "DFXP"; end
-    def self.QT; "QT"; end
-    def self.all; "[ SRT, SBV, DFXP, QT ]"; end
+    def self.TRANSCRIPT; "TRANSCRIPT"; end
+    def self.TWX; "TWX"; end
+    def self.TPM; "TPM"; end
+    def self.WEB_VTT; "WEB_VTT"; end
+    def self.ECHO; "ECHO"; end
+    def self.all; "[ SRT, SBV, DFXP, QT, TRANSCRIPT, TWX, TPM, WEB_VTT, ECHO ]"; end
   end
 
   class TokenType < BasicObject

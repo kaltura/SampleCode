@@ -1,5 +1,6 @@
 module Cielo24
   class Options
+
     def get_hash
       hash = {}
       self.instance_variables.each{ |var|

@@ -4,12 +4,11 @@ module Cielo24
     require 'json'
     require 'httpclient'
     require 'timeout'
-    include Timeout
     include JSON
 
     VERIFY_MODE = nil
-    BASIC_TIMEOUT = 60
-    DOWNLOAD_TIMEOUT = 300
+    BASIC_TIMEOUT = 60     # seconds
+    DOWNLOAD_TIMEOUT = 300 # seconds
     @@LAST_URL = "none" # For logging purposes
 
     def self.LAST_URL
@@ -41,7 +40,7 @@ module Cielo24
 
         }
       rescue Timeout::Error
-        raise StandardError.new("The HTTP session has timed out.")
+        raise TimeoutError.new("The HTTP session has timed out.")
       end
 
       @@LAST_URL = uri + (query.nil? ? "" : "?" + URI.encode_www_form(query))
@@ -57,6 +56,12 @@ module Cielo24
 
     def to_s
       return @type + " - " + super.to_s
+    end
+  end
+
+  class TimeoutError < StandardError
+    def initialize(message)
+      super message
     end
   end
 end
