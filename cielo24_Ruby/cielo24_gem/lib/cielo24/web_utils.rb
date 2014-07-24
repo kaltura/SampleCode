@@ -25,7 +25,7 @@ module Cielo24
       # TODO: timeout
 
       response = http_client.request(method, uri, query, body, headers, nil)
-      @@LAST_URL = uri + "?" + URI.encode_www_form(query)
+      @@LAST_URL = uri + (query.nil? ? "" : "?" + URI.encode_www_form(query))
 
       # Handle web errors
       if response.status_code == 200 or response.status_code == 204
