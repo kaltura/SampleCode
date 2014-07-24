@@ -3,6 +3,8 @@ module Cielo24
 
     require 'json'
     require 'httpclient'
+    require 'timeout'
+    include Timeout
     include JSON
 
     VERIFY_MODE = nil
@@ -22,18 +24,27 @@ module Cielo24
     def self.http_request(uri, method, timeout, query=nil, headers = nil, body = nil)
       http_client = HTTPClient.new
       http_client.cookie_manager = nil
-      # TODO: timeout
 
-      response = http_client.request(method, uri, query, body, headers, nil)
-      @@LAST_URL = uri + (query.nil? ? "" : "?" + URI.encode_www_form(query))
+      # Timeout block:
+      begin
+        # Error is raised if the following block fails to execute in 'timeout' sec:
+        Timeout.timeout(timeout) {
 
-      # Handle web errors
-      if response.status_code == 200 or response.status_code == 204
-        return response.body
-      else
-        json = JSON.parse(response.body)
-        raise WebError.new(json["ErrorType"], json["ErrorComment"])
+          response = http_client.request(method, uri, query, body, headers, nil)
+          # Handle web errors
+          if response.status_code == 200 or response.status_code == 204
+            return response.body
+          else
+            json = JSON.parse(response.body)
+            raise WebError.new(json["ErrorType"], json["ErrorComment"])
+          end
+
+        }
+      rescue Timeout::Error
+        raise StandardError.new("The HTTP session has timed out.")
       end
+
+      @@LAST_URL = uri + (query.nil? ? "" : "?" + URI.encode_www_form(query))
     end
   end
 
