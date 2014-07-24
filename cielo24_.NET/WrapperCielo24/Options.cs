@@ -345,7 +345,7 @@ namespace WrapperCielo24
         [QueryName("return_iwp")]
         public List<Fidelity> ReturnIwp { get; set; }
         [QueryName("speaker_id")]
-        public bool? SpeakerId { get; set; }                                 
+        public bool? SpeakerId { get; set; }                    
 
         public PerformTranscriptionOptions(CustomerApprovalSteps? customerApprovalSteps = null,
                                            CustomerApprovalTools? customerApprovalTool = null,
@@ -361,12 +361,6 @@ namespace WrapperCielo24
             this.ReturnIwp = returnIwp;
             this.SpeakerId = speakerId;
         }
-    }
-
-    class DeserializationHelper<T>
-    {
-        [JsonProperty("value")]
-        public T Value { get; set; }
     }
 
     [AttributeUsage(AttributeTargets.Property)]
