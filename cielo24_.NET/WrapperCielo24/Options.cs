@@ -10,7 +10,7 @@ using WrapperCielo24.JSON;
 namespace WrapperCielo24
 {
     /* The base class. All of the other option classes inherit from it. */
-    public abstract class Options
+    public abstract class BaseOptions
     {
         /* Returns a dictionary that contains key-value pairs of options, where key is the Name property
          * of the QueryName attribute assigned to every option and value is the value of the property.
@@ -49,20 +49,16 @@ namespace WrapperCielo24
                 if (key.Name.Equals(pair.Key))
                 {
                     property.SetValue(this, this.GetValueFromString(pair.Value, type), null);
-                    break;
-                }
-                else
-                {
-                    throw new ArgumentException("Invalid option: " + pair.Key); // Fail if property not found
+                    return;
                 }
             }
+            throw new ArgumentException("Invalid Option: " + pair.Key);
         }
 
         // Array of strings in the key=value form 
         public void PopulateFromArray(string[] array)
         {
-            if (array == null) { return; }
-            foreach (string s in array)
+            foreach (string s in array ?? new string[0])
             {
                 Dictionary<string, string> dictionary = Regex.Matches(s, "([^?=&]+)(=([^&]*))?").Cast<Match>().ToDictionary(x => x.Groups[1].Value, x => x.Groups[3].Value);
                 this.PopulateFromKeyValuePair(dictionary.First());
@@ -109,7 +105,7 @@ namespace WrapperCielo24
     /* Options found in both Transcript and Caption options
      * All of the option properties are nullable. Properties that are null are ignored by the ToQuery() method
      * and are not part of the resulting query string. */
-    public abstract class CommonOptions : Options
+    public abstract class CommonOptions : BaseOptions
     {
         [QueryName("characters_per_caption_line")]
         public int? CharactersPerCaptionLine { get; set; }
@@ -332,7 +328,7 @@ namespace WrapperCielo24
         }
     }
 
-    public class PerformTranscriptionOptions : Options
+    public class PerformTranscriptionOptions : BaseOptions
     {
         [QueryName("customer_approval_steps")]
         public CustomerApprovalSteps? CustomerApprovalSteps { get; set; }
