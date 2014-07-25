@@ -89,7 +89,7 @@ namespace CommandLineTool
                     break;
                 case "update_password":
                     Console.WriteLine("Updating password...");
-                    TryAction(delegate() { actions.UpdatePassword(options.ApiToken, options.NewPassword); return "Password updated successfuly"; });
+                    TryAction(delegate() { actions.UpdatePassword(options.ApiToken, options.NewPassword); return "Password updated successfully"; });
                     break;
                 // JOB CONTROL //
                 case "create":
