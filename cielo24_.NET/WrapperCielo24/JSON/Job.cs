@@ -6,26 +6,15 @@ using System.Text;
 
 namespace WrapperCielo24.JSON
 {
-    public class JobList
+    public class JobList : JsonBase
     {
         [JsonProperty("Username")]
         public string Username { get; set; }
         [JsonProperty("ActiveJobs")]
         public List<Job> ActiveJobs { get; set; }
-
-        public override string ToString()
-        {
-            string activeJobs = "";
-            foreach (Job job in this.ActiveJobs)
-            {
-                activeJobs += job.ToString() + "\n";
-            }
-            return "Username: " + this.Username +
-                   "\nActiveJobs:\n\n" + activeJobs;
-        }
     }
 
-    public class Job
+    public class Job : JsonBase
     {
         [JsonProperty("JobId")]
         public Guid JobId { get; set; }
@@ -51,25 +40,9 @@ namespace WrapperCielo24.JSON
         public DateTime? StartTime { get; set; }
         [JsonProperty("CompletedTime")]
         public DateTime? CompletedTime { get; set; }
-
-        public override string ToString()
-        {
-            return "JobId: " + this.JobId.ToString("N") +
-                   "\nJobName: " + this.JobName +
-                   "\nJobStatus: " + this.JobStatus.ToString() +
-                   "\nPriority: " + this.Priority.ToString() +
-                   "\nFidelity: " + this.Fidelity.ToString() +
-                   "\nJobLanguage: " + this.JobLanguage +
-                   "\nTargetLanguage: " + this.TargetLanguage +
-                   "\nCreationTime: " + this.CreationTime.ToString() +
-                   "\nDueDate: " + this.DueDate.ToString() +
-                   "\nTurnaroundTimeHours: " + this.TurnaroundTimeHours +
-                   "\nStartTime: " + this.StartTime.ToString() +
-                   "\nCompletedTime: " + this.CompletedTime.ToString();
-        }
     }
 
-    public class JobInfo
+    public class JobInfo : JsonBase
     {
         [JsonProperty("JobId")]
         public Guid JobId { get; set; }
@@ -79,32 +52,13 @@ namespace WrapperCielo24.JSON
         public string Language { get; set; }
         [JsonProperty("Tasks")]
         public List<Task> Tasks { get; set; }
-
-        public override string ToString()
-        {
-            string tasks = "";
-            foreach (Task task in this.Tasks)
-            {
-                tasks += task.ToString() + "\n";
-            }
-            return "JobId: " + this.JobId.ToString("N") +
-                   "\nJobName: " + this.JobName +
-                   "\nLanguage: " + this.Language +
-                   "\nTasks:\n\n" + tasks;
-        }
     }
 
-    public class CreateJobResult
+    public class CreateJobResult : JsonBase
     {
         [JsonProperty("JobId")]
         public Guid JobId { get; set; }
         [JsonProperty("TaskId")]
         public string TaskId { get; set; }
-
-        public override string ToString()
-        {
-            return "JobId: " + this.JobId.ToString("N") +
-                   "\nTaskId: " + this.TaskId;
-        }
     }
 }

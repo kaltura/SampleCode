@@ -20,13 +20,11 @@ namespace WrapperCielo24
             Debug.WriteLine("Uri: " + uri.ToString());
             HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(uri);
             request.Method = method.ToString();
-            if (headers != null)
+            foreach (KeyValuePair<string, string> pair in headers ?? new Dictionary<string, string>())
             {
-                foreach (KeyValuePair<string, string> pair in headers)
-                {
-                    request.Headers[pair.Key] = pair.Value;
-                }
+                request.Headers[pair.Key] = pair.Value;
             }
+
             IAsyncResult asyncResult = request.BeginGetResponse(null, null);
             asyncResult.AsyncWaitHandle.WaitOne(timeout); // Wait untill response is received, then proceed
             if (asyncResult.IsCompleted)

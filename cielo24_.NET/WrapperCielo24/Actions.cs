@@ -107,7 +107,7 @@ namespace WrapperCielo24
             Dictionary<string, string> queryDictionary = this.InitAccessReqDict(apiToken);
             queryDictionary.Add("new_password", newPassword);
 
-            Uri requestUri = Utils.BuildUri(BASE_URL, UPDATE_PASSWORD_PATH, null);
+            Uri requestUri = Utils.BuildUri(BASE_URL, UPDATE_PASSWORD_PATH, queryDictionary);
             web.HttpRequest(requestUri, HttpMethod.POST, WebUtils.BASIC_TIMEOUT, Utils.ToQuery(queryDictionary)); // Nothing returned
         }
 
@@ -166,25 +166,14 @@ namespace WrapperCielo24
         /* Deletes a job with jobId */
         public Guid DeleteJob(Guid apiToken, Guid jobId)
         {
-            Dictionary<string, string> queryDictionary = InitJobReqDict(apiToken, jobId);
-
-            Uri requestUri = Utils.BuildUri(BASE_URL, DELETE_JOB_PATH, queryDictionary);
-            string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
-            Dictionary<string, string> response = Utils.Deserialize<Dictionary<string, string>>(serverResponse);
-
+            Dictionary<string, string> response = getJobResponse<Dictionary<string, string>>(apiToken, jobId, DELETE_JOB_PATH);
             return new Guid(response["TaskId"]);
         }
 
         /* Gets information about a job with jobId */
         public JobInfo GetJobInfo(Guid apiToken, Guid jobId)
         {
-            Dictionary<string, string> queryDictionary = InitJobReqDict(apiToken, jobId);
-
-            Uri requestUri = Utils.BuildUri(BASE_URL, GET_JOB_INFO_PATH, queryDictionary);
-            string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
-            JobInfo jobInfo = Utils.Deserialize<JobInfo>(serverResponse);
-
-            return jobInfo;
+            return getJobResponse<JobInfo>(apiToken, jobId, GET_ELEMENT_LIST_PATH);
         }
 
         /* Gets a list of jobs */
@@ -242,12 +231,7 @@ namespace WrapperCielo24
         /* Returns a Uri to the media from job with jobId */
         public Uri GetMedia(Guid apiToken, Guid jobId)
         {
-            Dictionary<string, string> queryDictionary = InitJobReqDict(apiToken, jobId);
-
-            Uri requestUri = Utils.BuildUri(BASE_URL, GET_MEDIA_PATH, queryDictionary);
-            string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
-            Dictionary<string, string> response = Utils.Deserialize<Dictionary<string, string>>(serverResponse);
-
+            Dictionary<string, string> response = getJobResponse<Dictionary<string, string>>(apiToken, jobId, GET_MEDIA_PATH);
             return new Uri(response["MediaUrl"]);
         }
 
@@ -295,7 +279,7 @@ namespace WrapperCielo24
 
             Uri requestUri = Utils.BuildUri(BASE_URL, GET_CAPTION_PATH, queryDictionary);
             string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.DOWNLOAD_TIMEOUT);
-            if (captionOptions.BuildUrl.Value)
+            if (captionOptions != null && captionOptions.BuildUrl.Equals(true))
             {
                 Dictionary<string, string> response = Utils.Deserialize<Dictionary<string, string>>(serverResponse);
                 return response["CaptionUrl"];
@@ -307,29 +291,25 @@ namespace WrapperCielo24
         /* Returns an element list */
         public ElementList GetElementList(Guid apiToken, Guid jobId)
         {
-            Dictionary<string, string> queryDictionary = InitJobReqDict(apiToken, jobId);
-
-            Uri requestUri = Utils.BuildUri(BASE_URL, GET_ELEMENT_LIST_PATH, queryDictionary);
-            string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
-            ElementList elements = Utils.Deserialize<ElementList>(serverResponse);
-
-            return elements;
+            return getJobResponse<ElementList>(apiToken, jobId, GET_ELEMENT_LIST_PATH);
         }
 
         /* Returns a list of elements lists */
         public List<ElementListVersion> GetListOfElementLists(Guid apiToken, Guid jobId)
         {
-            Dictionary<string, string> queryDictionary = InitJobReqDict(apiToken, jobId);
-
-            Uri requestUri = Utils.BuildUri(BASE_URL, GET_LIST_OF_ELEMENT_LISTS_PATH, queryDictionary);
-            string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
-            List<ElementListVersion> list = Utils.Deserialize<List<ElementListVersion>>(serverResponse);
-
-            return list;
+            return getJobResponse<List<ElementListVersion>>(apiToken, jobId, GET_LIST_OF_ELEMENT_LISTS_PATH);
         }
 
 
         /// PRIVATE HELPER METHODS ///
+
+        private T getJobResponse<T>(Guid apiToken, Guid jobId, String path)
+        {
+            Dictionary<String, String> queryDictionary = InitJobReqDict(apiToken, jobId);
+            Uri requestUri = Utils.BuildUri(BASE_URL, path, queryDictionary);
+            String serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
+            return Utils.Deserialize<T>(serverResponse);
+        }
 
         /* Returns a dictionary with version, api_token and job_id key-value pairs (parameters used in almost every job-control action). */
         private Dictionary<string, string> InitJobReqDict(Guid apiToken, Guid jobId)

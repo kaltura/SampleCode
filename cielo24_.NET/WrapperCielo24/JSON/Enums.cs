@@ -10,7 +10,7 @@ using System.Text;
 
 namespace WrapperCielo24.JSON
 {
-    public enum TaskType { JOB_CREATED, JOB_DELETED, JOB_ADD_MEDIA, JOB_ADD_TRANSCRIPT, JOB_PERFORM_TRANSCRIPTION, JOB_PERFORM_PREMIUM_SYNC, JOB_REQUEST_TRANSCRIPT, JOB_REQUEST_CAPTION, JOB_REQUEST_ELEMENTLIST }
+    public enum TaskType { JOB_CREATED, JOB_DELETED, JOB_ADD_MEDIA, JOB_ADD_TRANSCRIPT, JOB_PERFORM_TRANSCRIPTION, JOB_PERFORM_PREMIUM_SYNC, JOB_UPDATE_ELEMENTLIST, JOB_GET_TRANSCRIPT, JOB_GET_CAPTION, JOB_GET_ELEMENTLIST }                       
 
     public enum ErrorType { LOGIN_INVALID, ACCOUNT_EXISTS, ACCOUNT_UNPRIVILEGED, BAD_API_TOKEN, INVALID_QUERY, INVALID_OPTION, MISSING_PARAMETER, INVALID_URL, ITEM_NOT_FOUND }
 
@@ -19,11 +19,11 @@ namespace WrapperCielo24.JSON
 
     public enum TaskStatus { COMPLETE, INPROGRESS, ABORTED, FAILED }
 
-    public enum Priority { ECONOMY, STANDARD, PRIORITY, CRITICAL }
+    public enum Priority { ECONOMY, STANDARD, PRIORITY, CRITICAL, HIGH }
 
-    public enum Fidelity { MECHANICAL, PREMIUM, PROFESSIONAL, INTERIM_PROFESSIONAL, FINAL }
+    public enum Fidelity { MECHANICAL, STANDARD, HIGH, EXTERNAL, PREMIUM, PROFESSIONAL }
 
-    public enum CaptionFormat { SRT, SBV, DFXP, QT }
+    public enum CaptionFormat { SRT, SBV, DFXP, QT, TRANSCRIPT, TWX, TPM, WEB_VTT, ECHO }
 
     public enum TokenType { word, punctuation, sound }
 
@@ -41,7 +41,7 @@ namespace WrapperCielo24.JSON
 
     public enum CustomerApprovalTools { AMARA, CIELO24 }
 
-    // TODO: public enum Languages{ en, fr, es, de, cmn, pt, jp, ar,  }
+    public enum Languages{ en, fr, es, de, cmn, pt, jp, ar, ko, zh, hi, it, ru, tr, he }
 
     /* JobStatus enum requires a converter because strings with spaces cannot be implicitly converted to enum */
     public class JobStatusConverter : StringEnumConverter
