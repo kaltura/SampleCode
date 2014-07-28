@@ -144,11 +144,11 @@ module Cielo24
     end
 
     def add_media_to_job_url(api_token, job_id, media_url)
-      return send_media_url(api_token, job_id, media_url, ADD_MEDIA_TO_JOB_PATH);
+      return send_media_url(api_token, job_id, media_url, ADD_MEDIA_TO_JOB_PATH)
     end
 
     def add_media_to_job_embedded(api_token, job_id, media_url)
-      return send_media_url(api_token, job_id, media_url, ADD_EMBEDDED_MEDIA_TO_JOB_PATH);
+      return send_media_url(api_token, job_id, media_url, ADD_EMBEDDED_MEDIA_TO_JOB_PATH)
     end
 
     def send_media_url(api_token, job_id, media_url, path)
