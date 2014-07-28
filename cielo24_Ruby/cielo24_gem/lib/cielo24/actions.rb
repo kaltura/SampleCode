@@ -11,7 +11,7 @@ module Cielo24
 
     attr_accessor :base_url
 
-    VERSION = 1
+    API_VERSION = 1
 
     LOGIN_PATH = "/api/account/login"
     LOGOUT_PATH = "/api/account/logout"
@@ -137,8 +137,9 @@ module Cielo24
     def add_media_to_job_file(api_token, job_id, media_file)
       assert_argument(media_file, "Media File")
       query_hash = init_job_req_dict(api_token, job_id)
+      file_size = File.size(media_file.path)
 
-      json = WebUtils.get_json(@base_url + ADD_MEDIA_TO_JOB_PATH, 'POST', nil, query_hash, {"Content-Type" => "video/mp4"}, {"upload" => media_file})
+      json = WebUtils.get_json(@base_url + ADD_MEDIA_TO_JOB_PATH, 'POST', nil, query_hash, {'Content-Type' => 'video/mp4', 'Content-Length' => file_size}, media_file)
       return json["TaskId"]
     end
 
@@ -240,7 +241,7 @@ module Cielo24
     end
 
     def init_version_dict()
-      {v: VERSION}
+      {v: API_VERSION}
     end
 
     def assert_argument(arg, arg_name)

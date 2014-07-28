@@ -23,11 +23,12 @@ module Cielo24
     def self.http_request(uri, method, timeout, query=nil, headers = nil, body = nil)
       http_client = HTTPClient.new
       http_client.cookie_manager = nil
+      http_client.send_timeout = 60*60*24*7 # HTTPClient default timeout set to 7 days, our own timeout handler is down below
 
       # Timeout block:
       begin
         # Error is raised if the following block fails to execute in 'timeout' sec:
-        Timeout.timeout(timeout) {
+        Timeout.timeout(timeout) { # nil timeout = infinite
 
           response = http_client.request(method, uri, query, body, headers, nil)
           # Handle web errors

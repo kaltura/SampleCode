@@ -105,7 +105,9 @@ class AccessTest < Test::Unit::TestCase
     assert_nothing_raised{@task_id = @@actions.add_media_to_job_embedded(@@api_token,@@job_id,"http://lesmoralesphotography.com/cielo24/test_suite/End_to_End_Regression/media_short_2327da9786d44a9a9c62242853593059.mp4")}
     assert_equal(32, @task_id.length)
     @@job_id = @@actions.create_job(@@api_token).JobId
-    file = File.open("C:/Users/Evgeny/Videos/small.mp4", "r")
+    file = File.open("C:/Users/Evgeny/Videos/The_Hobbit_480p.mov", "r")
+    #file = File.open("C:/Users/Evgeny/Videos/Thor.The.Dark.World.2013.1080p.BluRay.x264.YIFY.mp4", "r")
+    #file = File.open("C:/Users/Evgeny/Videos/small.mp4", "r")
     assert_nothing_raised{@task_id = @@actions.add_media_to_job_file(@@api_token,@@job_id, file)}
     assert_equal(32, @task_id.length)
   end

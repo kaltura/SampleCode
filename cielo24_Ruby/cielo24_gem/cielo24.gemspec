@@ -6,12 +6,12 @@ require 'cielo24/version'
 Gem::Specification.new do |spec|
   spec.name          = "cielo24"
   spec.version       = Cielo24::VERSION
-  spec.authors       = ["Evgeny Chistyakov"]
+  spec.authors       = ["cielo24"]
   spec.email         = ["support@cielo24.com"]
   spec.summary       = %q{Cielo24 API gem.}
   spec.description   = %q{This gem allows you to interact with the cielo24 public web API.}
   spec.homepage      = "http://cielo24.com"
-  spec.license       = "MIT"
+  #spec.license       = "MIT"
 
   spec.files         = Dir['lib/cielo24/*.rb'] + Dir['lib/*.rb']
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }

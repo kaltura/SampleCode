@@ -1,14 +1,14 @@
 PATH
   remote: .
   specs:
-    cielo24-cli (0.0.1)
+    cielo24-cli (0.0.2)
       cielo24
       thor
 
 GEM
   remote: https://rubygems.org/
   specs:
-    cielo24 (0.0.5)
+    cielo24 (0.0.7)
       hashie
       httpclient
     hashie (3.2.0)

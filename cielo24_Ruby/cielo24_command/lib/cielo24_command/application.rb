@@ -7,7 +7,7 @@ module Cielo24Command
 
     include Cielo24
 
-    ENV["THOR_COLUMNS"] = "300" # Otherwise descriptions/help gets truncated (...)
+    ENV["THOR_COLUMNS"] = "300" # Increases the maximum allowed length of a console line, otherwise descriptions/help gets truncated (...)
 
     # ALWAYS REQUIRED:
     username_option = [:u, :required => false, :desc => "cielo24 username", :type => :string, :banner => "username", :hide => true]
@@ -26,8 +26,8 @@ module Cielo24Command
     source_language_option = [:l, :required => false, :desc => "Source language " + Language.all, :banner => "source", :default => Language.English]
     target_language_option = [:t, :required => false, :desc => "Target language " + Language.all, :banner => "target", :default => Language.English]
     job_name_option = [:n, :required => false, :desc => "Job name", :banner => "jobname"]
-    job_options_option = [:J, :required => false, :desc => "Job option (list key:value pairs after -J)", :banner => 'key:value', :type => :hash]
-    caption_options_option = [:O, :required => false, :desc => "Caption/transcript options (list key:value pairs after -O)", :banner => 'key:value', :type => :hash]
+    job_options_option = [:J, :required => false, :desc => "Job option (list key:value pairs after -J)", :banner => 'key:value', :type => :hash, :default => {}]
+    caption_options_option = [:O, :required => false, :desc => "Caption/transcript options (list key:value pairs after -O)", :banner => 'key:value', :type => :hash, :default => {}]
     turn_around_hours_option = [:T, :required => false, :desc => "Turn around hours", :banner => "hours"]
     callback_url_option = [:C, :required => false, :desc => "Callback URL", :banner => "callback"]
     caption_format_option = [:c, :required => true, :desc => "Caption format " + CaptionFormat.all, :banner => "format", :default => CaptionFormat.SRT]
