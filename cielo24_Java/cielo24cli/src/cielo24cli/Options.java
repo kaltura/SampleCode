@@ -167,7 +167,7 @@ public class Options {
 
     public void PrintDefaultUsage() {
         System.out.println("\nUsage: ./program.exe [action] [options]");
-        System.out.println("\nHelp: ./program.exe help [action]");
+        System.out.println("Help: ./program.exe help [action]");
         System.out.println("Available actions: " + Joiner.on(", ").join(verbs));
         System.out.println("\nExecutes a cielo24 API call");
         System.out.println("\nALWAYS REQUIRED:");

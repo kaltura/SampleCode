@@ -3,11 +3,6 @@ package cielo24cli;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
-import java.util.logging.StreamHandler;
 
 import cielo24.*;
 import cielo24.options.*;
@@ -31,7 +26,7 @@ public class Main {
 		}
 		else if (args.length != 0 && Arrays.asList(Options.verbs).contains(args[0])) { // If verb is valid
 			invokedVerb = args[0];
-			try {// If parsing successful
+			try { // If parsing successful
 			    optionParser = new JCommander(options, Arrays.copyOfRange(args,  1, args.length));
 
 				if (!options.verboseMode) { // Enable verbose mode
