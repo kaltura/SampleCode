@@ -76,7 +76,7 @@ module Cielo24
       WebUtils.http_request(@base_url + UPDATE_PASSWORD_PATH, 'POST', WebUtils::BASIC_TIMEOUT, nil, nil, query_hash)
     end
 
-    def generate_api_key(api_token, username, force_new = false)
+    def generate_api_key(api_token, username, force_new=false)
       assert_argument(username, "Username")
       assert_argument(api_token, "API Token")
       query_hash = init_access_req_dict(api_token)
@@ -97,7 +97,7 @@ module Cielo24
 
     ### JOB CONTROL ###
 
-    def create_job(api_token, job_name = nil, source_language = "en")
+    def create_job(api_token, job_name=nil, source_language="en")
       query_hash = init_access_req_dict(api_token)
       query_hash[:job_name] = job_name if !(job_name.nil?)
       query_hash[:source_language] = source_language
@@ -173,9 +173,9 @@ module Cielo24
                               job_id,
                               fidelity,
                               priority,
-                              callback_uri = nil,
-                              turnaround_hours = nil,
-                              target_language = nil,
+                              callback_uri=nil,
+                              turnaround_hours=nil,
+                              target_language=nil,
                               options = nil)
       assert_argument(fidelity, "Fidelity")
       assert_argument(priority, "Priority")
@@ -191,7 +191,7 @@ module Cielo24
       return json["TaskId"]
     end
 
-    def get_transcript(api_token, job_id, transcript_options = nil)
+    def get_transcript(api_token, job_id, transcript_options=nil)
       query_hash = init_job_req_dict(api_token, job_id)
       query_hash.merge!(transcript_options.get_hash) if !(transcript_options.nil?)
 
@@ -199,7 +199,7 @@ module Cielo24
       return WebUtils.http_request(@base_url + GET_TRANSCRIPTION_PATH, 'GET', WebUtils::DOWNLOAD_TIMEOUT, query_hash)
     end
 
-    def get_caption(api_token, job_id, caption_format, caption_options = nil)
+    def get_caption(api_token, job_id, caption_format, caption_options=nil)
       query_hash = init_job_req_dict(api_token, job_id)
       query_hash[:caption_format] = caption_format
       query_hash.merge!(caption_options.get_hash) if !(caption_options.nil?)
