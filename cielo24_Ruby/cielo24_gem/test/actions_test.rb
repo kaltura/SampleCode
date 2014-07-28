@@ -61,7 +61,7 @@ class AccessTest < Test::Unit::TestCase
   def test_update_password
     assert_nothing_raised{@@actions.update_password(@@api_token, @@new_password)}
     assert_nothing_raised{@@actions.update_password(@@api_token, @@password)}
-    assert_raise(WebError) {@@actions.update_password("not_n_api_token", @@password)}
+    assert_raise(WebError) {@@actions.update_password("not_an_api_token", @@password)}
   end
 
   def test_create_job
@@ -95,7 +95,10 @@ class AccessTest < Test::Unit::TestCase
   end
 
   def test_perform_transcription
-    assert_nothing_raised{@@actions.perform_transcription(@@api_token,@@job_id, "PREMIUM", "STANDARD")}
+    assert_nothing_raised{@task_id = @@actions.add_media_to_job_url(@@api_token,@@job_id,"http://lesmoralesphotography.com/cielo24/test_suite/End_to_End_Regression/media_short_2327da9786d44a9a9c62242853593059.mp4")}
+    assert_equal(32, @task_id.length)
+    assert_nothing_raised{@task_id = @@actions.perform_transcription(@@api_token,@@job_id, "PREMIUM", "STANDARD")}
+    assert_equal(32, @task_id.length)
   end
 
   def test_add_data
