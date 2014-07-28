@@ -165,7 +165,6 @@ module Cielo24
       query_hash = init_job_req_dict(api_token, job_id)
 
       json = WebUtils.get_json(@base_url + GET_MEDIA_PATH, 'GET', WebUtils::BASIC_TIMEOUT, query_hash)
-
       return json["MediaUrl"]
     end
 
@@ -205,7 +204,7 @@ module Cielo24
       query_hash.merge!(caption_options.get_hash) if !(caption_options.nil?)
 
       response = WebUtils.http_request(@base_url + GET_CAPTION_PATH, 'GET', WebUtils::DOWNLOAD_TIMEOUT, query_hash)
-      if(!caption_options.nil? and caption_options[:build_url]) # If build_url is true
+      if(!caption_options.nil? and caption_options.build_url) # If build_url is true
         return JSON.parse(response)["CaptionUrl"]
       else
         return response # Else return raw caption text
