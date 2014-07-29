@@ -47,7 +47,7 @@ module Cielo24
       query_hash = init_version_dict
       headers = Hash.new
 
-      if use_headers
+      if not use_headers
         query_hash[:username] = username
         query_hash[:password] = password if (!password.nil?)
         query_hash[:securekey] = api_securekey if (!api_securekey.nil?)

@@ -96,7 +96,7 @@ module Cielo24Command
       puts "Adding media..."
       if !options[:m].nil?
         task_id = actions.add_media_to_job_url(token, mash.JobId, options[:m])
-      else !options[:M].nil?
+      elsif !options[:M].nil?
         file = File.new(File.absolute_path(options[:M]), "r")
         task_id = actions.add_media_to_job_file(token, mash.JobId, file)
       end
@@ -109,7 +109,7 @@ module Cielo24Command
       jobopts = PerformTranscriptionOptions.new
       jobopts.populate_from_hash(options[:J])
 
-      task_id = actions.perform_transcription(token, mash.JobId, options[:f], options[:P], options[:c], options[:T], options[:t], jobopts)
+      task_id = actions.perform_transcription(token, mash.JobId, options[:f], options[:P], options[:C], options[:T], options[:t], jobopts)
       puts "Task ID: " + task_id
       print_url()
     end
