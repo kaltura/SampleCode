@@ -81,7 +81,7 @@ module Cielo24Command
     def create
 
       if options[:m].nil? and options[:M].nil?
-        puts "Media URL or local file path mus be supplied"
+        puts "Media URL or local file path must be supplied"
         exit(1)
       end
 
