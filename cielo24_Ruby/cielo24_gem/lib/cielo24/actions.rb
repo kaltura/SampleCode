@@ -163,7 +163,6 @@ module Cielo24
 
     def get_media(api_token, job_id)
       query_hash = init_job_req_dict(api_token, job_id)
-
       json = WebUtils.get_json(@base_url + GET_MEDIA_PATH, 'GET', WebUtils::BASIC_TIMEOUT, query_hash)
       return json["MediaUrl"]
     end
@@ -193,7 +192,6 @@ module Cielo24
     def get_transcript(api_token, job_id, transcript_options=nil)
       query_hash = init_job_req_dict(api_token, job_id)
       query_hash.merge!(transcript_options.get_hash) if !(transcript_options.nil?)
-
       # Return raw transcript text
       return WebUtils.http_request(@base_url + GET_TRANSCRIPTION_PATH, 'GET', WebUtils::DOWNLOAD_TIMEOUT, query_hash)
     end
@@ -213,17 +211,14 @@ module Cielo24
 
     def get_element_list(api_token, job_id)
       query_hash = init_job_req_dict(api_token, job_id)
-
       json = WebUtils.get_json(@base_url + GET_ELEMENT_LIST_PATH, 'GET', WebUtils::BASIC_TIMEOUT, query_hash)
       return Mash.new(json)
     end
 
     def get_list_of_element_lists(api_token, job_id)
       query_hash = init_job_req_dict(api_token, job_id)
-
-      response = WebUtils.http_request(@base_url + GET_LIST_OF_ELEMENT_LISTS_PATH, 'GET', WebUtils::BASIC_TIMEOUT, query_hash)
-      array = JSON.parse(response)
-      return array
+      json = WebUtils.get_json(@base_url + GET_LIST_OF_ELEMENT_LISTS_PATH, 'GET', WebUtils::BASIC_TIMEOUT, query_hash)
+      return json
     end
 
     ### PRIVATE HELPER METHODS ###

@@ -1,5 +1,5 @@
 module Cielo24
-  class Options
+  class BaseOptions
 
     def get_hash
       hash = {}
@@ -14,11 +14,9 @@ module Cielo24
 
     def to_query
       hash = get_hash
-      array = Array.new(hash.length)
-      counter = 0
+      array = Array.new()
       hash.each do |key, value|
-        array[counter] = key + '=' + value.to_s
-        counter += 1
+        array.push(key + '=' + value.to_s)
       end
       return array.join("&")
     end
@@ -40,7 +38,7 @@ module Cielo24
     end
   end
 
-  class CommonOptions < Options
+  class CommonOptions < BaseOptions
 
     attr_accessor :characters_per_caption_line
     attr_accessor :elementlist_version
@@ -153,7 +151,7 @@ module Cielo24
     end
   end
 
-  class PerformTranscriptionOptions < Options
+  class PerformTranscriptionOptions < BaseOptions
 
     attr_accessor :customer_approval_steps
     attr_accessor :customer_approval_tool

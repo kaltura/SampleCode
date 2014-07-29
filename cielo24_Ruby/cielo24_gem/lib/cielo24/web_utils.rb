@@ -6,7 +6,6 @@ module Cielo24
     require 'timeout'
     include JSON
 
-    VERIFY_MODE = nil
     BASIC_TIMEOUT = 60     # seconds
     DOWNLOAD_TIMEOUT = 300 # seconds
     @@LAST_URL = "none" # For logging purposes
@@ -20,7 +19,7 @@ module Cielo24
       return JSON.parse(response)
     end
 
-    def self.http_request(uri, method, timeout, query=nil, headers = nil, body = nil)
+    def self.http_request(uri, method, timeout, query=nil, headers=nil, body=nil)
       http_client = HTTPClient.new
       http_client.cookie_manager = nil
       http_client.send_timeout = 60*60*24*7 # HTTPClient default timeout set to 7 days, our own timeout handler is down below
