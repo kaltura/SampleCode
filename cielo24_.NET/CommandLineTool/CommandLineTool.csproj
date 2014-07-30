@@ -33,7 +33,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Cielo24Merged">
-      <HintPath>..\WrapperCielo24\bin\Debug\Cielo24Merged.dll</HintPath>
+      <HintPath>..\Cielo24\bin\Release\Cielo24Merged.dll</HintPath>
     </Reference>
     <Reference Include="CommandLine">
       <HintPath>..\packages\CommandLineParser.1.9.71\lib\net40\CommandLine.dll</HintPath>

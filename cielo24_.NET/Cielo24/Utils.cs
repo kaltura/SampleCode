@@ -7,10 +7,10 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
-using WrapperCielo24.JSON;
+using Cielo24.JSON;
 using System.Diagnostics;
 
-namespace WrapperCielo24
+namespace Cielo24
 {
     public class Utils
     {

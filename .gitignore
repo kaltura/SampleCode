@@ -34,3 +34,6 @@ cielo24_.NET/CommandLineTool/bin/Release/CommandLineTool.exe
 cielo24_.NET/CommandLineTool/bin/Release/CommandLine.dll
 cielo24_.NET/CommandLineTool/bin/Release/Cielo24Merged.dll
 cielo24_.NET/WrapperCielo24/bin/Release/WrapperCielo24.dll
+cielo24_.NET/Cielo24/bin/Release/Newtonsoft.Json.xml
+cielo24_.NET/Cielo24/bin/Release/Newtonsoft.Json.dll
+cielo24_.NET/UnitTest/bin/Release/Cielo24Merged.dll

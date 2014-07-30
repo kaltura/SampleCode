@@ -6,9 +6,9 @@ using System.Text;
 using System.Diagnostics;
 using System.Security.Principal;
 using System.Collections.Generic;
-using WrapperCielo24.JSON;
+using Cielo24.JSON;
 
-namespace WrapperCielo24
+namespace Cielo24
 {
     public class Actions
     {

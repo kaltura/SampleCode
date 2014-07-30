@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using WrapperCielo24;
+using Cielo24;
 using CommandLine;
 using CommandLine.Text;
-using WrapperCielo24.JSON;
+using Cielo24.JSON;
 using System.Net;
 using System.Diagnostics;
 

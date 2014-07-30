@@ -7,7 +7,7 @@ using System.IO;
 using System.Threading;
 using System.Diagnostics;
 
-namespace WrapperCielo24
+namespace Cielo24
 {
     class WebUtils
     {

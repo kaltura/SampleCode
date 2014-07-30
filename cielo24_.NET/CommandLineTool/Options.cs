@@ -6,8 +6,8 @@ using CommandLine;
 using CommandLine.Text;
 using System.ComponentModel;
 using System.IO;
-using WrapperCielo24.JSON;
-using WrapperCielo24;
+using Cielo24.JSON;
+using Cielo24;
 
 namespace CommandLineTool
 {

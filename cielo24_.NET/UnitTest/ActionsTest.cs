@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using WrapperCielo24;
+using Cielo24;
 
 namespace UnitTest
 {

@@ -5,9 +5,9 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
-using WrapperCielo24.JSON;
+using Cielo24.JSON;
 
-namespace WrapperCielo24
+namespace Cielo24
 {
     /* The base class. All of the other option classes inherit from it. */
     public abstract class BaseOptions

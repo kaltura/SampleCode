@@ -7,8 +7,8 @@
     <ProjectGuid>{D021038A-607A-449C-8E52-BDEC97C951D1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WrapperCielo24</RootNamespace>
-    <AssemblyName>WrapperCielo24</AssemblyName>
+    <RootNamespace>Cielo24</RootNamespace>
+    <AssemblyName>Cielo24</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -53,9 +53,6 @@
     <Compile Include="JSON\Task.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="WebUtils.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

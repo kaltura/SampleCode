@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("WrapperCielo24")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Cielo24")]
+[assembly: AssemblyDescription("Library for cielo24 public REST API.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("WrapperCielo24")]
+[assembly: AssemblyCompany("cielo24")]
+[assembly: AssemblyProduct("Cielo24")]
 [assembly: AssemblyCopyright("Copyright ©  2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

@@ -8,7 +8,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 
-namespace WrapperCielo24.JSON
+namespace Cielo24.JSON
 {
     public enum TaskType { JOB_CREATED, JOB_DELETED, JOB_ADD_MEDIA, JOB_ADD_TRANSCRIPT, JOB_PERFORM_TRANSCRIPTION, JOB_PERFORM_PREMIUM_SYNC, JOB_UPDATE_ELEMENTLIST, JOB_GET_TRANSCRIPT, JOB_GET_CAPTION, JOB_GET_ELEMENTLIST }                       
 
