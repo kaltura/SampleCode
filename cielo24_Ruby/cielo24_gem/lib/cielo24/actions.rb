@@ -40,8 +40,6 @@ module Cielo24
 
     def login(username, password=nil, api_securekey=nil, use_headers=false)
       assert_argument(username, "Username")
-      # Password or API Secure Key must be supplied but not both
-      raise ArgumentError.new("Only password or API secure must be supplied for login.") if (!password.nil? and !api_securekey.nil?)
       raise ArgumentError.new("Password or API Secure Key must be supplied for login.") if (password.nil? and api_securekey.nil?)
 
       query_hash = init_version_dict

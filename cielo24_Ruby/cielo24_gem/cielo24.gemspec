@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["cielo24"]
   spec.email         = ["support@cielo24.com"]
   spec.summary       = %q{Cielo24 API gem.}
-  spec.description   = %q{This gem allows you to interact with the cielo24 public web API.}
+  spec.description   = %q{This gem allows you to interact with the cielo24 public REST API.}
   spec.homepage      = "http://cielo24.com"
   #spec.license       = "MIT"
 

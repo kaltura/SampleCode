@@ -30,7 +30,7 @@ module Cielo24Command
     caption_options_option = [:O, :required => false, :desc => "Caption/transcript options (list key:value pairs after -O)", :banner => 'key:value', :type => :hash, :default => {}]
     turn_around_hours_option = [:T, :required => false, :desc => "Turn around hours", :banner => "hours"]
     callback_url_option = [:C, :required => false, :desc => "Callback URL", :banner => "callback"]
-    caption_format_option = [:c, :required => true, :desc => "Caption format " + CaptionFormat.all, :banner => "format", :default => CaptionFormat.SRT]
+    caption_format_option = [:c, :required => false, :desc => "Caption format " + CaptionFormat.all, :banner => "format", :default => CaptionFormat.SRT]
     elementlist_version_option = [:e, :required => false, :desc => "ElementList Version", :banner => "version"]
     force_new_option = [:F, :required => false, :desc => "Force new key", :default => false]
     new_password_option = [:d, :required => true, :desc => "New password", :banner => "newpass"]
