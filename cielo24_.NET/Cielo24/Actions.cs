@@ -141,11 +141,11 @@ namespace Cielo24
         /// JOB CONTROL ///
 
         /* Creates a new job. Returns an array of Guids where 'JobId' is the 0th element and 'TaskId' is the 1st element */
-        public CreateJobResult CreateJob(Guid apiToken, string jobName = null, string sourceLanguage = "en")
+        public CreateJobResult CreateJob(Guid apiToken, string jobName = null, string language = "en")
         {
             Dictionary<string, string> queryDictionary = this.InitAccessReqDict(apiToken);
             if (jobName != null) { queryDictionary.Add("job_name", jobName); }
-            queryDictionary.Add("source_language", sourceLanguage);
+            queryDictionary.Add("language", language);
 
             Uri requestUri = Utils.BuildUri(BASE_URL, CREATE_JOB_PATH, queryDictionary);
             string serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
