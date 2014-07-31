@@ -147,10 +147,10 @@ public class Actions {
     /// JOB CONTROL ///
 
     /* Creates a new job. Returns an array of Guids where 'JobId' is the 0th element and 'TaskId' is the 1st element */
-    public CreateJobResult createJob(Guid apiToken, String jobName, String sourceLanguage) throws IOException, WebException {
+    public CreateJobResult createJob(Guid apiToken, String jobName, String language) throws IOException, WebException {
         Dictionary<String, String> queryDictionary = this.initAccessReqDict(apiToken);
         if (jobName != null) { queryDictionary.add("job_name", jobName); }
-        queryDictionary.add("source_language", sourceLanguage);
+        queryDictionary.add("language", language);
 
         URL requestURL = Utils.buildURL(serverUrl, CREATE_JOB_PATH, queryDictionary);
         String serverResponse = web.httpRequest(requestURL, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
