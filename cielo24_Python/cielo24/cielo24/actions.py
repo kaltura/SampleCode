@@ -88,11 +88,11 @@ class Actions:
 
     ### JOB CONTROL ###
 
-    def create_job(self, api_token, job_name=None, source_language="en"):
+    def create_job(self, api_token, job_name=None, language="en"):
         query_dict = self.__init_access_req_dict(api_token)
         if not job_name is None:
             query_dict['job_name'] = job_name
-            query_dict['source_language'] = source_language
+            query_dict['language'] = language
 
         json = WebUtils.get_json(self.base_url, self.CREATE_JOB_PATH, 'GET', WebUtils.BASIC_TIMEOUT, query_dict)
         # Return a hash with JobId and TaskId

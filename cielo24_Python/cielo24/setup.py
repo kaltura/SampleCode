@@ -4,7 +4,7 @@ from distutils.core import setup
 # Script for PyPI
 
 setup(name='cielo24',
-      version='1.0.1',
+      version='1.0.2',
       description='Package for interacting with the cielo24 public REST API',
       author='cielo24',
       author_email='support@cielo24.com',
