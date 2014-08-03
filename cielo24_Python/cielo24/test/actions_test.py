@@ -16,7 +16,7 @@ class AccessTest(TestCase):
     secure_key = None
     task_id = None
 
-  # Called before every test method runs. Can be used to set up fixture information.
+    # Called before every test method runs. Can be used to set up fixture information.
     def setUp(self):
         if self.api_token is None:
             self.api_token = self.actions.login(self.username, self.password, None, True)

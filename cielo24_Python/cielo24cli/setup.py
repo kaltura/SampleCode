@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from distutils.core import setup
+from setuptools import setup
 # Script for PyPI
 
 setup(name='cielo24cli',
@@ -9,5 +9,6 @@ setup(name='cielo24cli',
       author='cielo24',
       author_email='support@cielo24.com',
       url='http://www.cielo24.com',
+      install_requires = ['compago','cielo24'],
       py_modules=['cielo24cli']
      )

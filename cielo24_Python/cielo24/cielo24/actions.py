@@ -41,18 +41,18 @@ class Actions:
         query_dict = self.__init_version_dict()
         headers = dict()
 
-        if not use_headers:
-            query_dict['username'] = username
-            if not password is None:
-                query_dict['password'] = password
-            if not api_securekey is None:
-                query_dict['securekey'] = api_securekey
-        else:
+        if use_headers:
             headers['x-auth-user'] = username
-            if not password is None:
+            if password is not None:
                 headers['x-auth-key'] = password
-            if not api_securekey is None:
+            if api_securekey is not None:
                 headers['x-auth-securekey'] = api_securekey
+        else:
+            query_dict['username'] = username
+            if password is not None:
+                query_dict['password'] = password
+            if api_securekey is not None:
+                query_dict['securekey'] = api_securekey
 
         json = WebUtils.get_json(self.base_url, self.LOGIN_PATH, 'GET', WebUtils.BASIC_TIMEOUT, query_dict, headers)
         return json['ApiToken']
@@ -90,7 +90,7 @@ class Actions:
 
     def create_job(self, api_token, job_name=None, language="en"):
         query_dict = self.__init_access_req_dict(api_token)
-        if not job_name is None:
+        if job_name is not None:
             query_dict['job_name'] = job_name
             query_dict['language'] = language
 
@@ -163,13 +163,13 @@ class Actions:
         query_dict = self.__init_job_req_dict(api_token, job_id)
         query_dict['transcription_fidelity'] = fidelity
         query_dict['priority'] = priority
-        if not callback_uri is None:
+        if callback_uri is not None:
             query_dict['callback_uri'] = quote(callback_uri)
-        if not turnaround_hours is None:
+        if turnaround_hours is not None:
             query_dict['turnaround_hours'] = turnaround_hours
-        if not target_language is None:
+        if target_language is not None:
             query_dict['target_language'] = target_language
-        if not options is None:
+        if options is not None:
             query_dict.update(options.get_dict())
 
         json = WebUtils.get_json(self.base_url, self.PERFORM_TRANSCRIPTION, 'GET', WebUtils.BASIC_TIMEOUT, query_dict)
@@ -177,7 +177,7 @@ class Actions:
 
     def get_transcript(self, api_token, job_id, transcript_options=None):
         query_dict = self.__init_job_req_dict(api_token, job_id)
-        if not transcript_options is None:
+        if transcript_options is not None:
             query_dict.update(transcript_options.get_dict())
 
         # Return raw transcript text
@@ -186,7 +186,7 @@ class Actions:
     def get_caption(self, api_token, job_id, caption_format, caption_options=None):
         query_dict = self.__init_job_req_dict(api_token, job_id)
         query_dict['caption_format'] = caption_format
-        if not caption_options is None:
+        if caption_options is not None:
             query_dict.update(caption_options.get_dict())
 
         response = WebUtils.http_request(self.base_url, self.GET_CAPTION_PATH, 'GET', WebUtils.DOWNLOAD_TIMEOUT, query_dict)
