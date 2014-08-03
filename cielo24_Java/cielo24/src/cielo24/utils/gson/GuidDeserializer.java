@@ -9,7 +9,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
-public class GuidDeserializer implements JsonDeserializer<Guid>{
+public class GuidDeserializer implements JsonDeserializer<Guid> {
 
 	@Override
 	public Guid deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {

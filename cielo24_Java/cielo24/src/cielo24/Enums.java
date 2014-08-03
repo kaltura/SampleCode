@@ -3,8 +3,8 @@ package cielo24;
 import com.google.gson.annotations.SerializedName;
 
 public class Enums {
-	
-	public enum TaskType { JOB_CREATED, JOB_DELETED, JOB_ADD_MEDIA, JOB_ADD_TRANSCRIPT, JOB_PERFORM_TRANSCRIPTION, JOB_PERFORM_PREMIUM_SYNC, JOB_UPDATE_ELEMENTLIST, JOB_GET_TRANSCRIPT, JOB_GET_CAPTION, JOB_GET_ELEMENTLIST }                       
+
+	public enum TaskType { JOB_CREATED, JOB_DELETED, JOB_ADD_MEDIA, JOB_ADD_TRANSCRIPT, JOB_PERFORM_TRANSCRIPTION, JOB_PERFORM_PREMIUM_SYNC, JOB_UPDATE_ELEMENTLIST, JOB_GET_TRANSCRIPT, JOB_GET_CAPTION, JOB_GET_ELEMENTLIST }
 
     public enum ErrorType { LOGIN_INVALID, ACCOUNT_EXISTS, ACCOUNT_UNPRIVILEGED, BAD_API_TOKEN, INVALID_QUERY, INVALID_OPTION, MISSING_PARAMETER, INVALID_URL, ITEM_NOT_FOUND }
 
@@ -35,14 +35,4 @@ public class Enums {
     public enum CustomerApprovalTools { AMARA, CIELO24 }
 
     public enum Languages{ en, fr, es, de, cmn, pt, jp, ar, ko, zh, hi, it, ru, tr, he }
-
-    // TODO:
-    /* JobStatus enum requires a converter because strings with spaces cannot be implicitly converted to enum */
-    /*public class JobStatusConverter : StringEnumConverter
-    {
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-        {
-            return (reader.Value.ToString().Equals("In Process")) ? JobStatus.In_Process : base.ReadJson(reader, objectType, existingValue, serializer);
-        }
-    }*/
 }

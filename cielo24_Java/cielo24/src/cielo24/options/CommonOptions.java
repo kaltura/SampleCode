@@ -25,24 +25,5 @@ public abstract class CommonOptions extends BaseOptions {
 	@QueryName("sound_boundaries")
 	public char[] soundBoundaries = null;
 
-	public CommonOptions(){}
-	
-	public CommonOptions(int charactersPerCaptionLine,
-			Date elementListVersion,
-			String speakerChangeToken,
-			boolean maskProfanity,
-			ArrayList<Tag> removeSoundsList,
-			boolean removeSoundReferences,
-			boolean replaceSlang,
-			char[] soundBoundaries)
-	{
-		this.charactersPerCaptionLine = charactersPerCaptionLine;
-		this.elementListVersion = elementListVersion;
-		this.speakerChangeToken = speakerChangeToken;
-		this.maskProfanity = maskProfanity;
-		this.removeSoundsList = removeSoundsList;
-		this.removeSoundReferences = removeSoundReferences;
-		this.replaceSlang = replaceSlang;
-		this.soundBoundaries = soundBoundaries;
-	}
+	public CommonOptions() {}
 }

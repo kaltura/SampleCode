@@ -7,30 +7,29 @@ import java.util.Date;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Job extends JsonBase
-{
+public class Job extends JsonBase {
 	@SerializedName("JobId")
-    public Guid jobId;
+	public Guid jobId;
 	@SerializedName("JobName")
-    public String jobName;
+	public String jobName;
 	@SerializedName("JobStatus")
-    public JobStatus jobStatus;
+	public JobStatus jobStatus;
 	@SerializedName("Priority")
-    public Priority priority;
+	public Priority priority;
 	@SerializedName("Fidelity")
-    public Fidelity fidelity;
+	public Fidelity fidelity;
 	@SerializedName("JobLanguage")
-    public String jobLanguage;
+	public String jobLanguage;
 	@SerializedName("TargetLanguage")
-    public String targetLanguage;
+	public String targetLanguage;
 	@SerializedName("CreationTime")
-    public Date creationTime;
+	public Date creationTime;
 	@SerializedName("DueDate")
-    public Date dueDate;
+	public Date dueDate;
 	@SerializedName("TurnaroundTimeHours")
-    public int turnaroundTimeHours;
+	public int turnaroundTimeHours;
 	@SerializedName("StartTime")
-    public Date startTime;
+	public Date startTime;
 	@SerializedName("CompletedTime")
-    public Date completedTime;
+	public Date completedTime;
 }

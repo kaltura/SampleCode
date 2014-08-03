@@ -18,12 +18,4 @@ public class Dictionary<K, V> extends ArrayList<KeyValuePair<K, V>> {
 			this.add(pair.key, pair.value);
 		}
 	}
-
-	/*public void get(K k) {
-		for (KeyValuePair pair : this){
-			if (pair.key.equals(k)){
-				return pair.value;
-			}
-		}
-	}*/
 }

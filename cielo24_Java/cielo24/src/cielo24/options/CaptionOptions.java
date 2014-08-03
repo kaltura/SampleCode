@@ -1,12 +1,11 @@
 package cielo24.options;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 import cielo24.utils.QueryName;
 import static cielo24.Enums.*;
 
-public class CaptionOptions extends CommonOptions{
+public class CaptionOptions extends CommonOptions {
 
 	@QueryName("build_url")
 	public Boolean buildUrl = null;
@@ -71,87 +70,5 @@ public class CaptionOptions extends CommonOptions{
 	@QueryName("utf8_mark")
 	public Boolean utf8Mark = null;
 
-	public CaptionOptions(){}
-	
-	public CaptionOptions(int charactersPerCaptionLine,
-			              Date elementListVersion,
-			              String speakerChangeToken,
-			              boolean maskProfanity,
-			              ArrayList<Tag> removeSoundsList,
-			              boolean removeSoundReferences,
-			              boolean replaceSlang,
-			              char[] soundBoundaries,
-			              boolean buildUri,
-			              int captionWordsMin,
-			              boolean captionBySentence,
-			              String dfxpHeader,
-			              boolean disallowDangling,
-			              String effectsSpeaker,
-			              SpeakerId displaySpeakerId,
-			              Case forceCase,
-			              boolean includeDfxpMetadata,
-			              int layoutDefaultCaptionLengthMs,
-			              boolean lineBreakOnSentence,
-			              LineEnding lineEndingFormat,
-			              int linesPerCaption,
-			              int maximumCaptionDuration,
-			              int mergeGapInterval,
-			              int minimumCaptionLengthMs,
-			              int minimumGapBetweenCaptionsMs,
-			              int minimumMergeGapInterval,
-			              boolean qtSeamless,
-			              int silenceMaxMs,
-			              boolean singleSpeakerPerCaption,
-			              int soundThreshold,
-			              boolean soundTokensByCaption,
-			              boolean soundTokensByLine,
-			              ArrayList<Tag> soundTokensByCaptionList,
-			              ArrayList<Tag> soundTokensByLineList,
-			              boolean speakerOnNewLine,
-			              String srtFormat,
-			              boolean srtPrintCaptionNumbers,
-			              boolean stripSquareBrackets,
-			              boolean utf8_mark)
-	{
-		super(charactersPerCaptionLine,
-	          elementListVersion,
-              speakerChangeToken,
-              maskProfanity,
-              removeSoundsList,
-              removeSoundReferences,
-              replaceSlang,
-              soundBoundaries);
-		
-		this.buildUrl = buildUri;
-        this.captionWordsMin = captionWordsMin;
-        this.captionBySentence = captionBySentence;
-        this.dfxpHeader = dfxpHeader;
-        this.disallowDangling = disallowDangling;
-        this.effectsSpeaker = effectsSpeaker;
-        this.displayedSpeakerId = displaySpeakerId;
-        this.forceCase = forceCase;
-        this.includeDfxpMetadata = includeDfxpMetadata;
-        this.layoutTargetCaptionLengthMs = layoutDefaultCaptionLengthMs;
-        this.lineBreakOnSentence = lineBreakOnSentence;
-        this.lineEndingFormat = lineEndingFormat;
-        this.linesPerCaption = linesPerCaption;
-        this.maximumCaptionDuration = maximumCaptionDuration;
-        this.mergeGapInterval = mergeGapInterval;
-        this.minimumCaptionLengthMs = minimumCaptionLengthMs;
-        this.minimumGapBetweenCaptionsMs = minimumGapBetweenCaptionsMs;
-        this.minimumMergeGapInterval = minimumMergeGapInterval;
-        this.qtSeamless = qtSeamless;
-        this.silenceMaxMs = silenceMaxMs;
-        this.singleSpeakerPerCaption = singleSpeakerPerCaption;
-        this.soundThreshold = soundThreshold;
-        this.soundTokensByCaption = soundTokensByCaption;
-        this.soundTokensByLine = soundTokensByLine;
-        this.soundTokensByCaptionList = soundTokensByCaptionList;
-        this.soundTokensByLineList = soundTokensByLineList;
-        this.speakerOnNewLine = speakerOnNewLine;
-        this.srtFormat = srtFormat;
-        this.srtPrintCaptionNumbers = srtPrintCaptionNumbers;
-        this.stripSquareBrackets = stripSquareBrackets;
-        this.utf8Mark = utf8_mark;
-	}
+	public CaptionOptions() {}
 }

@@ -19,7 +19,7 @@ import cielo24.utils.WebException;
 
 public class WebUtils {
 
-	public static final int BASIC_TIMEOUT = 60 * 1000;         // 60 seconds
+    public static final int BASIC_TIMEOUT = 60 * 1000;         // 60 seconds
     public static final int DOWNLOAD_TIMEOUT = 5 * 60 * 1000;  // 5 minutes
     public final static Logger logger = Logger.getLogger("WebUtils");
 
@@ -33,14 +33,14 @@ public class WebUtils {
 
     	HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
-		if (headers != null) {
-			for (KeyValuePair<String, String> pair : headers) {
-				connection.setRequestProperty(pair.key, pair.value);
-			}
-		}
-		connection.setRequestMethod(method.toString());
-    	connection.setConnectTimeout(timeout);
-    	connection.setReadTimeout(timeout);
+        if (headers != null) {
+            for (KeyValuePair<String, String> pair : headers) {
+                connection.setRequestProperty(pair.key, pair.value);
+            }
+        }
+        connection.setRequestMethod(method.toString());
+        connection.setConnectTimeout(timeout);
+        connection.setReadTimeout(timeout);
         connection.connect();
 
         return readResponse(connection);
@@ -76,34 +76,36 @@ public class WebUtils {
     	    outputStream.write(buffer, 0, len);
     	}
     	outputStream.flush();
+    	outputStream.close();
 
     	return readResponse(connection);
     }
 
     /* Helper method */
     private String readResponse(HttpURLConnection connection) throws IOException, WebException {
-    	int responseCode = connection.getResponseCode();
-		if (responseCode == 200 || responseCode == 204) {
-			String response = readInputStream(connection.getInputStream());
-			connection.disconnect();
-			return response;
-		} else {
-			String response = readInputStream(connection.getErrorStream());
-			HashMap<String, String> map = Utils.deserialize(response, Utils.hashMapType);
-			connection.disconnect();
-			throw new WebException(map.get("ErrorType"), map.get("ErrorComment"));
-		}
+        int responseCode = connection.getResponseCode();
+        if (responseCode == 200 || responseCode == 204) {
+            String response = readInputStream(connection.getInputStream());
+            connection.disconnect();
+            return response;
+        } else {
+            String response = readInputStream(connection.getErrorStream());
+            HashMap<String, String> map = Utils.deserialize(response, Utils.hashMapType);
+            connection.disconnect();
+            throw new WebException(map.get("ErrorType"), map.get("ErrorComment"));
+        }
     }
 
     /* Reads data (String) from an input stream */
     private String readInputStream(InputStream stream) throws IOException{
-    	BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-		StringBuffer response = new StringBuffer();
-		String inputLine;
-		while ((inputLine = reader.readLine()) != null) {
-			response.append(inputLine);
-		}
-		return response.toString();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+        StringBuffer response = new StringBuffer();
+        String inputLine;
+        while ((inputLine = reader.readLine()) != null) {
+            response.append(inputLine);
+        }
+        reader.close();
+        return response.toString();
     }
 
     /* Logs the url */

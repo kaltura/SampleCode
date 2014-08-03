@@ -4,14 +4,13 @@ import cielo24.utils.Guid;
 import java.util.ArrayList;
 import com.google.gson.annotations.SerializedName;
 
-public class JobInfo extends JsonBase
-{
+public class JobInfo extends JsonBase {
 	@SerializedName("JobId")
-    public Guid jobId;
+	public Guid jobId;
 	@SerializedName("JobName")
-    public String jobName;
+	public String jobName;
 	@SerializedName("Language")
-    public String language;
+	public String language;
 	@SerializedName("Tasks")
-    public ArrayList<Task> tasks;
+	public ArrayList<Task> tasks;
 }

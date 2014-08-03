@@ -9,7 +9,7 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
-public class GuidSerializer implements JsonSerializer<Guid>{
+public class GuidSerializer implements JsonSerializer<Guid> {
 
 	@Override
 	public JsonElement serialize(Guid guid, Type type, JsonSerializationContext context) {

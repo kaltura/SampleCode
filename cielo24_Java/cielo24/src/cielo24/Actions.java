@@ -25,28 +25,28 @@ import cielo24.Enums.*;
 
 public class Actions {
 
-	public final int VERSION = 1;
+    private final static int API_VERSION = 1;
     public String serverUrl = "https://api.cielo24.com";
     private WebUtils web = new WebUtils();
 
-    private final String LOGIN_PATH = "/api/account/login";
-    private final String LOGOUT_PATH = "/api/account/logout";
-    private final String UPDATE_PASSWORD_PATH = "/api/account/update_password";
-    private final String GENERATE_API_KEY_PATH = "/api/account/generate_api_key";
-    private final String REMOVE_API_KEY_PATH = "/api/account/remove_api_key";
-    private final String CREATE_JOB_PATH = "/api/job/new";
-    private final String AUTHORIZE_JOB_PATH = "/api/job/authorize";
-    private final String DELETE_JOB_PATH = "/api/job/del";
-    private final String GET_JOB_INFO_PATH = "/api/job/info";
-    private final String GET_JOB_LIST_PATH = "/api/job/list";
-    private final String ADD_MEDIA_TO_JOB_PATH = "/api/job/add_media";
-    private final String ADD_EMBEDDED_MEDIA_TO_JOB_PATH = "/api/job/add_media_url";
-    private final String GET_MEDIA_PATH = "/api/job/media";
-    private final String PERFORM_TRANSCRIPTION = "/api/job/perform_transcription";
-    private final String GET_TRANSCRIPTION_PATH = "/api/job/get_transcript";
-    private final String GET_CAPTION_PATH = "/api/job/get_caption";
-    private final String GET_ELEMENT_LIST_PATH = "/api/job/get_elementlist";
-    private final String GET_LIST_OF_ELEMENT_LISTS_PATH = "/api/job/list_elementlists";
+    private final static String LOGIN_PATH = "/api/account/login";
+    private final static String LOGOUT_PATH = "/api/account/logout";
+    private final static String UPDATE_PASSWORD_PATH = "/api/account/update_password";
+    private final static String GENERATE_API_KEY_PATH = "/api/account/generate_api_key";
+    private final static String REMOVE_API_KEY_PATH = "/api/account/remove_api_key";
+    private final static String CREATE_JOB_PATH = "/api/job/new";
+    private final static String AUTHORIZE_JOB_PATH = "/api/job/authorize";
+    private final static String DELETE_JOB_PATH = "/api/job/del";
+    private final static String GET_JOB_INFO_PATH = "/api/job/info";
+    private final static String GET_JOB_LIST_PATH = "/api/job/list";
+    private final static String ADD_MEDIA_TO_JOB_PATH = "/api/job/add_media";
+    private final static String ADD_EMBEDDED_MEDIA_TO_JOB_PATH = "/api/job/add_media_url";
+    private final static String GET_MEDIA_PATH = "/api/job/media";
+    private final static String PERFORM_TRANSCRIPTION = "/api/job/perform_transcription";
+    private final static String GET_TRANSCRIPTION_PATH = "/api/job/get_transcript";
+    private final static String GET_CAPTION_PATH = "/api/job/get_caption";
+    private final static String GET_ELEMENT_LIST_PATH = "/api/job/get_elementlist";
+    private final static String GET_LIST_OF_ELEMENT_LISTS_PATH = "/api/job/list_elementlists";
 
     public Actions() {}
 
@@ -64,13 +64,13 @@ public class Actions {
         Dictionary<String, String> queryDictionary = initVersionDict();
         Dictionary<String, String> headers = new Dictionary<String, String>();
 
-		if (!useHeaders) {
-			queryDictionary.add("username", username);
-			queryDictionary.add("password", password);
-		} else {
-			headers.add("x-auth-user", username);
-			headers.add("x-auth-key", password);
-		}
+        if (!useHeaders) {
+            queryDictionary.add("username", username);
+            queryDictionary.add("password", password);
+        } else {
+            headers.add("x-auth-user", username);
+            headers.add("x-auth-key", password);
+        }
 
         URL requestURL = Utils.buildURL(serverUrl, LOGIN_PATH, queryDictionary);
         String serverResponse = web.httpRequest(requestURL, HttpMethod.GET, WebUtils.BASIC_TIMEOUT, headers);
@@ -80,26 +80,26 @@ public class Actions {
     }
 
     /* Performs a Login action. If useHeaders is true, puts securekey into HTTP headers */
-	public Guid login(String username, Guid securekey, boolean useHeaders) throws IOException, WebException {
-		this.assertArgument(username, "Username");
+    public Guid login(String username, Guid securekey, boolean useHeaders) throws IOException, WebException {
+        this.assertArgument(username, "Username");
 
-		Dictionary<String, String> queryDictionary = initVersionDict();
-		Dictionary<String, String> headers = new Dictionary<String, String>();
+        Dictionary<String, String> queryDictionary = initVersionDict();
+        Dictionary<String, String> headers = new Dictionary<String, String>();
 
-		if (!useHeaders) {
-			queryDictionary.add("username", username);
-			queryDictionary.add("securekey", securekey.toString());
-		} else {
-			headers.add("x-auth-user", username);
-			headers.add("x-auth-securekey", securekey.toString());
-		}
+        if (!useHeaders) {
+            queryDictionary.add("username", username);
+            queryDictionary.add("securekey", securekey.toString());
+        } else {
+            headers.add("x-auth-user", username);
+            headers.add("x-auth-securekey", securekey.toString());
+        }
 
-		URL requestURL = Utils.buildURL(serverUrl, LOGIN_PATH, queryDictionary);
-		String serverResponse = web.httpRequest(requestURL, HttpMethod.GET, WebUtils.BASIC_TIMEOUT, headers);
-		HashMap<String, String> response = Utils.deserialize(serverResponse, Utils.hashMapType);
+        URL requestURL = Utils.buildURL(serverUrl, LOGIN_PATH, queryDictionary);
+        String serverResponse = web.httpRequest(requestURL, HttpMethod.GET, WebUtils.BASIC_TIMEOUT, headers);
+        HashMap<String, String> response = Utils.deserialize(serverResponse, Utils.hashMapType);
 
-		return new Guid(response.get("ApiToken"));
-	}
+        return new Guid(response.get("ApiToken"));
+    }
 
     /* Performs a Logout action */
     public void logout(Guid apiToken) throws IOException, WebException {
@@ -312,9 +312,9 @@ public class Actions {
         return getCaption(apiToken, jobId, captionFormat, null);
     }
     public Guid performTranscription(Guid apiToken,
-            Guid jobId,
-            Fidelity fidelity,
-            Priority priority) throws IOException, WebException, IllegalArgumentException, IllegalAccessException  {
+                                     Guid jobId,
+                                     Fidelity fidelity,
+                                     Priority priority) throws IOException, WebException, IllegalArgumentException, IllegalAccessException  {
     	return performTranscription(apiToken, jobId, fidelity, priority, null, null, null, null);
     }
     /////////////////////////////////////////////////////////////////////
@@ -347,7 +347,7 @@ public class Actions {
     /* Returns a dictionary with version key-value pair (parameter used in every action). */
     private Dictionary<String, String> initVersionDict() {
         Dictionary<String, String> queryDictionary = new Dictionary<String, String>();
-        queryDictionary.add("v", Integer.toString(VERSION));
+        queryDictionary.add("v", Integer.toString(API_VERSION));
         return queryDictionary;
     }
 
