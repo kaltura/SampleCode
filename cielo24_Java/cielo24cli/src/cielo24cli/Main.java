@@ -20,14 +20,14 @@ public class Main {
 	static JCommander optionParser = new JCommander();
 	static String invokedVerb = null;
 
+	/* Usage: java -jar cielo24cli.jar action [options] */
 	public static void main(String[] args) throws IllegalArgumentException, IllegalAccessException, IOException, WebException {
 		if (args.length == 1 && Arrays.asList(Options.verbs).contains(args[0])) {
 			options.printActionHelp(args[0]);
-		}
-		else if (args.length != 0 && Arrays.asList(Options.verbs).contains(args[0])) { // If verb is valid
+		} else if (args.length != 0 && Arrays.asList(Options.verbs).contains(args[0])) { // If verb is valid
 			invokedVerb = args[0];
 			try { // If parsing successful
-			    optionParser = new JCommander(options, Arrays.copyOfRange(args,  1, args.length));
+				optionParser = new JCommander(options, Arrays.copyOfRange(args, 1, args.length));
 
 				if (!options.verboseMode) { // Enable verbose mode
 					WebUtils.logger.setUseParentHandlers(false);
@@ -35,22 +35,19 @@ public class Main {
 
 				if (invokedVerb.equals("login") || invokedVerb.equals("logout")) { // Login and logout are special cases
 					System.out.println(callAction(invokedVerb).toString());
-				}
-				else if (tryLogin()) {                                            // All other actions
+				} else if (tryLogin()) { // All other actions
 					System.out.println(callAction(invokedVerb).toString());
 				}
-			} catch(ParameterException e) { // Parsing failed: show usage for verb
+			} catch (ParameterException e) { // Parsing failed: show usage for verb
 				e.printStackTrace();
 				options.printActionHelp(invokedVerb);
-			} catch(Exception e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 				System.out.println("Exception: " + e.getMessage());
 			}
-		}
-		else if(args.length == 2 && args[0].equals("help") && Arrays.asList(Options.verbs).contains(args[1])){
+		} else if (args.length == 2 && args[0].equals("help") && Arrays.asList(Options.verbs).contains(args[1])) {
 			options.printActionHelp(args[1]);
-		}
-		else {
+		} else {
 			options.PrintDefaultUsage();
 		}
 
@@ -59,32 +56,32 @@ public class Main {
 
 	public static Object callAction(String actionName) throws IOException, WebException, IllegalArgumentException, IllegalAccessException {
 		actions.serverUrl = options.serverUrl;
-		switch (actionName) {
 		// ACCESS CONTROL //
-		case "login":
+		if(actionName.equals("login")) {
 			System.out.println("Logging in...");
 			if (options.apiSecureKey == null) { // Use password and username
 				return actions.login(options.username, options.password, options.headerLogin);
 			} else { // Use secure key
 				return actions.login(options.username, options.apiSecureKey, options.headerLogin);
 			}
-		case "logout":
+		} else if(actionName.equals("logout")) {
 			System.out.println("Logging out...");
 			actions.logout(options.apiToken);
 			return "Logged out successfully";
-		case "generate_api_key":
+		} else if(actionName.equals("generate_api_key")) {
 			System.out.println("Generating API key...");
 			return actions.generateAPIKey(options.apiToken, options.username, options.forceNew);
-		case "remove_api_key":
+		} else if(actionName.equals("remove_api_key")) {
 			System.out.println("Removing API key...");
 			actions.removeAPIKey(options.apiToken, options.apiSecureKey);
 			return "API Key removed successfully";
-		case "update_password":
+		} else if(actionName.equals("update_password")) {
 			System.out.println("Updating password...");
 			actions.updatePassword(options.apiToken, options.newPassword);
 			return "Password updated successfully";
-			// JOB CONTROL //
-		case "create":
+		}
+		// JOB CONTROL //
+		else if(actionName.equals("create")) {
 			System.out.println("Creating job...");
 			Guid jobId = actions.createJob(options.apiToken, options.jobName, options.sourceLanguage).jobId;
 			System.out.println("jobId: " + jobId.toString());
@@ -99,51 +96,51 @@ public class Main {
 			List<String> list1 = options.jobConfig;
 			pto.populateFromArray(list1.toArray(new String[list1.size()]));
 			return actions.performTranscription(options.apiToken, jobId, options.fidelity, options.priority, options.callbackUrl, options.turnaroundHours, options.targetLanguage, pto);
-		case "authorize":
+		} else if(actionName.equals("authorize")) {
 			System.out.println("Authorizing job...");
 			actions.authorizeJob(options.apiToken, options.jobId);
 			return "Job Authorized Succesfully";
-		case "delete":
+		} else if(actionName.equals("delete")) {
 			System.out.println("Deleting job...");
 			return actions.deleteJob(options.apiToken, options.jobId);
-		case "job_info":
+		} else if(actionName.equals("job_info")) {
 			System.out.println("Getting job info...");
 			return actions.getJobInfo(options.apiToken, options.jobId);
-		case "list":
+		} else if(actionName.equals("list")) {
 			System.out.println("Listing jobs...");
 			return actions.getJobList(options.apiToken);
-		case "add_media_to_job":
+		} else if(actionName.equals("add_media_to_job")) {
 			System.out.println("Ading media to job...");
 			if (options.mediaUrl != null) { // Media Url
 				return actions.addMediaToJob(options.apiToken, options.jobId, options.mediaUrl);
 			} else { // Media File
 				return actions.addMediaToJob(options.apiToken, options.jobId, options.mediaFile);
 			}
-		case "add_embedded_media_to_job":
+		} else if(actionName.equals("add_embedded_media_to_job")) {
 			System.out.println("Adding embedded media to job...");
 			return actions.addEmbeddedMediaToJob(options.apiToken, options.jobId, options.mediaUrl);
-		case "get_media":
+		} else if(actionName.equals("get_media")) {
 			System.out.println("Getting media...");
 			return actions.getMedia(options.apiToken, options.jobId);
-		case "get_transcript":
+		} else if(actionName.equals("get_transcript")) {
 			System.out.println("Getting transcript...");
 			TranscriptOptions to = new TranscriptOptions();
 			List<String> list2 = options.captionOptions;
 			to.populateFromArray(list2.toArray(new String[list2.size()]));
 			return actions.getTranscript(options.apiToken, options.jobId, to);
-		case "get_caption":
+		} else if(actionName.equals("get_caption")) {
 			System.out.println("Getting caption...");
 			CaptionOptions co = new CaptionOptions();
 			List<String> list3 = options.captionOptions;
 			co.populateFromArray(list3.toArray(new String[list3.size()]));
 			return actions.getCaption(options.apiToken, options.jobId, options.captionFormat, co);
-		case "get_elementlist":
+		} else if(actionName.equals("get_elementlist")) {
 			System.out.println("Getting element list...");
 			return actions.getElementList(options.apiToken, options.jobId);
-		case "list_elementlists":
+		} else if(actionName.equals("list_elementlists")) {
 			System.out.println("Listing element lists...");
 			return Joiner.on("\n").join(actions.getListOfElementLists(options.apiToken, options.jobId));
-		default:
+		} else{
 			options.PrintDefaultUsage();
 			return "";
 		}
@@ -153,10 +150,9 @@ public class Main {
 		actions.serverUrl = options.serverUrl;
 		if (options.apiToken == null) { // Need to obtain api token
 			try {
-				if(options.apiSecureKey != null){
+				if (options.apiSecureKey != null) {
 					options.apiToken = actions.login(options.username, options.apiSecureKey, true);
-				}
-				else{
+				} else {
 					options.apiToken = actions.login(options.username, options.password, true);
 				}
 			} catch (Exception e) {
