@@ -24,10 +24,10 @@ class AccessTest < Test::Unit::TestCase
   end
 
   def test_options
-    co = CaptionOptions.new
+    co = CaptionOptions.new(caption_words_min:25)
     co.build_url = true
     co.dfxp_header = "header"
-    assert_equal("build_url=true&dfxp_header=header", co.to_query)
+    assert_equal("build_url=true&caption_words_min=25&dfxp_header=header", co.to_query)
   end
 
   def test_login_and_logout

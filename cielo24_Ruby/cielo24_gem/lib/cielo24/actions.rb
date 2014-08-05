@@ -95,10 +95,10 @@ module Cielo24
 
     ### JOB CONTROL ###
 
-    def create_job(api_token, job_name=nil, source_language="en")
+    def create_job(api_token, job_name=nil, language="en")
       query_hash = init_access_req_dict(api_token)
       query_hash[:job_name] = job_name if !(job_name.nil?)
-      query_hash[:source_language] = source_language
+      query_hash[:language] = language
 
       json = WebUtils.get_json(@base_url + CREATE_JOB_PATH, 'GET', WebUtils::BASIC_TIMEOUT, query_hash)
       # Return a hash with JobId and TaskId
