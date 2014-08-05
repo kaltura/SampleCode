@@ -6,9 +6,9 @@ include Cielo24
 
 class AccessTest < Test::Unit::TestCase
   @@actions = Cielo24::Actions.new("http://sandbox-dev.cielo24.com")
-  @@password = "testscript2"
   @@username = "testscript"
-  @@new_password = "testscript"
+  @@password = "testscript2"
+  @@new_password = "testscript3"
   @@api_token = nil
   @@job_id = nil
 

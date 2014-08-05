@@ -268,6 +268,7 @@ module Cielo24Command
 
     desc "get_elementlist", 'Get ElementList for JobId'
     option *job_id_option
+    option *elementlist_version_option
     # always required (hidden)
     option *username_option
     option *password_option
@@ -277,7 +278,7 @@ module Cielo24Command
       puts "Getting ELement List..."
       actions = initialize_actions
       token = get_token(actions)
-      mash = actions.get_element_list(token, options[:j])
+      mash = actions.get_element_list(token, options[:j], option[:e])
       print_url()
       puts JSON.pretty_generate(JSON.parse(mash.to_json(nil)))
     end

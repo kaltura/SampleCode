@@ -207,8 +207,9 @@ module Cielo24
       end
     end
 
-    def get_element_list(api_token, job_id)
+    def get_element_list(api_token, job_id, elementlist_version=nil)
       query_hash = init_job_req_dict(api_token, job_id)
+      query_hash[:elementlist_version] = elementlist_version if !(elementlist_version.nil?)
       json = WebUtils.get_json(@base_url + GET_ELEMENT_LIST_PATH, 'GET', WebUtils::BASIC_TIMEOUT, query_hash)
       return Mash.new(json)
     end
