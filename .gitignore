@@ -38,4 +38,4 @@ cielo24_.NET/Cielo24/bin/Release/Newtonsoft.Json.xml
 cielo24_.NET/Cielo24/bin/Release/Newtonsoft.Json.dll
 cielo24_.NET/UnitTest/bin/Release/Cielo24Merged.dll
 *.class
-*.jar
+cielo24_Java/cielo24/bin/cielo24_unmerged.jar
