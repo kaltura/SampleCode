@@ -27,7 +27,7 @@ import cielo24.utils.Guid;
 
 public class ActionsTest {
 
-	Actions actions = new Actions("http://sandbox-dev.cielo24.com");
+	Actions actions = null;
 	String password = "testscript2";
 	String username = "testscript";
 	String newPassword = "testscript";
@@ -200,6 +200,7 @@ public class ActionsTest {
 
 	@Before
 	public void setUp() throws Exception {
+		this.actions = new Actions("http://sandbox-dev.cielo24.com");
 		if (this.apiToken == null){
 			this.apiToken = actions.login(username, password, true);
 		}
