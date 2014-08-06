@@ -162,7 +162,7 @@ namespace CommandLineTool
                     break;
                 case "get_elementlist":
                     Console.WriteLine("Getting element list...");
-                    TryAction(delegate() { return actions.GetElementList(options.ApiToken, options.JobId); });
+                    TryAction(delegate() { return actions.GetElementList(options.ApiToken, options.JobId, options.ElementlistVersion); });
                     break;
                 case "list_elementlists":
                     Console.WriteLine("Listing element lists...");

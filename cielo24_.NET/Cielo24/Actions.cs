@@ -289,9 +289,14 @@ namespace Cielo24
         }
 
         /* Returns an element list */
-        public ElementList GetElementList(Guid apiToken, Guid jobId)
+        public ElementList GetElementList(Guid apiToken, Guid jobId, DateTime? elementListVersion = null)
         {
-            return getJobResponse<ElementList>(apiToken, jobId, GET_ELEMENT_LIST_PATH);
+            Dictionary<string, string> queryDictionary = InitJobReqDict(apiToken, jobId);
+            if (elementListVersion != null) { queryDictionary.Add("elementlist_version", ((DateTime)elementListVersion).ToString("yyyy-MM-ddTHH:mm:ss.fffffffzzz")); }
+
+            Uri requestUri = Utils.BuildUri(BASE_URL, GET_ELEMENT_LIST_PATH, queryDictionary);
+            String serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.DOWNLOAD_TIMEOUT);
+            return Utils.Deserialize<ElementList>(serverResponse);
         }
 
         /* Returns a list of elements lists */

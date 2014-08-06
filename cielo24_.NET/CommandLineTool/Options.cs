@@ -71,7 +71,8 @@ namespace CommandLineTool
         public CaptionFormat CaptionFormat { get; set; }
 
         [Option('e', "el", HelpText = "The element list version [ISO Date format: 2014-05-06T10:49:38.341715]", Required = false, DefaultValue = null)]
-        public string ElementlistVersion { get; set; }
+        public string _ElementListVersion { get { return this.ElementlistVersion.ToString(); } set { this.ElementlistVersion = Converters.StringToDateTime(value, "Elementlist Version"); } }
+        public DateTime? ElementlistVersion { get; set; }
 
         [Option('C', "callback", HelpText = "Callback URL for the job", Required = false, DefaultValue = null)]
         public string _CallbackUrl { get { return this.CallbackUrl.ToString(); } set { this.CallbackUrl = Converters.StringToUri(value, "Callback URL"); } }
@@ -130,6 +131,9 @@ namespace CommandLineTool
                     Console.WriteLine("\nOPTIONAL:");
                     Console.WriteLine(indent + "-e" + gap + "The element list version [ISO Date format: 2014-05-06T10:49:38.341715]");
                     Console.WriteLine(indent + "-O" + gap + "Caption/transcript options query string arguments. Usage: -O key1=value1 -O key2=value2. See API documentation for details");
+                    break;
+                case "get_elementlist":
+                    Console.WriteLine(indent + "-e" + gap + "ElementList Version");
                     break;
                 case "generate_api_key":
                     Console.WriteLine("\nOPTIONAL:");
@@ -234,6 +238,22 @@ namespace CommandLineTool
             catch (IOException e)
             {
                 throw new IOException("Invalid file path: \'" + propertyName + "\'.\n" + e.Message, e);
+            }
+        }
+
+        public static DateTime? StringToDateTime(string s, string propertyName)
+        {
+            if (s == null)
+            {
+                return null;
+            }
+            try
+            {
+                return DateTime.Parse(s);
+            }
+            catch (IOException e)
+            {
+                throw new IOException("Invalid format: \'" + propertyName + "\'.\n" + e.Message, e);
             }
         }
     }
