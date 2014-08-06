@@ -14,8 +14,8 @@ More detailed information about each project can be found below:
   
 * Core library path:
 
-    cielo24_.NET/Cielo24/bin/Release/Cielo24.dll (depends on Newtonsoft.JSON)
-    cielo24_.NET/Cielo24/bin/Release/Cielo24Merged.dll (no dependencies)
+    cielo24_.NET/Cielo24/bin/Release/Cielo24.dll *(depends on Newtonsoft.JSON)*
+    cielo24_.NET/Cielo24/bin/Release/Cielo24Merged.dll *(no dependencies)*
     
 * NuGet:
 
@@ -27,7 +27,7 @@ More detailed information about each project can be found below:
     
 * Command Line Interface path:
 
-    cielo24_.NET/CommandLineTool/bin/Release/CommandLineToolMerged.exe (no dependencies)
+    cielo24_.NET/CommandLineTool/bin/Release/CommandLineToolMerged.exe *(no dependencies)*
     
     Usage: `CommandLineToolMerged.exe [action] [options]`
 
@@ -36,14 +36,14 @@ Java
 
 * Core jar path:
 
-    cielo24_Java/cielo24/bin/cielo24.jar (no dependencies)
+    cielo24_Java/cielo24/bin/cielo24.jar *(no dependencies)*
     
     Dependent jar can be compiled from source code (3rd party dependencies are in the /lib folder).
     In Eclipse - click cielo24.jardesc to compile.
     
 * Command Line Interface jar path:
 
-    cielo24_Java/cielo24cli/bin/cielo24cli.jar (no dependencies)
+    cielo24_Java/cielo24cli/bin/cielo24cli.jar *(no dependencies)*
     
     Usage: `java -jar cielo24cli.jar [action] [options]`
     
@@ -52,7 +52,7 @@ Python
 
 * Core sources:
 
-    cielo24_Python/cielo24/cielo24/ (no dependencies)
+    cielo24_Python/cielo24/cielo24/ *(no dependencies)*
     
 * PyPI:
 
@@ -69,7 +69,7 @@ Python
     
 * Command Line Interface path:
 
-    cielo24_Python/cielo24cli/cielo24cli.py (depends on compago)
+    cielo24_Python/cielo24cli/cielo24cli.py *(depends on compago)*
     
     Usage: `python cielo24cli.py [action] [options]`
 
@@ -78,7 +78,7 @@ Ruby
 
 * Core gem path:
 
-    cielo24_Ruby/cielo24_gem/cielo24-X.X.X.gem (depends on httpclient, hashie)
+    cielo24_Ruby/cielo24_gem/cielo24-X.X.X.gem *(depends on httpclient, hashie)*
     
 * Ruby Gems:
 
@@ -95,4 +95,4 @@ Ruby
     
 * Command Line Interface gem path:
 
-    cielo24_Ruby/cielo24_command/cielo24-cli-X.X.X.gem (depends on cielo24, thor)
+    cielo24_Ruby/cielo24_command/cielo24-cli-X.X.X.gem *(depends on cielo24, thor)*
