@@ -278,7 +278,7 @@ module Cielo24Command
       puts "Getting ELement List..."
       actions = initialize_actions
       token = get_token(actions)
-      mash = actions.get_element_list(token, options[:j], option[:e])
+      mash = actions.get_element_list(token, options[:j], options[:e])
       print_url()
       puts JSON.pretty_generate(JSON.parse(mash.to_json(nil)))
     end

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 import cielo24.WebUtils.HttpMethod;
@@ -300,10 +301,15 @@ public class Actions {
 	}
 
 	/* Returns an element list */
-	public ElementList getElementList(Guid apiToken,
-									  Guid jobId)
-									  throws IOException, WebException {
-		return getJobResponse(apiToken, jobId, GET_ELEMENT_LIST_PATH, ElementList.class);
+	public ElementList getElementList(Guid apiToken, Guid jobId, Date elementListVersion) throws IOException, WebException {
+		Dictionary<String, String> queryDictionary = initJobReqDict(apiToken, jobId);
+		if (elementListVersion != null) {
+			queryDictionary.add("elementlist_version", Utils.dateFormat.format(elementListVersion));
+		}
+
+		URL requestURL = Utils.buildURL(serverUrl, GET_ELEMENT_LIST_PATH, queryDictionary);
+		String serverResponse = web.httpRequest(requestURL, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
+		return Utils.deserialize(serverResponse, ElementList.class);
 	}
 
 	/* Returns a list of elements lists */
@@ -333,17 +339,16 @@ public class Actions {
 		return getTranscript(apiToken, jobId, null);
 	}
 
-	public String getCaption(Guid apiToken,
-							 Guid jobId,
-							 CaptionFormat captionFormat)
+	public String getCaption(Guid apiToken, Guid jobId, CaptionFormat captionFormat)
 							 throws IOException, WebException, IllegalArgumentException, IllegalAccessException {
 		return getCaption(apiToken, jobId, captionFormat, null);
 	}
 
-	public Guid performTranscription(Guid apiToken,
-									 Guid jobId,
-									 Fidelity fidelity,
-									 Priority priority)
+	public ElementList getElementList(Guid apiToken, Guid jobId) throws IOException, WebException {
+		return getElementList(apiToken, jobId, null);
+	}
+
+	public Guid performTranscription(Guid apiToken, Guid jobId, Fidelity fidelity, Priority priority)
 									 throws IOException, WebException, IllegalArgumentException, IllegalAccessException {
 		return performTranscription(apiToken, jobId, fidelity, priority, null, null, null, null);
 	}
