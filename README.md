@@ -12,12 +12,12 @@ More detailed information about each project can be found below:
 .NET
 ----
   
-Core library path:
+* Core library path:
 
     cielo24_.NET/Cielo24/bin/Release/Cielo24.dll (depends on Newtonsoft.JSON)
     cielo24_.NET/Cielo24/bin/Release/Cielo24Merged.dll (no dependencies)
     
-NuGet:
+* NuGet:
 
     Run the following command in the Package Manager Console in Visual Studio
     to install Cielo24 assembly as well as any dependencies:
@@ -25,7 +25,7 @@ NuGet:
       
     More information can be found here: https://www.nuget.org/packages/Cielo24/
     
-Command Line Interface path:
+* Command Line Interface path:
 
     cielo24_.NET/CommandLineTool/bin/Release/CommandLineToolMerged.exe (no dependencies)
     
@@ -34,14 +34,14 @@ Command Line Interface path:
 Java
 ----
 
-Core jar path:
+* Core jar path:
 
     cielo24_Java/cielo24/bin/cielo24.jar (no dependencies)
     
     Dependent jar can be compiled from source code (3rd party dependencies are in the /lib folder).
     In Eclipse - click cielo24.jardesc to compile.
     
-Command Line Interface jar path:
+* Command Line Interface jar path:
 
     cielo24_Java/cielo24cli/bin/cielo24cli.jar (no dependencies)
     
