@@ -8,6 +8,7 @@ import java.util.List;
 
 import cielo24.Enums.*;
 import cielo24.utils.Guid;
+import cielo24.utils.NanoDate;
 import cielo24cli.converters.*;
 
 import com.beust.jcommander.Parameter;
@@ -66,8 +67,8 @@ public class Options {
     @Parameter(names="-c", description="The caption format [SRT, DFXP, QT] (SRT by default)", required=false)
     public CaptionFormat captionFormat = CaptionFormat.SRT;
 
-    @Parameter(names="-e", description="The element list version [ISO Date format: 2014-05-06T10:49:38.341715]", required=false)
-    public String elementlistVersion = null;
+    @Parameter(names="-e", description="The element list version [ISO Date format: 2014-05-06T10:49:38.341715]", required=false, converter=NanoDateConverter.class)
+    public NanoDate elementlistVersion = null;
 
     @Parameter(names="-C", description="Callback URL for the job", required=false)
     public URL callbackUrl = null;
@@ -105,61 +106,62 @@ public class Options {
         }
 
         if(action.equals("add_media_to_job")){
-                //"$job_id_param" "$media_url_param" "or" "$media_file_param"
-                System.out.println(indent + "-m" + gap + "Media URL");
-                System.out.println("or");
-                System.out.println(indent + "-M" + gap + "Local Media File");
+            System.out.println(indent + "-m" + gap + "Media URL");
+            System.out.println("or");
+            System.out.println(indent + "-M" + gap + "Local Media File");
+        }
+        else if(action.equals("get_elementlist")){
+        	System.out.println(indent + "-e" + gap + "ElementList Version");
         }
         else if(action.equals("add_embedded_media_to_job")){
-                System.out.println(indent + "-m" + gap + "Media URL");
+            System.out.println(indent + "-m" + gap + "Media URL");
         }
         else if(action.equals("list")){
-                System.out.println(indent + "none");
+            System.out.println(indent + "none");
         }
         else if(action.equals("get_caption") || action.equals("get_transcript")){
-                System.out.println(indent + "-c" + gap + "The caption format [SRT, DFXP, QT] (SRT by default)");
-                System.out.println("\nOPTIONAL:");
-                System.out.println(indent + "-e" + gap + "The element list version [ISO Date format: 2014-05-06T10:49:38.341715]");
-                System.out.println(indent + "-O" + gap + "Caption/transcript options query String arguments. Usage: -O key1=value1 -O key2=value2. See API documentation for details");
+            System.out.println(indent + "-c" + gap + "The caption format [SRT, DFXP, QT] (SRT by default)");
+            System.out.println("\nOPTIONAL:");
+            System.out.println(indent + "-e" + gap + "The element list version [ISO Date format: 2014-05-06T10:49:38.341715]");
+            System.out.println(indent + "-O" + gap + "Caption/transcript options query String arguments. Usage: -O key1=value1 -O key2=value2. See API documentation for details");
         }
         else if(action.equals("generate_api_key")){
-                System.out.println("\nOPTIONAL:");
-                System.out.println(indent + "-F" + gap + "Always force new API key (disabled by default)");
+            System.out.println("\nOPTIONAL:");
+            System.out.println(indent + "-F" + gap + "Always force new API key (disabled by default)");
         }
         else if(action.equals("remove_api_key")){
-                System.out.println(indent + "-k" + gap + "API Secure Key");
+            System.out.println(indent + "-k" + gap + "API Secure Key");
         }
         else if(action.equals("update_password")){
-                System.out.println(indent + "-d" + gap + "New password");
+            System.out.println(indent + "-d" + gap + "New password");
         }
         else if(action.equals("logout")){
-                System.out.println(indent + "-N" + gap + "API token for the current session");
+            System.out.println(indent + "-N" + gap + "API token for the current session");
         }
         else if(action.equals("login")){
-                System.out.println(indent + "-u" + gap + "cielo24 username");
-                System.out.println(indent + "-p" + gap + "cielo24 password");
-                System.out.println("or");
-                System.out.println(indent + "-k" + gap + "API secure key");
-                System.out.println("or");
-                System.out.println(indent + "-N" + gap + "API token of the current session");
-                System.out.println("\nOPTIONAL:");
-                System.out.println(indent + "-H" + gap + "Use headers");
+            System.out.println(indent + "-u" + gap + "cielo24 username");
+            System.out.println(indent + "-p" + gap + "cielo24 password");
+            System.out.println("or");
+            System.out.println(indent + "-k" + gap + "API secure key");
+            System.out.println("or");
+            System.out.println(indent + "-N" + gap + "API token of the current session");
+            System.out.println("\nOPTIONAL:");
+            System.out.println(indent + "-H" + gap + "Use headers");
         }
         else if(action.equals("create")){
-                System.out.println(indent + "-f" + gap + "Fidelity [MECHANICAL, PREMIUM, PROFESSIONAL]");
-                System.out.println(indent + "-P" + gap + "Priority [ECONOMY, STANDARD, HIGH]");
-                System.out.println(indent + "-M" + gap + "Local Media File");
-                System.out.println("or");
-                System.out.println(indent + "-m" + gap + "Media URL");
-                System.out.println("\nOPTIONAL:");
-                System.out.println(indent + "-n" + gap + "Job Name");
-                System.out.println(indent + "-J" + gap + "Job options dictionary. Usage: -O key1=value1 -O key2=value2. See API documentation for details");
-                System.out.println(indent + "-C" + gap + "Callback URL for the job");
-                System.out.println(indent + "-T" + gap + "Turnaround hours");
-                System.out.println(indent + "-l" + gap + "The source language [en, es, de, fr] (en by default)");
-                System.out.println(indent + "-t" + gap + "The target language [en, es, de, fr] (en by default)");
+            System.out.println(indent + "-f" + gap + "Fidelity [MECHANICAL, PREMIUM, PROFESSIONAL]");
+            System.out.println(indent + "-P" + gap + "Priority [ECONOMY, STANDARD, HIGH]");
+            System.out.println(indent + "-M" + gap + "Local Media File");
+            System.out.println("or");
+            System.out.println(indent + "-m" + gap + "Media URL");
+            System.out.println("\nOPTIONAL:");
+            System.out.println(indent + "-n" + gap + "Job Name");
+            System.out.println(indent + "-J" + gap + "Job options dictionary. Usage: -O key1=value1 -O key2=value2. See API documentation for details");
+            System.out.println(indent + "-C" + gap + "Callback URL for the job");
+            System.out.println(indent + "-T" + gap + "Turnaround hours");
+            System.out.println(indent + "-l" + gap + "The source language [en, es, de, fr] (en by default)");
+            System.out.println(indent + "-t" + gap + "The target language [en, es, de, fr] (en by default)");
         }
-
     }
 
     public void PrintDefaultUsage() {

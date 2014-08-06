@@ -3,7 +3,6 @@ package cielo24.options;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -78,9 +77,7 @@ public abstract class BaseOptions {
 			return Utils.joinQuoteList((ArrayList<?>) value, ", ");
 		} else if (value instanceof char[]) {                // char[] (returned as (a, b))
 			return Utils.joinCharArray((char[]) value, ", ");
-		} else if (value instanceof Date) {                  // DateTime (in ISO 8601 format)
-			return Utils.dateFormat.format((Date) value);
-		} else {                                             // Takes care of the rest: Integer, Boolean, String, URL
+		} else {                                             // Takes care of the rest: Integer, Boolean, String, URL, NanoDate
 			return value.toString();
 		}
 	}

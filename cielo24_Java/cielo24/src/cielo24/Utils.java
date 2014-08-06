@@ -30,7 +30,7 @@ public class Utils {
 
 	public static final Type hashMapType = new TypeToken<HashMap<String, String>>() {}.getType();
 	public static final Type listELType = new TypeToken<ArrayList<ElementListVersion>>() {}.getType();
-	public static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS"); // 2014-07-24T14:57:38.138269
+	//public static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS"); // 2014-07-24T14:57:38.138269
 
 	/* Concatinates baseURL, actionPath and key-value pairs from the dictionary, returning a URL */
 	public static URL buildURL(String baseURL, String actionPath, Dictionary<String, String> dictionary) throws MalformedURLException {

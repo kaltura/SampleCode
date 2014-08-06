@@ -1,8 +1,8 @@
 package cielo24.options;
 
 import java.util.ArrayList;
-import java.util.Date;
 
+import cielo24.utils.NanoDate;
 import cielo24.utils.QueryName;
 import static cielo24.Enums.*;
 
@@ -11,7 +11,7 @@ public abstract class CommonOptions extends BaseOptions {
 	@QueryName("characters_per_caption_line")
 	public Integer charactersPerCaptionLine = null;
 	@QueryName("elementlist_version")
-	public Date elementListVersion = null;
+	public NanoDate elementListVersion = null;
 	@QueryName("emit_speaker_change_token_as")
 	public String speakerChangeToken = null;
 	@QueryName("mask_profanity")

@@ -136,7 +136,7 @@ public class Main {
 			return actions.getCaption(options.apiToken, options.jobId, options.captionFormat, co);
 		} else if(actionName.equals("get_elementlist")) {
 			System.out.println("Getting element list...");
-			return actions.getElementList(options.apiToken, options.jobId);
+			return actions.getElementList(options.apiToken, options.jobId, options.elementlistVersion);
 		} else if(actionName.equals("list_elementlists")) {
 			System.out.println("Listing element lists...");
 			return Joiner.on("\n").join(actions.getListOfElementLists(options.apiToken, options.jobId));

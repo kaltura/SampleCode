@@ -14,6 +14,6 @@ public class DateSerializer implements JsonSerializer<Date> {
 
 	@Override
 	public JsonElement serialize(Date date, Type type, JsonSerializationContext context) {
-		return new JsonPrimitive(Utils.dateFormat.format(date));
+		return new JsonPrimitive(date.toString());
 	}
 }
