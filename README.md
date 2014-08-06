@@ -50,11 +50,11 @@ Java
 Python
 ------
 
-Core sources:
+* Core sources:
 
     cielo24_Python/cielo24/cielo24/ (no dependencies)
     
-PyPI:
+* PyPI:
 
     Run the following command to install сielo24 package as well as any dependencies:
       `pip install cielo24`
@@ -67,7 +67,7 @@ PyPI:
     More information can be found here: https://pypi.python.org/pypi/cielo24cli
     
     
-Command Line Interface path:
+* Command Line Interface path:
 
     cielo24_Python/cielo24cli/cielo24cli.py (depends on compago)
     
@@ -76,11 +76,11 @@ Command Line Interface path:
 Ruby
 ----
 
-Core gem path:
+* Core gem path:
 
     cielo24_Ruby/cielo24_gem/cielo24-X.X.X.gem (depends on httpclient, hashie)
     
-Ruby Gems:
+* Ruby Gems:
 
     Run the following command to install сielo24 gem as well as any dependencies:
       `gem install cielo24`
@@ -93,6 +93,6 @@ Ruby Gems:
     Usage: `cielo24cli [action] [options]`
     More information can be found here: https://rubygems.org/gems/cielo24-cli
     
-Command Line Interface gem path:
+* Command Line Interface gem path:
 
     cielo24_Ruby/cielo24_command/cielo24-cli-X.X.X.gem (depends on cielo24, thor)
