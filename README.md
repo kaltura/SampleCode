@@ -7,7 +7,7 @@ Each folder contains contains source code for the core library,
 a sample command line tool, compiled packages (.dll, .jar, .gem)
 as well as some miscellaneous stuff (such as unit tests).
 
-More detailed information about each project can be found below.
+More detailed information about each project can be found below:
 
 .NET
 ----
@@ -19,14 +19,14 @@ More detailed information about each project can be found below.
   NuGet:
     Run the following command in the Package Manager Console in Visual Studio
     to install Cielo24 assembly as well as any dependencies:
-      ``Install-Package Cielo24``
+      `Install-Package Cielo24`
       
     More information can be found here: https://www.nuget.org/packages/Cielo24/
     
   Command Line Interface path:
     cielo24_.NET/CommandLineTool/bin/Release/CommandLineToolMerged.exe (no dependencies)
     
-    Usage: ``CommandLineToolMerged.exe [action] [options]``
+    Usage: `CommandLineToolMerged.exe [action] [options]`
 
 Java
 ----
@@ -40,7 +40,7 @@ Java
   Command Line Interface jar path:
     cielo24_Java/cielo24cli/bin/cielo24cli.jar (no dependencies)
     
-    Usage: ``java -jar cielo24cli.jar [action] [options]``
+    Usage: `java -jar cielo24cli.jar [action] [options]`
     
 Python
 ------
@@ -50,12 +50,12 @@ Python
     
   PyPI:
     Run the following command to install сielo24 package as well as any dependencies:
-      ``pip install cielo24``
+      `pip install cielo24`
     
     More information can be found here: https://pypi.python.org/pypi/cielo24
     
     Run the following command to install сielo24cli package as well as any dependencies:
-      ``pip install cielo24cli``
+      `pip install cielo24cli`
       
     More information can be found here: https://pypi.python.org/pypi/cielo24cli
     
@@ -63,7 +63,7 @@ Python
   Command Line Interface path:
     cielo24_Python/cielo24cli/cielo24cli.py (depends on compago)
     
-    Usage: ``python cielo24cli.py [action] [options]``
+    Usage: `python cielo24cli.py [action] [options]`
 
 Ruby
 ----
@@ -73,14 +73,14 @@ Ruby
     
   Ruby Gems:
     Run the following command to install сielo24 gem as well as any dependencies:
-      ``gem install cielo24``
+      `gem install cielo24`
     
     More information can be found here: http://rubygems.org/gems/cielo24
     
     Run the following command to install сielo24-cli gem as well as any dependencies:
-      ``gem install cielo24-cli``
+      `gem install cielo24-cli`
       
-    Usage: ``cielo24cli [action] [options]``
+    Usage: `cielo24cli [action] [options]`
     More information can be found here: https://rubygems.org/gems/cielo24-cli
     
   Command Line Interface gem path:
