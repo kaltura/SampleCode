@@ -4,7 +4,7 @@ from setuptools import setup
 # Script for PyPI
 
 setup(name='cielo24cli',
-      version='1.0.1',
+      version='1.0.2',
       description='Commmand line for cielo24 package.',
       author='cielo24',
       author_email='support@cielo24.com',

@@ -195,8 +195,10 @@ class Actions:
         else:
             return response  # Else return raw caption text
 
-    def get_element_list(self, api_token, job_id):
+    def get_element_list(self, api_token, job_id, elementlist_version=None):
         query_dict = self.__init_job_req_dict(api_token, job_id)
+        if elementlist_version is not None:
+            query_dict['elementlist_version'] = elementlist_version
 
         json = WebUtils.get_json(self.base_url, self.GET_ELEMENT_LIST_PATH, 'GET', WebUtils.BASIC_TIMEOUT, query_dict)
         return json

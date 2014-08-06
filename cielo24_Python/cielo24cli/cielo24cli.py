@@ -312,6 +312,7 @@ def get_transcript(job_id,
 
 
 @app.option('-j', dest='job_id', required=True, help="Job Id")
+@app.option('-e', dest='elementlist_version', required=False, help="ElementList version", default=None)
 # Always required (hidden)
 @app.option('-u', dest='username', required=True, help="cielo24 username")
 @app.option('-p', dest='password', required=False, help="cielo24 password", default=None)
@@ -325,12 +326,13 @@ def get_elementlist(job_id,
                     api_securekey,
                     api_token,
                     server_url,
-                    verbose_mode):
+                    verbose_mode,
+                    elementlist_version):
     print "Getting ELement List..."
     __set_verbose(verbose_mode)
     actions = __initialize_actions(server_url)
     token = __get_token(actions, username, password, api_securekey, api_token)
-    json = actions.get_element_list(token, job_id)
+    json = actions.get_element_list(token, job_id, elementlist_version)
     print dumps(json, indent=4, separators=(',', ': '))
 
 @app.option('-j', dest='job_id', required=True, help="Job Id")
