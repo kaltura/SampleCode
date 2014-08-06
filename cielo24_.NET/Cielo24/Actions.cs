@@ -36,6 +36,13 @@ namespace Cielo24
         private const string GET_ELEMENT_LIST_PATH = "/api/job/get_elementlist";
         private const string GET_LIST_OF_ELEMENT_LISTS_PATH = "/api/job/list_elementlists";
 
+        public Actions() { }
+
+        public Actions(String uri)
+        {
+            this.BASE_URL = uri;
+        }
+
         /// ACCESS CONTROL ///
 
         /* Performs a Login action. If useHeaders is true, puts username and password into HTTP headers */

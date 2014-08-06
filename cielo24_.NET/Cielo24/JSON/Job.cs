@@ -59,6 +59,6 @@ namespace Cielo24.JSON
         [JsonProperty("JobId")]
         public Guid JobId { get; set; }
         [JsonProperty("TaskId")]
-        public string TaskId { get; set; }
+        public Guid TaskId { get; set; }
     }
 }
