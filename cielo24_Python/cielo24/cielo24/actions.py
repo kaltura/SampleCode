@@ -138,7 +138,7 @@ class Actions:
     def __send_media_url(self, api_token, job_id, media_url, path):
         self.__assert_argument(media_url, "Media URL")
         query_dict = self.__init_job_req_dict(api_token, job_id)
-        query_dict['media_url'] = quote(media_url)
+        query_dict['media_url'] = quote(media_url, '')
 
         json = WebUtils.get_json(self.base_url, path, 'GET', WebUtils.BASIC_TIMEOUT, query_dict)
         return json["TaskId"]
@@ -164,7 +164,7 @@ class Actions:
         query_dict['transcription_fidelity'] = fidelity
         query_dict['priority'] = priority
         if callback_uri is not None:
-            query_dict['callback_uri'] = quote(callback_uri)
+            query_dict['callback_uri'] = quote(callback_uri, '')
         if turnaround_hours is not None:
             query_dict['turnaround_hours'] = turnaround_hours
         if target_language is not None:
