@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    cielo24 (0.0.12)
+    cielo24 (0.0.13)
       hashie
       httpclient
 

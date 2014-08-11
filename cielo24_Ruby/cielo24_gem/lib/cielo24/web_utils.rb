@@ -23,6 +23,7 @@ module Cielo24
       http_client = HTTPClient.new
       http_client.cookie_manager = nil
       http_client.send_timeout = 60*60*24*7 # HTTPClient default timeout set to 7 days, our own timeout handler is down below
+      @@LAST_URL = uri + (query.nil? ? "" : "?" + URI.encode_www_form(query))
 
       # Timeout block:
       begin
@@ -42,8 +43,6 @@ module Cielo24
       rescue Timeout::Error
         raise TimeoutError.new("The HTTP session has timed out.")
       end
-
-      @@LAST_URL = uri + (query.nil? ? "" : "?" + URI.encode_www_form(query))
     end
   end
 
