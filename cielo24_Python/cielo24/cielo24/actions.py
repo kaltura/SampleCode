@@ -1,7 +1,6 @@
 from json import JSONDecoder
 from os import fstat
-from urllib import quote, urlencode
-
+from urllib import urlencode
 from web_utils import WebUtils
 
 
@@ -138,7 +137,7 @@ class Actions:
     def __send_media_url(self, api_token, job_id, media_url, path):
         self.__assert_argument(media_url, "Media URL")
         query_dict = self.__init_job_req_dict(api_token, job_id)
-        query_dict['media_url'] = quote(media_url, '')
+        query_dict['media_url'] = media_url
 
         json = WebUtils.get_json(self.base_url, path, 'GET', WebUtils.BASIC_TIMEOUT, query_dict)
         return json["TaskId"]
@@ -154,7 +153,7 @@ class Actions:
                               job_id,
                               fidelity,
                               priority,
-                              callback_uri=None,
+                              callback_url=None,
                               turnaround_hours=None,
                               target_language=None,
                               options=None):
@@ -163,8 +162,8 @@ class Actions:
         query_dict = self.__init_job_req_dict(api_token, job_id)
         query_dict['transcription_fidelity'] = fidelity
         query_dict['priority'] = priority
-        if callback_uri is not None:
-            query_dict['callback_uri'] = quote(callback_uri, '')
+        if callback_url is not None:
+            query_dict['callback_url'] = callback_url
         if turnaround_hours is not None:
             query_dict['turnaround_hours'] = turnaround_hours
         if target_language is not None:
