@@ -24,8 +24,8 @@ class ErrorType:
   
 
 class JobStatus:
-    Authorizing = "SRT"
-    Ping = "SRT"
+    Authorizing = "Authorizing"
+    Ping = "Ping"
     In_Process = "In Process"
     Complete = "Complete"
   
