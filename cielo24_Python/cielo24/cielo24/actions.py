@@ -1,10 +1,11 @@
+# encoding: utf-8
 from json import JSONDecoder
 from os import fstat
 from urllib import urlencode
 from web_utils import WebUtils
 
 
-class Actions:
+class Actions(object):
 
     API_VERSION = 1
     LOGIN_PATH = "/api/account/login"

@@ -1,3 +1,4 @@
+# encoding: utf-8
 from unittest import TestCase
 from traceback import format_exc
 
@@ -6,7 +7,7 @@ from cielo24.options import *
 from cielo24.web_utils import *
 
 
-class AccessTest(TestCase):
+class TestAccess(TestCase):
     actions = Actions("http://sandbox-dev.cielo24.com")
     username = "testscript"
     password = "testscript2"
