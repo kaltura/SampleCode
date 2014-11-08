@@ -11,19 +11,19 @@ namespace UnitTest
     public class ActionsTest
     {
         private Actions actions = new Actions("http://sandbox-dev.cielo24.com");
-        private String username = "testscript";
-        private String password = "testscript2";
-        private String newPassword = "testscript3";
+        private String username = "api_test";
+        private String password = "api_test";
+        private String newPassword = "api_test_new";
         private Guid apiToken = Guid.Empty;
         private Guid jobId = Guid.Empty;
         private Guid taskId = Guid.Empty;
         private Guid secureKey = Guid.Empty;
-        private Uri uri = new Uri("http://lesmoralesphotography.com/cielo24/test_suite/End_to_End_Regression/media_short_2327da9786d44a9a9c62242853593059.mp4");
+        private Uri sampleVideoUri = new Uri("http://techslides.com/demos/sample-videos/small.mp4");
+        private string sampleVideoFilePath = "C:\\path\\to\\file.mp4";
 
         [TestMethod]
         public void testOptions()
         {
-
             CaptionOptions co = new CaptionOptions();
             co.CaptionBySentence = true;
             co.ForceCase = Case.upper;
@@ -50,7 +50,6 @@ namespace UnitTest
             Assert.AreEqual(32, apiToken.ToString("N").Length);
             // Logout
             actions.Logout(apiToken);
-
             apiToken = Guid.Empty;
         }
 
@@ -67,10 +66,8 @@ namespace UnitTest
         [TestMethod]
         public void testUpdatePassword()
         {
-
             actions.UpdatePassword(apiToken, newPassword);
             actions.UpdatePassword(apiToken, password);
-
         }
 
         [TestMethod]
@@ -85,24 +82,20 @@ namespace UnitTest
         public void testAuthorizeJob()
         {
             actions.AuthorizeJob(apiToken, jobId);
-
             jobId = Guid.Empty;
         }
 
         [TestMethod]
         public void testDeleteJob()
         {
-
             taskId = actions.DeleteJob(apiToken, jobId);
             Assert.AreEqual(32, taskId.ToString("N").Length);
-
             jobId = Guid.Empty;
         }
 
         [TestMethod]
         public void testGets()
         {
-
             Console.WriteLine("testing getJobInfo()");
             JobInfo info = actions.GetJobInfo(apiToken, jobId);
             Console.WriteLine("testing getJobList()");
@@ -113,7 +106,6 @@ namespace UnitTest
             List<ElementListVersion> list3 = actions.GetListOfElementLists(apiToken, jobId);
             Console.WriteLine("testing getMedia()");
             Uri uri = actions.GetMedia(apiToken, jobId);
-
         }
 
         [TestMethod]
@@ -121,28 +113,24 @@ namespace UnitTest
         {
             actions.GetCaption(apiToken, jobId, CaptionFormat.SRT);
             actions.GetTranscript(apiToken, jobId);
-
         }
 
         [TestMethod]
         public void testPerformTranscription()
         {
-            actions.AddMediaToJob(apiToken, jobId, uri);
+            actions.AddMediaToJob(apiToken, jobId, sampleVideoUri);
             taskId = actions.PerformTranscription(apiToken, jobId, Fidelity.STANDARD, Priority.STANDARD);
             Assert.AreEqual(32, taskId.ToString("N").Length);
-
         }
 
         [TestMethod]
         public void testAddData()
         {
-            string smallFile = "C:\\Users\\Evgeny\\Videos\\small.mp4";
-            string bigFile = "C:\\Users\\Evgeny\\Videos\\The_Hobbit_480p.mov";
-            FileStream fs = new FileStream(smallFile, FileMode.Open);
-            taskId = actions.AddMediaToJob(apiToken, jobId, uri);
+            FileStream fs = new FileStream(sampleVideoFilePath, FileMode.Open);
+            taskId = actions.AddMediaToJob(apiToken, jobId, sampleVideoUri);
             Assert.AreEqual(32, taskId.ToString("N").Length);
             jobId = actions.CreateJob(apiToken).JobId;
-            taskId = actions.AddEmbeddedMediaToJob(apiToken, jobId, uri);
+            taskId = actions.AddEmbeddedMediaToJob(apiToken, jobId, sampleVideoUri);
             Assert.AreEqual(32, taskId.ToString("N").Length);
             jobId = actions.CreateJob(apiToken).JobId;
             taskId = actions.AddMediaToJob(apiToken, jobId, fs);
