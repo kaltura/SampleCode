@@ -1,6 +1,7 @@
 # encoding: utf-8
 from unittest import TestCase
 from traceback import format_exc
+from urlparse import urlparse
 
 from cielo24.actions import Actions
 from cielo24.options import *
@@ -77,9 +78,9 @@ class TestAccess(TestCase):
 
     def test_create_job(self):
         try:
-            json = self.actions.create_job(self.api_token, "testname", "en")
-            self.assertEqual(32, len(json['JobId']))
-            self.assertEqual(32, len(json['TaskId']))
+            json_object = self.actions.create_job(self.api_token, "testname", "en")
+            self.assertEqual(32, len(json_object['JobId']))
+            self.assertEqual(32, len(json_object['TaskId']))
         except Exception as e:
             print(format_exc())
             self.fail("test_create_job() failed.")
@@ -103,15 +104,22 @@ class TestAccess(TestCase):
 
     def test_gets(self):
         try:
-            json = self.actions.get_job_info(self.api_token, self.job_id)
-            #print(type(json))
-            json = self.actions.get_job_list(self.api_token)
-            #print(json)
-            json = self.actions.get_element_list(self.api_token, self.job_id)
-            #print(josn)
-            json = self.actions.get_list_of_element_lists(self.api_token, self.job_id)
-            #print(josn)
-            json = self.actions.get_media(self.api_token, self.job_id)
+            json_object = self.actions.get_job_info(self.api_token, self.job_id)
+            self.assertIsNotNone(json_object.get(["JobId"]))
+
+            json_object = self.actions.get_job_list(self.api_token)
+            self.assertIsNotNone(json_object.get(["ActiveJobs"]))
+
+            json_object = self.actions.get_element_list(self.api_token, self.job_id)
+            self.assertIsNotNone(json_object.get(["version"]))
+
+            json_object = self.actions.get_list_of_element_lists(self.api_token, self.job_id)
+            self.assertTrue(isinstance(json_object, list))
+
+            media_url = self.actions.get_media(self.api_token, self.job_id)
+            parsed_url = urlparse(media_url)
+            self.assertIsNot(parsed_url.scheme, '')
+            self.assertIsNot(parsed_url.netloc, '')
         except Exception as e:
             print(format_exc())
             self.fail("test_gets() failed.")
