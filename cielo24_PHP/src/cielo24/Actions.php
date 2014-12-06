@@ -37,50 +37,36 @@ class Actions {
     /// ACCESS CONTROL ///
 
     /* Performs a Login action. If useHeaders is true, puts username and password into HTTP headers */
-    public function login($username, $password, $use_headers = false) {
+    public function login($username, $password = null, $api_securekey = null, $use_headers = false) {
         $this->assert_argument($username, "Username");
-        $this->assert_argument($password, "Password");
+
+        # Password or API Secure Key must be supplied but not both
+        if ($password == null and $api_securekey == null) {
+            throw new InvalidArgumentException("Password or API Secure Key must be supplied for login.");
+        }
 
         $query_dict = $this->init_version_dict();
         $headers = array();
 
-        if (!$use_headers) {
-            $query_dict["username"] = $username;
-            $query_dict["password"] = $password;
-        } else {
+        if ($use_headers) {
             $headers["x-auth-user"] = $username;
-            $headers["x-auth-key"] = $password;
+            if ($password != null) {
+                $headers["x-auth-key"] = $password;
+            }
+            if ($api_securekey != null) {
+                $headers["x-auth-securekey"] = $api_securekey;
+            }
+        } else {
+            $query_dict["username"] = $username;
+            if ($password != null) {
+                $query_dict["password"] = $password;
+            }
+            if ($api_securekey != null) {
+                $query_dict["securekey"] = $api_securekey;
+            }
         }
 
-        // TODO
-
-        $request_uri = Utils.BuildUri(BASE_URL, LOGIN_PATH, queryDictionary);
-        $server_response = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT, headers);
-        $response = Utils.Deserialize<Dictionary<string, string>>(serverResponse);
-
-        return $response["ApiToken"];
-    }
-
-    /* Performs a Login action. If useHeaders is true, puts securekey into HTTP headers */
-    public function login1($username, $securekey, $use_headers = false) {
-        $this->assert_argument($username, "Username");
-
-        $query_dict = $this->init_version_dict();
-        $headers = array();
-
-        if (!$use_headers) {
-            $query_dict["username"] = $username;
-            $query_dict["securekey"] = $securekey;
-        } else {
-            $headers["x-auth-user"] = $username;
-            $headers["x-auth-securekey"] = $securekey;
-        }
-
-        // TODO
-        $requestUri = Utils.BuildUri(BASE_URL, LOGIN_PATH, queryDictionary);
-        $serverResponse = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT, headers);
-        $response = Utils.Deserialize<Dictionary<string, string>>(serverResponse);
-
+        $response = WebUtils::getJson($this->BASE_URL, Actions::LOGIN_PATH, HTTP_METH_GET, WebUtils::BASIC_TIMEOUT, $query_dict, $headers);
         return $response["ApiToken"];
     }
 
@@ -134,27 +120,51 @@ class Actions {
 
     /* Creates a new job. Returns an array of Guids where 'JobId' is the 0th element and 'TaskId' is the 1st element */
     public function create_job($api_token, $job_name = null, $language = "en") {
+        $query_dict = $this->init_access_req_dict($api_token);
+        if($job_name) {
+            $query_dict["job_name"] = $job_name;
+        }
+        $query_dict["language"] = $language;
 
+        //TODO
+
+        $request_uri = Utils.BuildUri($this->BASE_URL, Actions::CREATE_JOB_PATH, $query_dict);
+        $server_response = web.HttpRequest($request_uri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
+        $response = Utils.Deserialize<CreateJobResult>($server_response);
+
+        return $response;
     }
 
     /* Authorizes a job with job_id */
     public function authorize_job($api_token, $job_id) {
+        $query_dict = $this->init_job_req_dict($api_token, $job_id);
 
+        //TODO
+        $request_uri = Utils.BuildUri($this->BASE_URL, Actions::AUTHORIZE_JOB_PATH, $query_dict);
+        web.HttpRequest($request_uri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT); // Nothing returned
     }
 
     /* Deletes a job with job_id */
     public function delete_job($api_token, $job_id) {
-
+        //TODO
+        $response = $this->get_job_response($api_token, $job_id, Actions::DELETE_JOB_PATH);
+        return $response["TaskId"];
     }
 
     /* Gets information about a job with job_id */
     public function get_job_info($api_token, $job_id) {
-
+        //TODO
     }
 
     /* Gets a list of jobs */
     public function get_job_list($api_token) {
+        $query_dict = $this->init_access_req_dict($api_token);
 
+        //TODO
+        $request_uri = Utils.BuildUri($this->BASE_URL, Actions::GET_JOB_LIST_PATH, $query_dict);
+        $server_response = web.HttpRequest($request_uri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
+        $job_list = Utils.Deserialize<JobList>($server_response);
+        return $job_list;
     }
 
     /* Uploads a file from fileStream to job with job_id */
@@ -217,7 +227,7 @@ class Actions {
     /// PRIVATE HELPER METHODS ///
 
     private function get_job_response($api_token, $job_id, $path) {
-
+        return null;
     }
 
     /* Returns a dictionary with version, api_token and job_id key-value pairs (parameters used in almost every job-control action). */
