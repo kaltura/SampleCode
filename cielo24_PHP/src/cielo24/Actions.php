@@ -38,14 +38,14 @@ class Actions {
 
     /* Performs a Login action. If useHeaders is true, puts username and password into HTTP headers */
     public function login($username, $password = null, $api_securekey = null, $use_headers = false) {
-        $this->assert_argument($username, "Username");
+        $this->_assertArgument($username, "Username");
 
         # Password or API Secure Key must be supplied but not both
         if ($password == null and $api_securekey == null) {
             throw new InvalidArgumentException("Password or API Secure Key must be supplied for login.");
         }
 
-        $query_dict = $this->init_version_dict();
+        $query_dict = $this->_initVersionDict();
         $headers = array();
 
         if ($use_headers) {
@@ -72,124 +72,115 @@ class Actions {
 
     /* Performs a Logout action */
     public function logout($api_token) {
-        $query_dict = $this->init_access_req_dict($api_token);
-
-        //TODO
-        $request_uri = Utils.BuildUri(BASE_URL, LOGOUT_PATH, queryDictionary);
-        web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT); // Nothing returned
+        $query_dict = $this->_initAccessReqDict($api_token);
+        // Nothing returned
+        WebUtils::httpRequest($this->BASE_URL, Actions::LOGOUT_PATH, HTTP_METH_GET, WebUtils::BASIC_TIMEOUT, $query_dict);
     }
 
     /* Updates password */
-    public function update_password($api_token, $new_password) {
-        $this->assert_argument($new_password, "New Password");
+    public function updatePassword($api_token, $new_password) {
+        $this->_assertArgument($new_password, "New Password");
 
-        $query_dict = $this->init_access_req_dict($api_token);
+        $query_dict = $this->_initAccessReqDict($api_token);
         $query_dict["new_password"] = $new_password;
-
-        // TODO
-        $request_uri = Utils.BuildUri(BASE_URL, UPDATE_PASSWORD_PATH, queryDictionary);
-        web.HttpRequest(requestUri, HttpMethod.POST, WebUtils.BASIC_TIMEOUT, Utils.ToQuery(queryDictionary)); // Nothing returned
+        // Nothing returned
+        WebUtils::httpRequest($this->BASE_URL, Actions::UPDATE_PASSWORD_PATH, HTTP_METH_POST, WebUtils::BASIC_TIMEOUT, null, null, http_build_query($query_dict));
     }
 
     /* Returns a new Secure API key */
-    public function generate_API_key($api_token, $username, $force_new = false) {
-        $this->assert_argument($username, "Username");
+    public function generateAPIKey($api_token, $username, $force_new = false) {
+        $this->_assertArgument($username, "Username");
 
-        $query_dict = $this->init_access_req_dict($api_token);
+        $query_dict = $this->_initAccessReqDict($api_token);
         $query_dict["account_id"] = $username;
         $query_dict["force_new"] = ($force_new) ? 'true' : 'false';
 
-        // TODO
-        $request_uri = Utils.BuildUri($this->BASE_URL, Actions::GENERATE_API_KEY_PATH, $query_dict);
-        $server_response = web.HttpRequest(requestUri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
-        $response = Utils.Deserialize<Dictionary<string, string>>($server_response);
+        $response = WebUtils::getJson($this->BASE_URL, Actions::GENERATE_API_KEY_PATH, HTTP_METH_GET, WebUtils::BASIC_TIMEOUT, $query_dict);
         return $response["ApiKey"];
     }
 
     /* Deactivates the supplied Secure API key */
-    public function remove_API_key($api_token, $api_securekey) {
-        $query_dict = $this->init_access_req_dict($api_token);
+    public function removeAPIKey($api_token, $api_securekey) {
+        $query_dict = $this->_initAccessReqDict($api_token);
         $query_dict["api_securekey"] = $api_securekey;
-
-        //TODO
-        $request_uri = Utils.BuildUri($this->BASE_URL, Actions::REMOVE_API_KEY_PATH, $query_dict);
-        web.HttpRequest($request_uri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT); // Nothing returned
+        // Nothing returned
+        WebUtils::httpRequest($this->BASE_URL, Actions::REMOVE_API_KEY_PATH, HTTP_METH_GET, WebUtils::BASIC_TIMEOUT, $query_dict);
     }
 
     /// JOB CONTROL ///
 
     /* Creates a new job. Returns an array of Guids where 'JobId' is the 0th element and 'TaskId' is the 1st element */
-    public function create_job($api_token, $job_name = null, $language = "en") {
-        $query_dict = $this->init_access_req_dict($api_token);
+    public function createJob($api_token, $job_name = null, $language = "en") {
+        $query_dict = $this->_initAccessReqDict($api_token);
         if($job_name) {
             $query_dict["job_name"] = $job_name;
         }
-        $query_dict["language"] = $language;
+        $query_dict["language"] = ($language == null) ? "en" : $language;
 
-        //TODO
-
-        $request_uri = Utils.BuildUri($this->BASE_URL, Actions::CREATE_JOB_PATH, $query_dict);
-        $server_response = web.HttpRequest($request_uri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
-        $response = Utils.Deserialize<CreateJobResult>($server_response);
-
+        $response = WebUtils::getJson($this->BASE_URL, Actions::CREATE_JOB_PATH, HTTP_METH_GET, WebUtils::BASIC_TIMEOUT, $query_dict);
+        // Return a hash with JobId and TaskId
         return $response;
     }
 
     /* Authorizes a job with job_id */
-    public function authorize_job($api_token, $job_id) {
-        $query_dict = $this->init_job_req_dict($api_token, $job_id);
-
-        //TODO
-        $request_uri = Utils.BuildUri($this->BASE_URL, Actions::AUTHORIZE_JOB_PATH, $query_dict);
-        web.HttpRequest($request_uri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT); // Nothing returned
+    public function authorizeJob($api_token, $job_id) {
+        $query_dict = $this->_initJobReqDict($api_token, $job_id);
+        // Nothing returned\
+        WebUtils::httpRequest($this->BASE_URL, Actions::AUTHORIZE_JOB_PATH, HTTP_METH_GET, WebUtils::BASIC_TIMEOUT, $query_dict);
     }
 
     /* Deletes a job with job_id */
-    public function delete_job($api_token, $job_id) {
-        //TODO
-        $response = $this->get_job_response($api_token, $job_id, Actions::DELETE_JOB_PATH);
+    public function deleteJob($api_token, $job_id) {
+        $query_dict = $this->_initJobReqDict($api_token, $job_id);
+        $response = WebUtils::getJson($this->BASE_URL, Actions::DELETE_JOB_PATH, HTTP_METH_GET, WebUtils::BASIC_TIMEOUT, $query_dict);
         return $response["TaskId"];
     }
 
     /* Gets information about a job with job_id */
-    public function get_job_info($api_token, $job_id) {
-        //TODO
+    public function getJobInfo($api_token, $job_id) {
+        $query_dict = $this->_initJobReqDict($api_token, $job_id);
+        $response = WebUtils::getJson($this->BASE_URL, Actions::GET_JOB_INFO_PATH, HTTP_METH_GET, WebUtils::BASIC_TIMEOUT, $query_dict);
+        return $response;
     }
 
     /* Gets a list of jobs */
-    public function get_job_list($api_token) {
-        $query_dict = $this->init_access_req_dict($api_token);
-
-        //TODO
-        $request_uri = Utils.BuildUri($this->BASE_URL, Actions::GET_JOB_LIST_PATH, $query_dict);
-        $server_response = web.HttpRequest($request_uri, HttpMethod.GET, WebUtils.BASIC_TIMEOUT);
-        $job_list = Utils.Deserialize<JobList>($server_response);
-        return $job_list;
+    public function getJobList($api_token) {
+        $query_dict = $this->_initAccessReqDict($api_token);
+        $response = WebUtils::getJson($this->BASE_URL, Actions::GET_JOB_LIST_PATH, HTTP_METH_GET, WebUtils::BASIC_TIMEOUT, $query_dict);
+        return $response;
     }
 
     /* Uploads a file from fileStream to job with job_id */
-    public function add_media_to_job($api_token, $job_id, $file_stream) {
+    public function addMediaToJobFile($api_token, $job_id, $file_stream) {
+
 
     }
 
     /* Provides job with job_id a url to media */
-    public function add_media_to_job1($api_token, $job_id, $media_url) {
+    public function addMediaToJobUrl($api_token, $job_id, $media_url) {
 
     }
 
     /* Provides job with job_id a url to media */
-    public function add_embedded_media_to_job($api_token, $job_id, $media_url) {
+    public function addMediaToJobEmbedded($api_token, $job_id, $media_url) {
 
     }
 
     /* Helper method for AddMediaToJob and AddEmbeddedMediaToJob methods */
-    private function sendM_media_url($api_token, $job_id, $media_url, $path) {
+    private function _sendMediaUrl($api_token, $job_id, $media_url, $path) {
+        $this->_assertArgument($media_url, "Media URL");
+        $query_dict = $this->_initJobReqDict($api_token, $job_id);
+        $query_dict['media_url'] = $media_url;
 
+        $response = WebUtils::getJson($this->BASE_URL, $path, HTTP_METH_GET, WebUtils::BASIC_TIMEOUT, $query_dict);
+        return $response["TaskId"];
     }
 
     /* Returns a Uri to the media from job with job_id */
-    public function get_media($api_token, $job_id) {
-
+    public function getMedia($api_token, $job_id) {
+        $query_dict = $this->_initJobReqDict($api_token, $job_id);
+        $response = WebUtils::getJson($this->BASE_URL, Actions::GET_MEDIA_PATH, HTTP_METH_GET, WebUtils::BASIC_TIMEOUT, $query_dict);
+        return $response["MediaUrl"];
     }
 
     /* Makes a PerformTranscription call */
@@ -205,22 +196,27 @@ class Actions {
     }
 
     /* Returns a transcript from a job with job_id */
-    public function get_transcript($api_token, $job_id, $transcript_options = null) {
-
+    public function getTranscript($api_token, $job_id, $transcript_options = null) {
+        $query_dict = $this->_initJobReqDict($api_token, $job_id);
+        if ($transcript_options != null) {
+            $query_dict += $transcript_options;
+        }
+        # Return raw transcript text
+        return WebUtils::httpRequest($this->BASE_URL, Actions::GET_TRANSCRIPTION_PATH, HTTP_METH_GET, WebUtils::BASIC_TIMEOUT, $query_dict);
     }
 
     /* Returns a caption from a job with job_id OR if buildUri is true, returns a string representation of the uri */
-    public function get_caption($api_token, $job_id, $caption_format, $caption_options = null) {
+    public function getCaption($api_token, $job_id, $caption_format, $caption_options = null) {
 
     }
 
     /* Returns an element list */
-    public function get_element_list($api_token, $job_id, $element_list_version = null) {
+    public function getElementList($api_token, $job_id, $element_list_version = null) {
 
     }
 
     /* Returns a list of elements lists */
-    public function get_list_of_element_lists($api_token, $job_id) {
+    public function getListOfElementLists($api_token, $job_id) {
 
     }
 
@@ -231,28 +227,28 @@ class Actions {
     }
 
     /* Returns a dictionary with version, api_token and job_id key-value pairs (parameters used in almost every job-control action). */
-    private function init_job_req_dict($api_token, $job_id) {
-        $this->assert_argument($api_token, "Job ID");
-        $dict = $this->init_access_req_dict($api_token);
+    private function _initJobReqDict($api_token, $job_id) {
+        $this->_assertArgument($api_token, "Job ID");
+        $dict = $this->_initAccessReqDict($api_token);
         $dict["job_id"] = $job_id;
         return $dict;
     }
 
     /* Returns a dictionary with version and api_token key-value pairs (parameters used in almost every access-control action). */
-    private function init_access_req_dict($api_token) {
-        $this->assert_argument($api_token, "API Token");
-        $dict = $this->init_version_dict();
+    private function _initAccessReqDict($api_token) {
+        $this->_assertArgument($api_token, "API Token");
+        $dict = $this->_initVersionDict();
         $dict["api_token"] = $api_token;
         return $dict;
     }
 
     /* Returns a dictionary with version key-value pair (parameter used in every action). */
-    private function init_version_dict() {
+    private function _initVersionDict() {
         return array("v" => Actions::API_VERSION);
     }
 
     /* If arg is invalid (null or empty), throws an InvalidArgumentException */
-    private function assert_argument($arg, $arg_name) {
+    private function _assertArgument($arg, $arg_name) {
         if ($arg == null) { throw new InvalidArgumentException("Invalid " . $arg_name); }
         elseif (gettype($arg) == "string" and strlen($arg) == 0) { throw new InvalidArgumentException("Invalid " . $arg_name); }
     }
